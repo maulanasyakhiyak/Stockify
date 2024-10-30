@@ -2,29 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\Product\ProductService;
 
 class AdminController extends Controller
 {
-    public function dashboard(){
+    protected $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
+    public function dashboard()
+    {
         return view('adminpage.dashboard');
     }
-    public function product(){
-        return view('adminpage.product');
+
+    public function product()
+    {
+        $products = $this->productService->getProductPaginate(5);
+        return view('adminpage.product', compact('products'));
     }
-    public function stok(){
+
+    public function stok()
+    {
         return view('adminpage.stok');
     }
-    public function suplier(){
+
+    public function suplier()
+    {
         return view('adminpage.suplier');
     }
-    public function pengguna(){
+
+    public function pengguna()
+    {
         return view('adminpage.pengguna');
     }
-    public function laporan(){
+
+    public function laporan()
+    {
         return view('adminpage.laporan');
     }
-    public function settings(){
+
+    public function settings()
+    {
         return view('adminpage.settings');
+    }
+
+    public function dataProduk()
+    {
+        $products = $this->productService->getProductPaginate(5);
+        return view('adminpage.product.data-product', compact('products'));
+    }
+
+    public function categoriesProduk()
+    {
+        return view('adminpage.product.categories-product');
+    }
+
+    public function attributeProduk()
+    {
+        return view('adminpage.product.attribute-product');
     }
 }

@@ -40,7 +40,7 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="#">
     <meta property="og:image:type" content="image/png">
-
+    @yield('css')
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
@@ -86,6 +86,8 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/datepicker.min.js"></script>
     <script src="https://kit.fontawesome.com/4e981ecd7b.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('plugins/jquery.min.js') }}"></script>
+    @yield('js')
 </body>
 
 </html>
