@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Categories\CategoriesRepository;
+use App\Repositories\Categories\CategoriesRepositoryImplement;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Product\ProductRepositoryImplement;
 use App\Services\Product\ProductService;
@@ -15,9 +17,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(ProductRepository::class,ProductRepositoryImplement::class);
+        $this->app->bind(ProductRepository::class, ProductRepositoryImplement::class);
 
-        $this->app->bind(ProductService::class,ProductServiceImplement::class);
+        $this->app->bind(ProductService::class, ProductServiceImplement::class);
+
+        $this->app->bind(CategoriesRepository::class, CategoriesRepositoryImplement::class);
     }
 
     /**

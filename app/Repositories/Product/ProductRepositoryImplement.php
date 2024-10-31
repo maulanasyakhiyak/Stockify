@@ -24,11 +24,12 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
     {
         return $this->model->all();
     }
+
     public function getProductPaginate($num)
     {
         return $this->model->paginate($num);
     }
-    
+
     public function findProduct($data)
     {
         return $this->model->find($data);

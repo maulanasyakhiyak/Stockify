@@ -9,6 +9,7 @@
     <meta name="generator" content="Laravel">
 
     <title>Stockify - @yield('subtitle')</title>
+    <livewire:styles />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="canonical" href="{{ request()->fullUrl() }}">
 
@@ -88,6 +89,8 @@
     <script src="https://kit.fontawesome.com/4e981ecd7b.js" crossorigin="anonymous"></script>
     <script src="{{ asset('plugins/jquery.min.js') }}"></script>
     @yield('js')
+    <livewire:scripts />
+
 </body>
 
 </html>

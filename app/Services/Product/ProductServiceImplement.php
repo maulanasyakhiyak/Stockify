@@ -2,11 +2,10 @@
 
 namespace App\Services\Product;
 
-use Exception;
 use App\Models\Product;
-use LaravelEasyRepository\Service;
-use Illuminate\Support\Facades\Validator;
 use App\Repositories\Product\ProductRepository;
+use Illuminate\Support\Facades\Validator;
+use LaravelEasyRepository\Service;
 
 class ProductServiceImplement extends Service implements ProductService
 {
@@ -25,9 +24,10 @@ class ProductServiceImplement extends Service implements ProductService
     {
         return $this->mainRepository->getProduct();
     }
+
     public function searchProducts($search)
     {
-        return Product::where('name', 'like', '%' . $search . '%')->get(); // Pencarian produk berdasarkan nama
+        return Product::with(['category', 'attributes'])->where('name', 'like', '%'.$search.'%')->get(); // Pencarian produk berdasarkan nama
     }
 
     public function getProductPaginate($num)
@@ -68,8 +68,10 @@ class ProductServiceImplement extends Service implements ProductService
         ]);
 
         if ($validator->fails()) {
-          $errors = $validator->errors();
-          throw new Exception($errors->first(), 422);
+            return [
+                'success' => false,
+                'error' => $validator->errors(),
+            ];
         }
 
         $this->mainRepository->createProduct($validator->validated());

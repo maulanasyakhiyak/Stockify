@@ -7,6 +7,7 @@ use LaravelEasyRepository\Repository;
 interface ProductRepository extends Repository
 {
     public function getProduct();
+
     public function getProductPaginate($num);
 
     public function findProduct($id);

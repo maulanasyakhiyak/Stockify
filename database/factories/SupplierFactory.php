@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +10,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class SupplierFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = Supplier::class;
+
+    public function definition()
     {
         return [
-            //
+            'name' => $this->faker->company,          // Nama perusahaan supplier acak
+            'address' => $this->faker->address,       // Alamat acak
+            'phone' => $this->faker->phoneNumber,     // Nomor telepon acak
+            'email' => $this->faker->unique()->safeEmail, // Email acak dan unik
         ];
     }
 }
