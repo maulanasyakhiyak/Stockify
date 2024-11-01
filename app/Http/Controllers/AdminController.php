@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Categories\CategoriesRepository;
+use App\Services\Categories\CategoriesService;
 use App\Services\Product\ProductService;
 use Illuminate\Http\Request;
 
@@ -9,9 +11,12 @@ class AdminController extends Controller
 {
     protected $productService;
 
-    public function __construct(ProductService $productService)
+    protected $categoriesService;
+
+    public function __construct(ProductService $productService, CategoriesService $categoriesService)
     {
         $this->productService = $productService;
+        $this->categoriesService = $categoriesService;
     }
 
     public function dashboard()
@@ -83,8 +88,45 @@ class AdminController extends Controller
         return view('adminpage.product.categories-product');
     }
 
+    public function newCategoriesProduk(Request $req)
+    {
+        $result = $this->categoriesService->createCategories($req->all());
+
+        if ($result['success']) {
+            return redirect()->back()->with('success', 'Category berhasil ditambahkan!');
+        } else {
+            return redirect()->back()->withInput()->with('openDrawer', true)->with('error', $result['error']);
+        }
+    }
+
+    public function updateCategoriesProduk(Request $req, $id)
+    {
+        $result = $this->categoriesService->updateCategories($id, [
+            'name' => $req->input('name'),
+            'description' => $req->input('desc'),
+        ]);
+
+        if ($result['success']) {
+            return redirect()->back()->with('success', 'Category berhasil ditambahkan!');
+        } else {
+            return redirect()->back()->withInput()->with('openDrawer', true)->with('error', $result['error']);
+        }
+    }
+
     public function attributeProduk()
     {
         return view('adminpage.product.attribute-product');
+    }
+
+    public function deleteCategoriesProduk(CategoriesRepository $categoriesRepository, $id)
+    {
+        $result = $categoriesRepository->deleteCategories($id);
+        if ($result) {
+            return redirect()->back()->with('success', 'Category berhasil dihapus!');
+        } else {
+            return redirect()->back()->withInput()->with('openDrawer', true)->with('error',
+                $result['error']);
+        }
+
     }
 }

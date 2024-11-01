@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,20 +16,33 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('a');
+    return redirect(route('login'));
+});
 
-Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/product', [AdminController::class, 'product'])->name('admin.product');
-Route::get('/product/data-produk', [AdminController::class, 'dataProduk'])->name('admin.product.data-produk');
-Route::post('/product/data-produk/add', [AdminController::class, 'newDataProduk'])->name('admin.product.data-produk.new');
-Route::get('/product/categories-produk', [AdminController::class, 'categoriesProduk'])->name('admin.product.categories-produk');
-Route::get('/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
+Route::group(['middleware' => ['auth', 'role:admin']], function () {
+    Route::get('/admin', function () {
+        return redirect(route('admin.dashboard'));
+    });
+    Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-Route::get('/product/data-produk', [AdminController::class, 'dataProduk'])->name('admin.product.data-produk');
-Route::get('/stok', [AdminController::class, 'stok'])->name('admin.stok');
-Route::get('/suplier', [AdminController::class, 'suplier'])->name('admin.suplier');
-Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
-Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
-Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::get('admin/product', [AdminController::class, 'product'])->name('admin.product');
+    Route::get('admin/product/data-produk', [AdminController::class, 'dataProduk'])->name('admin.product.data-produk');
+    Route::post('admin/product/data-produk/add', [AdminController::class, 'newDataProduk'])->name('admin.product.data-produk.new');
+
+    Route::get('admin/product/categories-produk', [AdminController::class, 'categoriesProduk'])->name('admin.product.categories-produk');
+    Route::post('admin/product/categories-produk/add', [AdminController::class, 'newCategoriesProduk'])->name('admin.product.categories-produk.add');
+    Route::post('admin/product/categories-produk/update/{id}', [AdminController::class, 'updateCategoriesProduk'])->name('admin.product.categories-produk.update');
+    Route::post('admin/product/categories-produk/delete/{id}', [AdminController::class, 'deleteCategoriesProduk'])->name('admin.product.categories-produk.delete');
+
+    Route::get('admin/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
+
+    Route::get('admin/stok', [AdminController::class, 'stok'])->name('admin.stok');
+    Route::get('admin/suplier', [AdminController::class, 'suplier'])->name('admin.suplier');
+    Route::get('admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
+    Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
+    Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
+});

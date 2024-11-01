@@ -25,5 +25,30 @@ class CategoriesRepositoryImplement extends Eloquent implements CategoriesReposi
         return $this->model->all();
     }
 
-    // Write something awesome :)
+    public function createCategories($data)
+    {
+        return $this->model->create($data);
+    }
+
+    public function updateCategories($id, $data)
+    {
+        $currentData = $this->model->find($id);
+
+        if (! $currentData) {
+            throw new \Exception('Kategori tidak ditemukan.');
+        }
+
+        return $currentData->update($data);
+    }
+
+    public function deleteCategories($id)
+    {
+        $currentData = $this->model->find($id);
+        if (! $currentData) {
+            throw new \Exception('Kategori tidak ditemukan.');
+        }
+
+        return $currentData->delete();
+
+    }
 }

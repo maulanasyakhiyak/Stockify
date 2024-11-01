@@ -41,56 +41,56 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="#">
     <meta property="og:image:type" content="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
     @yield('css')
-    <script>
-        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
-                '(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark')
-        }
-    </script>
+
+
 </head>
 @php
     $whiteBg = isset($params['white_bg']) && $params['white_bg'];
 @endphp
 
+<script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
+            '(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark')
+    }
+</script>
+
 <body class="{{ $whiteBg ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800' }}">
-    <x-navbar-dashboard />
-    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
-        @php
-            $role = 'admin';
-        @endphp
-        @switch($role)
-            @case('admin')
-                <x-sidebar.admin-sidebar />
-            @break
 
-            @case('manajer')
-                <x-sidebar.manajer-sidebar />
-            @break
+    @yield('body')
 
-            @case('staff')
-                <x-sidebar.staff-sidebar />
-            @break
-
-            @default
-        @endswitch
-        <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
-            <main>
-                @yield('content')
-            </main>
-            <x-footer-dashboard />
-        </div>
-    </div>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/datepicker.min.js"></script>
     <script src="https://kit.fontawesome.com/4e981ecd7b.js" crossorigin="anonymous"></script>
     <script src="{{ asset('plugins/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
     @yield('js')
     <livewire:scripts />
-
 </body>
+
+
+
+<script>
+    $(document).ready(function() {
+        @if (session('error'))
+            @foreach (session('error')->all() as $error)
+                toastr.error('{{ $error }}');
+            @endforeach
+        @endif
+
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+    });
+</script>
+
+
+
+
 
 </html>

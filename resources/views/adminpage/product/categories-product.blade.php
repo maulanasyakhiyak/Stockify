@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('subtitle', 'Produk')
 @section('content')
-    @livewire('data-product')
+    @livewire('data-categories')
 @endsection
