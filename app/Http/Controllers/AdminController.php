@@ -9,14 +9,19 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    protected $paginate = 10;
+
     protected $productService;
 
     protected $categoriesService;
 
-    public function __construct(ProductService $productService, CategoriesService $categoriesService)
+    protected $categoriesRepository;
+
+    public function __construct(ProductService $productService, CategoriesService $categoriesService, CategoriesRepository $categoriesRepository)
     {
         $this->productService = $productService;
         $this->categoriesService = $categoriesService;
+        $this->categoriesRepository = $categoriesRepository;
     }
 
     public function dashboard()
@@ -25,18 +30,44 @@ class AdminController extends Controller
     }
 
     // PRODUCT FUNCTION
-    public function product()
-    {
-        $products = $this->productService->getProductPaginate(5);
 
-        return view('adminpage.product', compact('products'));
+    public function changePaginate(Request $req)
+    {
+        session(['paginate' => $req->input('paginate_change')]);
+
+        return response()->json(['success' => true]);
     }
 
-    public function dataProduk()
+    public function filterProduct(Request $req)
     {
-        $products = $this->productService->getProductPaginate(5);
 
-        return view('adminpage.product.data-product', compact('products'));
+        $filter = [
+            'category' => $req->input('category_filter'),
+            'selling_price_min' => $req->input('selling_price_min'),
+            'selling_price_max' => $req->input('selling_price_max'),
+
+        ];
+
+        session($filter);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function dataProduk(Request $req)
+    {
+
+        $paginate = session('paginate', $this->paginate);
+        $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
+        $products = $this->productService->getProductPaginate($paginate, $filter);
+        $categories = $this->categoriesService->getCategories();
+
+        $page = $req->get('page');
+
+        if ($page > $products->lastPage()) {
+            return redirect()->route('admin.product.data-produk');
+        }
+
+        return view('adminpage.product.data-product', compact('products', 'categories', 'paginate', 'filter'));
     }
 
     public function newDataProduk(Request $r)
@@ -44,16 +75,47 @@ class AdminController extends Controller
 
         $result = $this->productService->createProduct([
             'name' => $r->input('name'),
-            'category' => $r->input('category'),
-            'stock' => $r->input('product_stock'),
+            'image' => $r->file('product_image'),
+            'category_id' => $r->input('category'),
+            'sku' => $r->input('product_stock'),
             'purchase_price' => $r->input('purchase_price'),
-            'sale_price' => $r->input('selling_price'),
+            'selling_price' => $r->input('selling_price'),
             'description' => $r->input('desc'),
         ]);
 
         if ($result['success']) {
             return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
         } else {
+            return redirect()->back()->withInput()->with('openDrawer', true)->withErrors($result['error']);
+        }
+    }
+
+    public function deleteDataProduk($id)
+    {
+        $result = $this->productService->deleteProduct($id);
+
+        return redirect()->back()->with(
+            $result['success'] ? 'success' : 'error',
+            $result['message']
+        );
+
+    }
+
+    public function updateDataProduk(Request $req, $id)
+    {
+        $result = $this->productService->serviceUpdateProduct([
+            'name' => $req->input('name'),
+            'category_id' => $req->input('category-update'),
+            'sku' => $req->input('sku'),
+            'purchase_price' => $req->input('purchase_price'),
+            'selling_price' => $req->input('selling_price'),
+            'description' => $req->input('description'),
+        ], $id);
+        // dd($req->all());
+        if ($result['success']) {
+            return redirect()->back()->with('success', $result['message']);
+        } else {
+            // dd($result['error']);
             return redirect()->back()->withInput()->with('openDrawer', true)->withErrors($result['error']);
         }
     }

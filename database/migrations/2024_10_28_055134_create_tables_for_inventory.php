@@ -45,7 +45,7 @@ class CreateTablesForInventory extends Migration
         // Table products
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('set null');
+            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('set null');
             $table->string('name');
             $table->string('sku')->unique()->comment('Stock Keeping Unit');

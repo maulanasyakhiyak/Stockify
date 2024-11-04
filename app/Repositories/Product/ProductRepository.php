@@ -8,7 +8,13 @@ interface ProductRepository extends Repository
 {
     public function getProduct();
 
-    public function getProductPaginate($num);
+    public function deleteProduct($id);
+
+    public function updateProduct($data, $id);
+
+    public function getProductPaginate($num, $filter = null);
+
+    public function searchProduct($perPage, $search);
 
     public function findProduct($id);
 

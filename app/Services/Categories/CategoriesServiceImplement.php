@@ -20,6 +20,11 @@ class CategoriesServiceImplement extends Service implements CategoriesService
         $this->mainRepository = $mainRepository;
     }
 
+    public function getCategories()
+    {
+        return $this->mainRepository->getCategories();
+    }
+
     public function createCategories($data)
     {
         $validator = Validator::make($data, [

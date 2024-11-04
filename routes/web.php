@@ -27,11 +27,17 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/admin', function () {
         return redirect(route('admin.dashboard'));
     });
+
+    Route::post('/change_paginate', [AdminController::class, 'changePaginate'])->name('change_paginate');
+    Route::post('/filter-product', [AdminController::class, 'filterProduct'])->name('filter-product');
+
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('admin/product', [AdminController::class, 'product'])->name('admin.product');
     Route::get('admin/product/data-produk', [AdminController::class, 'dataProduk'])->name('admin.product.data-produk');
     Route::post('admin/product/data-produk/add', [AdminController::class, 'newDataProduk'])->name('admin.product.data-produk.new');
+    Route::put('admin/product/data-produk/update/{id}', [AdminController::class, 'updateDataProduk'])->name('admin.product.data-produk.update');
+    Route::delete('admin/product/data-produk/delete/{id}', [AdminController::class, 'deleteDataProduk'])->name('admin.product.data-produk.delete');
 
     Route::get('admin/product/categories-produk', [AdminController::class, 'categoriesProduk'])->name('admin.product.categories-produk');
     Route::post('admin/product/categories-produk/add', [AdminController::class, 'newCategoriesProduk'])->name('admin.product.categories-produk.add');

@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('body')
     <x-navbar-dashboard />
     <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
@@ -28,6 +29,5 @@
             <x-footer-dashboard />
         </div>
     </div>
-
-
 @endsection
+

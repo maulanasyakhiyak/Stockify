@@ -8,6 +8,8 @@ interface CategoriesService extends BaseService
 {
     public function createCategories($data);
 
+    public function getCategories();
+
     public function updateCategories($id, $data);
 
     public function searchCategories($var, $input);

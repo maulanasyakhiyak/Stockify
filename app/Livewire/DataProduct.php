@@ -3,32 +3,50 @@
 namespace App\Livewire;
 
 use App\Repositories\Categories\CategoriesRepository;
+use App\Repositories\Product\ProductRepository;
 use App\Services\Product\ProductService;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class DataProduct extends Component
 {
-    public $products = []; // Menyimpan semua produk
+    use WithPagination;
 
     public $categories = [];
 
-    public $search = ''; // Menyimpan input pencarian
+    public $search = '';
+
+    protected $productService;
 
     protected $categoryRepository;
 
-    public function mount(ProductService $productService, CategoriesRepository $categoryRepository)
+    protected $productRepository;
+
+    public function mount(ProductService $productService, CategoriesRepository $categoryRepository, ProductRepository $productRepository)
     {
-        $this->products = $productService->getAllProduct();
-        $this->categories = $categoryRepository->getCategories();
+        $this->productService = $productService; // Simpan service produk
+        $this->categoryRepository = $categoryRepository;
+        $this->productRepository = $productRepository;
+
+        // Ambil kategori saat komponen dimuat
+        $this->categories = $this->categoryRepository->getCategories();
     }
 
     public function updatedSearch()
     {
-        $this->products = app(ProductService::class)->searchProducts($this->search);
+        $this->resetPage();
     }
 
     public function render()
     {
-        return view('livewire.data-product');
+        if ($this->search) {
+            $products = app(ProductRepository::class)->searchProduct(5, $this->search);
+        } else {
+            $products = app(ProductRepository::class)->getProductPaginate();
+        }
+
+        return view('livewire.data-product', [
+            'products' => $products,
+        ]);
     }
 }

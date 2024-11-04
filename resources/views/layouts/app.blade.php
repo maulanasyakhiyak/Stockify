@@ -7,9 +7,9 @@
     <meta name="description" content="#">
     <meta name="author" content="#">
     <meta name="generator" content="Laravel">
+    @yield('other_meta')
 
     <title>Stockify - @yield('subtitle')</title>
-    <livewire:styles />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="canonical" href="{{ request()->fullUrl() }}">
 
@@ -61,32 +61,30 @@
 </script>
 
 <body class="{{ $whiteBg ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800' }}">
-
     @yield('body')
 
+    <script src="{{ asset('plugins/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/datepicker.min.js"></script>
     <script src="https://kit.fontawesome.com/4e981ecd7b.js" crossorigin="anonymous"></script>
-    <script src="{{ asset('plugins/jquery.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
     @yield('js')
-    <livewire:scripts />
 </body>
 
 
 
 <script>
-    $(document).ready(function() {
-        @if (session('error'))
-            @foreach (session('error')->all() as $error)
-                toastr.error('{{ $error }}');
-            @endforeach
-        @endif
+$(document).ready(function() {
+    @if (session('errors'))
+    @foreach (session('errors')->all() as $error)
+        toastr.error("{{ $error }}");
+    @endforeach
+@endif
 
-        @if (session('success'))
-            toastr.success("{{ session('success') }}");
-        @endif
-    });
+@if (session('success'))
+    toastr.success("{{ session('success') }}");
+@endif
+});
 </script>
 
 

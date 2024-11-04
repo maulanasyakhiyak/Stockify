@@ -17,6 +17,7 @@ class ProductFactory extends Factory
             'purchase_price' => $this->faker->randomFloat(2, 10, 100),
             'selling_price' => $this->faker->randomFloat(2, 100, 200),
             'description' => $this->faker->sentence,
+            'image' => $this->faker->imageUrl(50, 50, 'animals', true, 'cats'),
             'category_id' => $this->faker->randomElement(\App\Models\Category::pluck('id')->toArray()), // Ambil ID kategori yang ada
             'supplier_id' => $this->faker->randomElement(\App\Models\Supplier::pluck('id')->toArray()), // Ambil ID supplier yang ada
         ];
