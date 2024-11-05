@@ -8,9 +8,9 @@
                     <tr>
                         <th scope="col" class="p-4">
                             <div class="flex items-center">
-                                <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox"
+                                <input id="checkbox-all-product" type="checkbox"
                                     class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
-                                <label for="checkbox-all" class="sr-only">Select All</label>
+                                <label for="checkbox-all-product" class="sr-only">Select All</label>
                             </div>
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Image</th>
@@ -27,13 +27,13 @@
                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="w-4 p-4">
                                 <div class="flex items-center">
-                                    <input id="checkbox-{{ $product['id'] }}" aria-describedby="checkbox-{{ $product['id'] }}" type="checkbox"
+                                    <input id="checkbox-{{ $product['id'] }}" data-checkbox="{{$product['id']}}" aria-describedby="checkbox-{{ $product['id'] }}" type="checkbox"
                                         class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="checkbox-{{ $product['id'] }}" class="sr-only">Select {{ $product['name'] }}</label>
                                 </div>
                             </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <img src="{{ asset('images/thumbnails/' . $product['image']) }}" class="h-24 w-24 rounded-lg object-cover border" alt="Product Image" loading="lazy">
+                                <img src="{{ asset('images/thumbnails/' . ($product['image'] ?? 'default.png')) }}" class="h-24 min-w-24 rounded-lg object-cover border" alt="Product Image" loading="lazy">
                             </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="text-base font-semibold">{{ $product['name'] }}</div>

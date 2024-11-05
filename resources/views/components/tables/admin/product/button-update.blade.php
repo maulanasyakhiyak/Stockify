@@ -31,7 +31,7 @@
         </svg>
         <span class="sr-only">Close menu</span>
     </button>
-    <form action="{{ route($routeUpdate,$product['id']) }}" method="POST">
+    <form action="{{ route($routeUpdate,$product['id']) }}" method="POST" class="overflow-x-auto h-5/6" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="space-y-4">
@@ -86,10 +86,38 @@
             <div>
                 <label for="description"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                <textarea id="description" rows="4"
+                <textarea id="description" rows="4" name="description"
                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="Enter event description here">{{ $product['description'] }}</textarea>
+                    placeholder="Enter event description here" >{{ $product['description'] }}</textarea>
             </div>
+
+            <div class="flex items-center justify-center w-full" >
+                <label for="product_update_image_{{$product['id']}}" data-dropfile="product_update_image_{{$product['id']}}"
+                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                    @if ($product['image'])    
+                    <img class="w-full h-full rounded-lg" src="{{ asset('images/original/'.$product['image']) }}" alt=""
+                        data-image="product_update_image_{{$product['id']}}">
+                        @else
+                        <img class="w-full h-full rounded-lg" src="" alt=""
+                            data-image="product_update_image_{{$product['id']}}" hidden>
+                        
+                    @endif
+                    <div class="{{$product['image'] ? 'hidden' : 'flex'}} flex-col items-center justify-center pt-5 pb-6" data-noImage="product_update_image_{{$product['id']}}">
+                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                        </svg>
+                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click
+                                to upload</span> or drag and drop</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                    </div>
+                    <input type="file" id="product_update_image_{{$product['id']}}" name="product_update_image_{{$product['id']}}" data-file="product_update_image_{{$product['id']}}"  accept="image/*" hidden />
+                </label>
+            </div>
+
         </div>
         <div class="bottom-0 left-0 flex justify-center w-full pb-4 mt-4 space-x-4 sm:absolute sm:px-4 sm:mt-0">
             <button type="submit"

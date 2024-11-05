@@ -2,14 +2,12 @@
 
 namespace App\Services\Product;
 
-use Exception;
-use App\Models\Product;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-use LaravelEasyRepository\Service;
-use Illuminate\Support\Facades\Validator;
 use App\Repositories\Product\ProductRepository;
-use Illuminate\Support\Facades\Storage;
+use Exception;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
+use LaravelEasyRepository\Service;
 
 class ProductServiceImplement extends Service implements ProductService
 {
@@ -26,39 +24,52 @@ class ProductServiceImplement extends Service implements ProductService
 
     public function serviceSaveImage($image, $name)
     {
-         // Membuat instance ImageManager
-    $manager = new ImageManager(new Driver()); // atau 'imagick' jika Anda menggunakan Imagick
+        $manager = new ImageManager(new Driver); // atau 'imagick' jika Anda menggunakan Imagick
 
-    $filename = $name . time() . '.' . $image->getClientOriginalExtension();
+        $filename = $name.time().'.'.$image->getClientOriginalExtension();
 
-    // Path untuk gambar asli dan thumbnail
-    $originalPath = env('IMAGE_ORI_PUBLIC_PATH');
-    $thumbnailPath =env('IMAGE_THUMB_PUBLIC_PATH');
+        // Path untuk gambar asli dan thumbnail
+        $originalPath = env('IMAGE_ORI_PUBLIC_PATH');
+        $thumbnailPath = env('IMAGE_THUMB_PUBLIC_PATH');
 
-    // Memastikan direktori ada atau buat baru
-    if (!file_exists($originalPath)) {
-        mkdir($originalPath, 0755, true);
-    }
-    if (!file_exists($thumbnailPath)) {
-        mkdir($thumbnailPath, 0755, true);
-    }
-    // dd($thumbnailPath . $filename);
-    // Simpan Gambar
-    try{
-        $manager->read($image)
-        ->scale(720, 720) // Atur ukuran gambar asli
-        ->save($originalPath.$filename);
+        // Memastikan direktori ada atau buat baru
+        if (! file_exists($originalPath)) {
+            mkdir($originalPath, 0755, true);
+        }
+        if (! file_exists($thumbnailPath)) {
+            mkdir($thumbnailPath, 0755, true);
+        }
+        // dd($thumbnailPath . $filename);
+        // Simpan Gambar
+        try {
+            $manager->read($image)
+                ->scale(720, 720) // Atur ukuran gambar asli
+                ->save($originalPath.$filename);
 
-        $manager->read($image)
+            $manager->read($image)
                 ->resize(100, 100) // Atur ukuran thumbnail
                 ->save($thumbnailPath.$filename);
-    }catch(Exception $e){
-        dd($e->getMessage());
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+
+        return $filename;
+
     }
 
-
-    return $filename;
-
+    public function serviceDeleteImage($filename)
+    {   
+        if(!$filename){
+            return true;
+        }
+        $ori_path = env('IMAGE_ORI_PUBLIC_PATH').$filename;
+        $thumb_path = env('IMAGE_THUMB_PUBLIC_PATH').$filename;
+        if (file_exists($ori_path) && file_exists($thumb_path)) {
+            unlink($ori_path);
+            unlink($thumb_path);
+        } else {
+            return true;
+        }
     }
 
     public function getAllProduct()
@@ -83,44 +94,56 @@ class ProductServiceImplement extends Service implements ProductService
 
     public function createProduct($data)
     {
-        $productName = $data['name'];
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255|unique:products,name',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'sku' => 'required|min:0',
+            'sku' => 'required|string|unique:products,sku',
             'purchase_price' => 'required|numeric|min:0',
-            'selling_price' => 'required|numeric|min:0',
-            'description' => 'required|min:10',
+            'selling_price' => 'required|numeric|min:0|gt:purchase_price',
+            'description' => 'required|string|min:10',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Jika gambar ada, akan divalidasi
         ], [
-            'name.unique' => "produk {$productName} sudah ada.",
             'name.required' => 'Nama produk wajib diisi.',
             'name.string' => 'Nama produk harus berupa teks.',
-            'name.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
-            'category_id.required' => 'Kategori wajib dipilih.',
-            'category_id.exists' => 'Kategori wajib dipilih.',
-            'stock.required' => 'Stok wajib diisi.',
-            'stock.numeric' => 'Stok harus berupa angka.',
-            'stock.min' => 'Stok tidak boleh kurang dari 0.',
-            'purchase_price.required' => 'Harga beli wajib diisi.',
-            'purchase_price.numeric' => 'Harga beli harus berupa angka.',
-            'purchase_price.min' => 'Harga beli tidak boleh kurang dari 0.',
-            'selling_price.required' => 'Harga jual wajib diisi.',
-            'selling_price.numeric' => 'Harga jual harus berupa angka.',
-            'selling_price.min' => 'Harga jual tidak boleh kurang dari 0.',
-            'description.required' => 'Deskripsi wajib diisi.',
-            'description.min' => 'Deskripsi harus terdiri dari minimal 10 karakter.',
+            'name.max' => 'Nama produk maksimal 255 karakter.',
+            'name.unique' => 'Nama produk sudah terdaftar, silakan pilih nama lain.',
+        
+            'category_id.required' => 'Kategori produk wajib dipilih.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
+        
+            'sku.required' => 'SKU produk wajib diisi.',
+            'sku.string' => 'SKU harus berupa teks.',
+            'sku.unique' => 'SKU produk sudah terdaftar, silakan pilih SKU lain.',
+        
+            'purchase_price.required' => 'Harga beli produk wajib diisi.',
+            'purchase_price.numeric' => 'Harga beli produk harus berupa angka.',
+            'purchase_price.min' => 'Harga beli produk tidak boleh kurang dari 0.',
+        
+            'selling_price.required' => 'Harga jual produk wajib diisi.',
+            'selling_price.numeric' => 'Harga jual produk harus berupa angka.',
+            'selling_price.min' => 'Harga jual produk tidak boleh kurang dari 0.',
+            'selling_price.gt' => 'Harga jual produk harus lebih besar dari harga beli.',
+        
+            'description.required' => 'Deskripsi produk wajib diisi.',
+            'description.string' => 'Deskripsi produk harus berupa teks.',
+            'description.min' => 'Deskripsi produk minimal 10 karakter.',
+        
+            // Pesan untuk validasi gambar
+            'image.image' => 'File yang diunggah harus berupa gambar.',
+            'image.mimes' => 'Gambar harus bertipe JPEG, PNG, JPG, atau GIF.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
-
+        
 
         if ($validator->fails()) {
             return [
                 'success' => false,
-                'error' => $validator->errors(),
+                'message' => $validator->errors(),
             ];
         }
-
-        $data['image'] = $this->serviceSaveImage($data['image'], 'product');
+        if($data['image']){
+            $data['image'] = $this->serviceSaveImage($data['image'], 'product');
+        }
         $this->mainRepository->createProduct($data);
 
         return [
@@ -132,29 +155,29 @@ class ProductServiceImplement extends Service implements ProductService
     {
         try {
             $productName = $this->mainRepository->findProduct($id)->name;
-            $filename = $this->mainRepository->findProduct($id)->image;
-            unlink(env('IMAGE_ORI_PUBLIC_PATH').$filename);
-            unlink(env('IMAGE_THUMB_PUBLIC_PATH').$filename);
+
+            $this->serviceDeleteImage($this->mainRepository->findProduct($id)->image);
+
             $this->mainRepository->deleteProduct($id);
+
             return [
                 'success' => true,
-                'message' => "Produk {$productName} berhasil dihapus."
+                'message' => "Produk {$productName} berhasil dihapus.",
             ];
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
     }
 
     public function serviceUpdateProduct($data, $id)
     {
-
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
-            'sku' => 'required|string|max:100|unique:products,sku,' . ($data['id'] ?? 'NULL'),
+            'sku' => 'required|string|unique:products,sku,'.$id,
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0|gt:purchase_price',
             'description' => 'nullable|string',
@@ -187,20 +210,30 @@ class ProductServiceImplement extends Service implements ProductService
         if ($validator->fails()) {
             return [
                 'success' => false,
-                'error' => $validator->errors(),
+                'message' => $validator->errors(),
             ];
         }
 
         try {
-            $this->mainRepository->updateProduct($validator->validated(), $id);
+
+            if ($data['image']) {
+                
+                $this->serviceDeleteImage($this->mainRepository->findProduct($id)->image);
+                $data['image'] = $this->serviceSaveImage($data['image'], 'product');
+            } else {
+                unset($data['image']);
+            }
+
+            $this->mainRepository->updateProduct($data, $id);
+
             return [
                 'success' => true,
-                'message' => "Berhasil Update data {$id}"
+                'message' => "Berhasil Update data {$id}",
             ];
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
     }

@@ -20,9 +20,9 @@ class CategoriesServiceImplement extends Service implements CategoriesService
         $this->mainRepository = $mainRepository;
     }
 
-    public function getCategories()
+    public function getCategories($paginate)
     {
-        return $this->mainRepository->getCategories();
+        return $this->mainRepository->getCategories($paginate);
     }
 
     public function createCategories($data)
@@ -40,7 +40,7 @@ class CategoriesServiceImplement extends Service implements CategoriesService
         if ($validator->fails()) {
             return [
                 'success' => false,
-                'error' => $validator->errors(),
+                'message' => $validator->errors(),
             ];
         }
 
@@ -70,7 +70,7 @@ class CategoriesServiceImplement extends Service implements CategoriesService
         if ($validator->fails()) {
             return [
                 'success' => false,
-                'error' => $validator->errors(),
+                'message' => $validator->errors(),
             ];
         }
 

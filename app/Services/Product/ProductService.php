@@ -20,5 +20,7 @@ interface ProductService extends BaseService
 
     public function serviceUpdateProduct($data, $id);
 
-    public function serviceSaveImage($image,$name);
+    public function serviceSaveImage($image, $name);
+
+    public function serviceDeleteImage($image);
 }

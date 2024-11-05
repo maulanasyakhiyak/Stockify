@@ -59,7 +59,7 @@ class AdminController extends Controller
         $paginate = session('paginate', $this->paginate);
         $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
         $products = $this->productService->getProductPaginate($paginate, $filter);
-        $categories = $this->categoriesService->getCategories();
+        $categories = $this->categoriesRepository->getCategories();
 
         $page = $req->get('page');
 
@@ -86,7 +86,7 @@ class AdminController extends Controller
         if ($result['success']) {
             return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
         } else {
-            return redirect()->back()->withInput()->with('openDrawer', true)->withErrors($result['error']);
+            return redirect()->back()->withInput()->with('openDrawer', true)->withErrors($result['message']);
         }
     }
 
@@ -103,20 +103,21 @@ class AdminController extends Controller
 
     public function updateDataProduk(Request $req, $id)
     {
+        // dd($req->all());
         $result = $this->productService->serviceUpdateProduct([
             'name' => $req->input('name'),
+            'image' => $req->file('product_update_image_'.$id),
             'category_id' => $req->input('category-update'),
             'sku' => $req->input('sku'),
             'purchase_price' => $req->input('purchase_price'),
             'selling_price' => $req->input('selling_price'),
             'description' => $req->input('description'),
         ], $id);
-        // dd($req->all());
+
         if ($result['success']) {
             return redirect()->back()->with('success', $result['message']);
         } else {
-            // dd($result['error']);
-            return redirect()->back()->withInput()->with('openDrawer', true)->withErrors($result['error']);
+            return redirect()->back()->withInput()->with('openDrawer', true)->withErrors($result['message']);
         }
     }
 
@@ -147,7 +148,9 @@ class AdminController extends Controller
 
     public function categoriesProduk()
     {
-        return view('adminpage.product.categories-product');
+        $paginate = session('paginate', $this->paginate);
+        $categories = $this->categoriesRepository->getCategories($paginate);
+        return view('adminpage.product.categories-product',compact('categories','paginate'));
     }
 
     public function newCategoriesProduk(Request $req)
@@ -165,13 +168,13 @@ class AdminController extends Controller
     {
         $result = $this->categoriesService->updateCategories($id, [
             'name' => $req->input('name'),
-            'description' => $req->input('desc'),
+            'description' => $req->input('description'),
         ]);
-
+        
         if ($result['success']) {
             return redirect()->back()->with('success', 'Category berhasil ditambahkan!');
         } else {
-            return redirect()->back()->withInput()->with('openDrawer', true)->with('error', $result['error']);
+            return redirect()->back()->withInput()->withErrors( $result['message']);
         }
     }
 

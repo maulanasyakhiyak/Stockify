@@ -34,7 +34,7 @@
 
                             <div class="flex items-center w-full sm:justify-end">
                                 <div class="flex gap-3">
-                                    <div class="selected-info text-gray-500 dark:text-gray-300 hidden">0 data selected</div>
+                                    <div class="text-gray-500 dark:text-gray-300 hidden" id="selected-info-warp"><span id="selected-info"></span> data selected</div>
 
                                     <button data-tooltip-target="export-button" data-tooltip-placement="bottom"
                                         type="button"
@@ -115,8 +115,8 @@
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="" selected>All category</option>
                                             @foreach ($categories as $item)
-                                                <option value="{{ $item->id }}"
-                                                    {{ $filter['category'] == $item->id ? 'selected' : '' }}>
+                                                <option value="{{ $item->id }}" {{ isset($filter['category']) && $filter['category'] == $item->id ? 'selected' : '' }}
+>
                                                     {{ $item->name }}</option>
                                             @endforeach
                                         </select>
@@ -131,13 +131,13 @@
                                             <div>
                                                 <input type="number" name="selling_price_min" id="selling_price_min"
                                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                    placeholder="Min" value="{{ $filter['selling_price_min'] }}">
+                                                    placeholder="Min" value="{{ isset($filter['selling_price_min']) ? $filter['selling_price_min'] : '' }}">
                                             </div>
 
                                             <div>
                                                 <input type="number" name="selling_price_max" id="selling_price_max"
                                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                    placeholder="Max" value="{{ $filter['selling_price_max'] }}">
+                                                    placeholder="Max" value="{{ isset($filter['selling_price_max']) ? $filter['selling_price_max'] : '' }}">
                                             </div>
                                         </div>
                                     </div>
@@ -270,7 +270,7 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
                             </div>
-                            <input id="product_image" name="product_image" type="file"  accept="image/*" hidden />
+                            <input id="product_image" name="product_image" type="file" data-file="product_image"  accept="image/*" hidden />
                         </label>
                     </div>
 
