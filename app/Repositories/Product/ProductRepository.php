@@ -16,7 +16,7 @@ interface ProductRepository extends Repository
 
     public function searchProduct($perPage, $search);
 
-    public function findProduct($id);
+    public function findProduct($data);
 
     public function createProduct($data);
 }

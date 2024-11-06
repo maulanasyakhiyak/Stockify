@@ -8,7 +8,7 @@
                     <tr>
                         <th scope="col" class="p-4">
                             <div class="flex items-center">
-                                <input id="checkbox-all-product" type="checkbox"
+                                <input id="checkbox-all-product" data-checkbox_all="true" type="checkbox"
                                     class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                 <label for="checkbox-all-product" class="sr-only">Select All</label>
                             </div>
@@ -27,7 +27,9 @@
                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="w-4 p-4">
                                 <div class="flex items-center">
-                                    <input id="checkbox-{{ $product['id'] }}" data-checkbox="{{$product['id']}}" aria-describedby="checkbox-{{ $product['id'] }}" type="checkbox"
+                                    <input id="checkbox-{{ $product['id'] }}" data-checkbox_item="{{$product['id']}}"
+                                        {{ in_array($product['id'], session('checkbox', [])) ? 'checked' : '' }}
+                                        aria-describedby="checkbox-{{ $product['id'] }}" type="checkbox"
                                         class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="checkbox-{{ $product['id'] }}" class="sr-only">Select {{ $product['name'] }}</label>
                                 </div>

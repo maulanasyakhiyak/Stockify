@@ -27,7 +27,8 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/admin', function () {
         return redirect(route('admin.dashboard'));
     });
-
+    Route::get('/get-selected-id', [AdminController::class,'getSelectedId']);
+    Route::post('/record-checkbox', [AdminController::class,'recordCheckbox']);
     Route::post('/change_paginate', [AdminController::class, 'changePaginate'])->name('change_paginate');
     Route::post('/filter-product', [AdminController::class, 'filterProduct'])->name('filter-product');
 

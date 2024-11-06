@@ -10,7 +10,6 @@
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('js/data-product.js') }}"></script>
-
 @endsection
 
 @section('other_meta')
@@ -19,8 +18,6 @@
 @endsection
 
 @section('content')
-
-
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="flex flex-col">
             <div class="block sm:flex items-center rounded-t-lg justify-between mb-3 lg:mt-1.5">
@@ -34,7 +31,6 @@
 
                             <div class="flex items-center w-full sm:justify-end">
                                 <div class="flex gap-3">
-                                    <div class="text-gray-500 dark:text-gray-300 hidden" id="selected-info-warp"><span id="selected-info"></span> data selected</div>
 
                                     <button data-tooltip-target="export-button" data-tooltip-placement="bottom"
                                         type="button"
@@ -58,10 +54,59 @@
                                         Export file
                                         <div class="tooltip-arrow" data-popper-arrow></div>
                                     </div>
-                                    <button data-tooltip-target="delete-button" data-tooltip-placement="bottom"
-                                        type="button" class="bg-red-500 rounded-lg text-white text-sm p-3">
+                                    {{-- Delete Check Modal --}}
+                                    <button data-tooltip-target="delete-button" data-modal-target="selected_delete"
+                                        onclick="addDataToModal('selected_delete')" data-modal-toggle="selected_delete"
+                                        data-tooltip-placement="bottom" id="delete_selected" type="button"
+                                        class="bg-red-500 rounded-lg text-white text-sm p-3 disabled:bg-red-400">
                                         <i class="fa-solid fa-trash-can pe-2"></i>Delete
                                     </button>
+                                    <!-- Small Modal -->
+                                    <div id="selected_delete" tabindex="-1"
+                                        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                        <div class="relative w-full max-w-md max-h-full">
+                                            <!-- Modal content -->
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                <!-- Modal header -->
+                                                <div
+                                                    class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                    <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                                                        Small modal
+                                                    </h3>
+                                                    <button type="button"
+                                                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                        data-modal-hide="selected_delete">
+                                                        <svg class="w-3 h-3" aria-hidden="true"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 14 14">
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                stroke-linejoin="round" stroke-width="2"
+                                                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                        </svg>
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+                                                <!-- Modal body -->
+                                                <div class="p-4 md:p-5 space-y-4 modal_body">
+                                                    <h3>Apakah anda yakin ingin menghapus data yang dipilih</h3>
+                                                    <p>
+
+                                                    </p>
+                                                </div>
+                                                <!-- Modal footer -->
+                                                <div
+                                                    class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                                    <button data-modal-hide="selected_delete" type="button"
+                                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I
+                                                        accept</button>
+                                                    <button data-modal-hide="selected_delete" type="button"
+                                                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -115,8 +160,8 @@
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option value="" selected>All category</option>
                                             @foreach ($categories as $item)
-                                                <option value="{{ $item->id }}" {{ isset($filter['category']) && $filter['category'] == $item->id ? 'selected' : '' }}
->
+                                                <option value="{{ $item->id }}"
+                                                    {{ isset($filter['category']) && $filter['category'] == $item->id ? 'selected' : '' }}>
                                                     {{ $item->name }}</option>
                                             @endforeach
                                         </select>
@@ -131,13 +176,15 @@
                                             <div>
                                                 <input type="number" name="selling_price_min" id="selling_price_min"
                                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                    placeholder="Min" value="{{ isset($filter['selling_price_min']) ? $filter['selling_price_min'] : '' }}">
+                                                    placeholder="Min"
+                                                    value="{{ isset($filter['selling_price_min']) ? $filter['selling_price_min'] : '' }}">
                                             </div>
 
                                             <div>
                                                 <input type="number" name="selling_price_max" id="selling_price_max"
                                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                    placeholder="Max" value="{{ isset($filter['selling_price_max']) ? $filter['selling_price_max'] : '' }}">
+                                                    placeholder="Max"
+                                                    value="{{ isset($filter['selling_price_max']) ? $filter['selling_price_max'] : '' }}">
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +226,8 @@
                 </svg>
                 <span class="sr-only">Close menu</span>
             </button>
-            <form action="{{ route('admin.product.data-produk.new') }}" method="POST" class="overflow-x-auto h-5/6" enctype="multipart/form-data">
+            <form action="{{ route('admin.product.data-produk.new') }}" method="POST" class="overflow-x-auto h-5/6"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -225,22 +273,22 @@
                             <input type="number" name="purchase_price" id="purchase_price"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Rp." value="{{ old('purchase_price') }}">
-                            </div>
+                        </div>
 
-                            <div>
-                                <label for="selling_price"
+                        <div>
+                            <label for="selling_price"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selling price</label>
-                                <input type="number" name="selling_price" id="selling_price"
+                            <input type="number" name="selling_price" id="selling_price"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Rp." value="{{ old('selling_price') }}">
-                                @error('sale_price')
+                            @error('sale_price')
                                 <span class="text-red-500">{{ $message }}</span>
-                                @enderror
-                            </div>
+                            @enderror
                         </div>
-                        @error('purchase_price')
-                            <span class="text-red-500">{{ $message }}</span>
-                        @enderror
+                    </div>
+                    @error('purchase_price')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
 
                     <div>
                         <label for="description"
@@ -253,7 +301,7 @@
                         @enderror
                     </div>
 
-                    <div class="flex items-center justify-center w-full" >
+                    <div class="flex items-center justify-center w-full">
                         <label for="product_image" data-dropfile="product_image"
                             class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                             <img class="w-full h-full rounded-lg" src="" alt=""
@@ -270,7 +318,8 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
                             </div>
-                            <input id="product_image" name="product_image" type="file" data-file="product_image"  accept="image/*" hidden />
+                            <input id="product_image" name="product_image" type="file" data-file="product_image"
+                                accept="image/*" hidden />
                         </label>
                     </div>
 

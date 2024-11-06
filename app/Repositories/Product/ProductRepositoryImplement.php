@@ -57,7 +57,7 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
 
     public function findProduct($data)
     {
-        return $this->model->find($data);
+        return $this->model->whereIn('id', $data)->get();
     }
 
     public function createProduct($data)

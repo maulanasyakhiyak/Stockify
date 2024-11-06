@@ -74,17 +74,17 @@
 
 
 <script>
-$(document).ready(function() {
-    @if (session('errors'))
-    @foreach (session('errors')->all() as $error)
-        toastr.error("{{ $error }}");
-    @endforeach
-@endif
+// $(document).ready(function() {
+//     @if (session('errors'))
+//     @foreach (session('errors')->all() as $error)
+//         toastr.error("{{ $error }}");
+//     @endforeach
+// @endif
 
-@if (session('success'))
-    toastr.success("{{ session('success') }}");
-@endif
-});
+// @if (session('success'))
+//     toastr.success("{{ session('success') }}");
+// @endif
+// });
 </script>
 
 

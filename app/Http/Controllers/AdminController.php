@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Categories\CategoriesRepository;
+use App\Repositories\Product\ProductRepository;
 use App\Services\Categories\CategoriesService;
 use App\Services\Product\ProductService;
+use Exception;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     protected $paginate = 10;
+
+    protected $checkboxSession;
 
     protected $productService;
 
@@ -17,11 +21,18 @@ class AdminController extends Controller
 
     protected $categoriesRepository;
 
-    public function __construct(ProductService $productService, CategoriesService $categoriesService, CategoriesRepository $categoriesRepository)
+    protected $productRepository;
+
+    public function __construct(ProductRepository $productRepository,
+                                ProductService $productService,
+                                CategoriesService $categoriesService,
+                                CategoriesRepository $categoriesRepository)
     {
         $this->productService = $productService;
+        $this->productRepository = $productRepository;
         $this->categoriesService = $categoriesService;
         $this->categoriesRepository = $categoriesRepository;
+        $this->checkboxSession = session('checkbox', []);
     }
 
     public function dashboard()
@@ -30,6 +41,54 @@ class AdminController extends Controller
     }
 
     // PRODUCT FUNCTION
+    public function getSelectedId(Request $req)
+    {
+        $data = session('checkbox', []);
+        if($req->has('withData')){
+            $data_product = $this->productRepository->findProduct($data);
+            return response()->json([
+                'success' => true,
+                'data' => $data_product,
+            ]);
+        }else{
+            return response()->json([
+                'success' => true,
+                'data' => count($data),
+            ]);
+        }
+
+
+    }
+
+    public function recordCheckbox(Request $req)
+    {
+        $checkboxSession = session()->get('checkbox', []);
+        try{
+            if ($req->has('checkedItems')) {
+                $checkedItems = ($req->input('checkedItems'));
+                foreach ($checkedItems as  $item) {
+                    if (!in_array($item, $checkboxSession)) {
+                        $checkboxSession[] =  (int)$item;
+                    }
+                }
+            }
+            if ($req->has('uncheckedItems')) {
+                $uncheckedItems = $req->input('uncheckedItems');
+                    foreach ($uncheckedItems as $item) {
+                        $key = array_search((int)$item, $checkboxSession);
+                        if ($key !== false) {
+                            unset($checkboxSession[$key]);
+                        }
+                    }
+            }
+
+            session(['checkbox' => $checkboxSession]);
+            return response()->json(['success' => true]);
+        }catch(Exception $e){
+            return response()->json(['success' => false , 'message' => $e->getMessage()]);
+        }
+
+    }
 
     public function changePaginate(Request $req)
     {
@@ -55,7 +114,7 @@ class AdminController extends Controller
 
     public function dataProduk(Request $req)
     {
-
+        // dd(session()->all());
         $paginate = session('paginate', $this->paginate);
         $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
         $products = $this->productService->getProductPaginate($paginate, $filter);
@@ -67,7 +126,12 @@ class AdminController extends Controller
             return redirect()->route('admin.product.data-produk');
         }
 
-        return view('adminpage.product.data-product', compact('products', 'categories', 'paginate', 'filter'));
+        return view('adminpage.product.data-product', compact(
+            'products',
+            'categories',
+            'paginate',
+            'filter' ,
+            ));
     }
 
     public function newDataProduk(Request $r)
@@ -92,13 +156,15 @@ class AdminController extends Controller
 
     public function deleteDataProduk($id)
     {
+        $checkboxSession = session('checkbox', []);
+        unset($checkboxSession[$id]);
+        session(['checkbox' => $checkboxSession]);
         $result = $this->productService->deleteProduct($id);
 
         return redirect()->back()->with(
             $result['success'] ? 'success' : 'error',
             $result['message']
         );
-
     }
 
     public function updateDataProduk(Request $req, $id)
@@ -106,7 +172,7 @@ class AdminController extends Controller
         // dd($req->all());
         $result = $this->productService->serviceUpdateProduct([
             'name' => $req->input('name'),
-            'image' => $req->file('product_update_image_'.$id),
+            'image' => $req->file('product_update_image_' . $id),
             'category_id' => $req->input('category-update'),
             'sku' => $req->input('sku'),
             'purchase_price' => $req->input('purchase_price'),
@@ -150,7 +216,7 @@ class AdminController extends Controller
     {
         $paginate = session('paginate', $this->paginate);
         $categories = $this->categoriesRepository->getCategories($paginate);
-        return view('adminpage.product.categories-product',compact('categories','paginate'));
+        return view('adminpage.product.categories-product', compact('categories', 'paginate'));
     }
 
     public function newCategoriesProduk(Request $req)
@@ -170,11 +236,11 @@ class AdminController extends Controller
             'name' => $req->input('name'),
             'description' => $req->input('description'),
         ]);
-        
+
         if ($result['success']) {
             return redirect()->back()->with('success', 'Category berhasil ditambahkan!');
         } else {
-            return redirect()->back()->withInput()->withErrors( $result['message']);
+            return redirect()->back()->withInput()->withErrors($result['message']);
         }
     }
 
@@ -189,9 +255,10 @@ class AdminController extends Controller
         if ($result) {
             return redirect()->back()->with('success', 'Category berhasil dihapus!');
         } else {
-            return redirect()->back()->withInput()->with('openDrawer', true)->with('error',
-                $result['error']);
+            return redirect()->back()->withInput()->with('openDrawer', true)->with(
+                'error',
+                $result['error']
+            );
         }
-
     }
 }
