@@ -174,6 +174,7 @@ class ProductServiceImplement extends Service implements ProductService
 
     public function serviceUpdateProduct($data, $id)
     {
+        $id = (int) $id;
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',

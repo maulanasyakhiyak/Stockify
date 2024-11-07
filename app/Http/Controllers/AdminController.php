@@ -45,7 +45,7 @@ class AdminController extends Controller
     {
         $data = session('checkbox', []);
         if($req->has('withData')){
-            $data_product = $this->productRepository->findProduct($data);
+            $data_product = $this->productRepository->findMultipleProduct($data);
             return response()->json([
                 'success' => true,
                 'data' => $data_product,
@@ -167,9 +167,17 @@ class AdminController extends Controller
         );
     }
 
-    public function updateDataProduk(Request $req, $id)
+    public function deleteDataProdukSelected()
     {
-        // dd($req->all());
+        $data_selected = session('checkbox', []);
+        $this->productRepository->destroyProduct($data_selected);
+        session()->forget('checkbox');
+
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
+
+    }
+    public function updateDataProduk(Request $req, $id)
+    { 
         $result = $this->productService->serviceUpdateProduct([
             'name' => $req->input('name'),
             'image' => $req->file('product_update_image_' . $id),

@@ -57,6 +57,11 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
 
     public function findProduct($data)
     {
+        return $this->model->where('id', $data)->first();
+    }
+
+    public function findMultipleProduct($data)
+    {
         return $this->model->whereIn('id', $data)->get();
     }
 
@@ -73,6 +78,12 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
         }
 
         return $product->delete();
+    }
+
+    public function destroyProduct($data)
+    {
+        $this->model->destroy($data);
+        
     }
 
     public function updateProduct($data, $id)

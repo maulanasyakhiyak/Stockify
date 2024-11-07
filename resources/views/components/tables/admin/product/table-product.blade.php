@@ -35,7 +35,7 @@
                                 </div>
                             </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <img src="{{ asset('images/thumbnails/' . ($product['image'] ?? 'default.png')) }}" class="h-24 min-w-24 rounded-lg object-cover border" alt="Product Image" loading="lazy">
+                                <img src="{{ asset('images/thumbnails/' . ( $product['imsage'] ?? 'default.png')) }}" class="h-[100px] min-w-[100px] rounded-lg object-cover border" alt="Product Image" loading="lazy">
                             </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <div class="text-base font-semibold">{{ $product['name'] }}</div>
