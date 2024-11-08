@@ -58,7 +58,7 @@ class ProductServiceImplement extends Service implements ProductService
     }
 
     public function serviceDeleteImage($filename)
-    {   
+    {
         if(!$filename){
             return true;
         }
@@ -82,9 +82,9 @@ class ProductServiceImplement extends Service implements ProductService
         // Pencarian produk berdasarkan nama
     }
 
-    public function getProductPaginate($perPage, $filter = null)
+    public function getProductPaginate($perPage, $filter = null, $search = null )
     {
-        return $this->mainRepository->getProductPaginate($perPage, $filter);
+        return $this->mainRepository->getProductPaginate($perPage, $filter, $search);
     }
 
     public function getProductById($id)
@@ -107,33 +107,33 @@ class ProductServiceImplement extends Service implements ProductService
             'name.string' => 'Nama produk harus berupa teks.',
             'name.max' => 'Nama produk maksimal 255 karakter.',
             'name.unique' => 'Nama produk sudah terdaftar, silakan pilih nama lain.',
-        
+
             'category_id.required' => 'Kategori produk wajib dipilih.',
             'category_id.exists' => 'Kategori yang dipilih tidak valid.',
-        
+
             'sku.required' => 'SKU produk wajib diisi.',
             'sku.string' => 'SKU harus berupa teks.',
             'sku.unique' => 'SKU produk sudah terdaftar, silakan pilih SKU lain.',
-        
+
             'purchase_price.required' => 'Harga beli produk wajib diisi.',
             'purchase_price.numeric' => 'Harga beli produk harus berupa angka.',
             'purchase_price.min' => 'Harga beli produk tidak boleh kurang dari 0.',
-        
+
             'selling_price.required' => 'Harga jual produk wajib diisi.',
             'selling_price.numeric' => 'Harga jual produk harus berupa angka.',
             'selling_price.min' => 'Harga jual produk tidak boleh kurang dari 0.',
             'selling_price.gt' => 'Harga jual produk harus lebih besar dari harga beli.',
-        
+
             'description.required' => 'Deskripsi produk wajib diisi.',
             'description.string' => 'Deskripsi produk harus berupa teks.',
             'description.min' => 'Deskripsi produk minimal 10 karakter.',
-        
+
             // Pesan untuk validasi gambar
             'image.image' => 'File yang diunggah harus berupa gambar.',
             'image.mimes' => 'Gambar harus bertipe JPEG, PNG, JPG, atau GIF.',
             'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
-        
+
 
         if ($validator->fails()) {
             return [
@@ -218,7 +218,7 @@ class ProductServiceImplement extends Service implements ProductService
         try {
 
             if ($data['image']) {
-                
+
                 $this->serviceDeleteImage($this->mainRepository->findProduct($id)->image);
                 $data['image'] = $this->serviceSaveImage($data['image'], 'product');
             } else {

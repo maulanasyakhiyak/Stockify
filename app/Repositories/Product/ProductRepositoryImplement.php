@@ -30,9 +30,15 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
         return $this->model->all();
     }
 
-    public function getProductPaginate($num, $filter = null)
+    public function getProductPaginate($num, $filter = null, $search = null)
     {
         $query = $this->model::query();
+
+        if($search){
+
+            $query->where('name', 'like', '%'.$search.'%');
+        }
+
         if ($filter) {
             if (isset($filter['category'])) {
                 $query->where('category_id', $filter['category']);
@@ -50,9 +56,13 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
         return $query->paginate($num);
     }
 
-    public function searchProduct($perPage, $search)
+    public function searchProduct($search, $perPage = null)
     {
-        return $this->model->where('name', 'like', '%'.$search.'%')->paginate($perPage);
+        if($perPage){
+            return $this->model->where('name', 'like', '%'.$search.'%')->paginate($perPage);
+        }else{
+            return $this->model->where('name', 'like', '%'.$search.'%')->get();
+        }
     }
 
     public function findProduct($data)
@@ -83,7 +93,7 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
     public function destroyProduct($data)
     {
         $this->model->destroy($data);
-        
+
     }
 
     public function updateProduct($data, $id)

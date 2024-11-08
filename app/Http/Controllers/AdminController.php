@@ -112,14 +112,38 @@ class AdminController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function searchProduct(Request $req){
+        $val = $req->input('input');
+        $productsSearch = $this->productRepository->searchProduct($val, 5);
+        $categoriesSearch = $this->categoriesRepository->getCategories();
+
+        $html = view('components.tables.admin.product.table-product', [
+            'products' => $productsSearch,
+            'categories' => $categoriesSearch,
+            'routeUpdate' => 'admin.product.data-produk.update',
+            'routeDelete' => 'admin.product.data-produk.delete'
+        ])->render();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $html
+        ]);
+    }
+
     public function dataProduk(Request $req)
     {
         // dd(session()->all());
         $paginate = session('paginate', $this->paginate);
         $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
-        $products = $this->productService->getProductPaginate($paginate, $filter);
         $categories = $this->categoriesRepository->getCategories();
 
+        if($req->has('search')){
+            $products = $this->productService->getProductPaginate($paginate,$filter, $req->get('search'));
+        }else{
+            $products = $this->productService->getProductPaginate($paginate, $filter);
+        }
+
+        $search = $req->get('search');
         $page = $req->get('page');
 
         if ($page > $products->lastPage()) {
@@ -130,6 +154,7 @@ class AdminController extends Controller
             'products',
             'categories',
             'paginate',
+            'search',
             'filter' ,
             ));
     }
@@ -177,7 +202,7 @@ class AdminController extends Controller
 
     }
     public function updateDataProduk(Request $req, $id)
-    { 
+    {
         $result = $this->productService->serviceUpdateProduct([
             'name' => $req->input('name'),
             'image' => $req->file('product_update_image_' . $id),

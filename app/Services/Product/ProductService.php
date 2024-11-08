@@ -10,7 +10,7 @@ interface ProductService extends BaseService
 
     public function searchProducts($search);
 
-    public function getProductPaginate($perPage, $filter = null);
+    public function getProductPaginate($perPage, $filter = null,  $search = null);
 
     public function getProductById($id);
 

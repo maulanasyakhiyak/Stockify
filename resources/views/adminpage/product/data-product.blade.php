@@ -9,7 +9,7 @@
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="{{ asset('js/data-product.js') }}"></script>
+    @vite(['resources/js/data-product.js'])
 @endsection
 
 @section('other_meta')
@@ -38,35 +38,73 @@
                                         <i class="fa-solid fa-file-arrow-up pe-2"></i>Export
                                     </button>
 
-                                    <button data-tooltip-target="import-bottom" data-tooltip-placement="bottom"
+                                    <button data-tooltip-target="import-bottom" data-tooltip-placement="bottom" data-target-modal="import-modal"
                                         type="button"
                                         class="rounded-lg border text-gray-500 dark:text-gray-50 bg-white dark:bg-gray-700 dark:border-gray-500  text-sm p-3">
                                         <i class="fa-solid fa-file-arrow-down pe-2"></i>Import
                                     </button>
+
+
+
+                                    <div id="import-modal" tabindex="-1" class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
+
+                                        <div class="relative p-4 w-full max-w-2xl max-h-full">
+
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4 animationDrop" data-modal="body">
+                                                <div class="flex justify-between">
+                                                    <h2 class="text-xl font-semibold mb-4">Import Products</h2>
+                                                    <button data-hide-modal="import-modal" class="absolute right-4 top-4"><i class="fa-solid fa-x text-gray-400"></i></button>
+                                                </div>
+                                                <div class="flex items-center justify-center w-full">
+                                                    <label for="product_image" data-dropfile="product_image"
+                                                        class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-sky-500 rounded-lg cursor-pointer bg-sky-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                                        <img class="w-full h-full rounded-lg" src="" alt=""
+                                                            data-image="product_image" hidden>
+                                                        <div class="flex flex-col items-center justify-center pt-5 pb-6" data-noImage="product_image">
+                                                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                            </svg>
+                                                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click
+                                                                    to upload</span> or drag and drop</p>
+                                                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)
+                                                            </p>
+                                                        </div>
+                                                        <input id="product_image" name="product_image" type="file" data-file="product_image"
+                                                            accept="image/*" hidden />
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
 
                                     <div id="import-bottom" role="tooltip"
                                         class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-700 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-600">
                                         Import file
                                         <div class="tooltip-arrow" data-popper-arrow></div>
                                     </div>
+
                                     <div id="export-button" role="tooltip"
                                         class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-700 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-600">
                                         Export file
                                         <div class="tooltip-arrow" data-popper-arrow></div>
                                     </div>
                                     {{-- Delete Check Modal --}}
-                                    <button data-tooltip-target="delete-button" data-modal-target="selected_delete"
-                                        onclick="addDataToModal('selected_delete')" data-modal-toggle="selected_delete"
+                                    <button data-button-delete-selected="selected_delete" data-tooltip-target="delete-button" data-target-modal="selected_delete"
                                         data-tooltip-placement="bottom" id="delete_selected" type="button"
                                         class="bg-red-500 rounded-lg text-white text-sm p-3 disabled:bg-red-400">
                                         <i class="fa-solid fa-trash-can pe-2"></i>Delete
                                     </button>
                                     <!-- Small Modal -->
-                                    <div id="selected_delete" tabindex="-1" data-modal-backdrop="dynamic"
-                                        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                    <div id="selected_delete" tabindex="-1"
+                                        class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
                                         <div class="relative w-full max-w-md max-h-full">
                                             <!-- Modal content -->
-                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 animationDrop" data-modal="body">
 
                                                 <!-- Modal body -->
                                                 <div class="p-4 md:p-5 space-y-4 ">
@@ -76,7 +114,7 @@
 
                                                     </div>
                                                     <div class="flex justify-end">
-                                                        <button data-modal-hide="selected_delete" type="button"
+                                                        <button data-hide-modal="selected_delete" type="button"
                                                             class="py-2.5 px-5  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
                                                     <form action="{{ route('admin.product.data-produk.delete-selected') }}" method="POST" class="inline-flex">
                                                         @csrf
@@ -114,9 +152,11 @@
                             </div>
                             <label for="products-search" class="sr-only">Search</label>
                             <div class="relative w-48 sm:w-64 xl:w-72">
-                                <input type="text" name="email" id="products-search"
-                                    class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Search products by name">
+                                <form action="{{ route('admin.product.data-produk') }}" method="GET" class="inline">
+                                    <input type="text" name="search" id="products-search" value="{{ $search }}"
+                                        class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Search products by name">
+                                </form>
                             </div>
 
                             <button id="createProductButton"
@@ -190,8 +230,8 @@
                 </div>
             </div>
 
-            <x-tables.admin.product.table-product :products="$products" :categories="$categories"
-                routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
+                <x-tables.admin.product.table-product :products="$products" :categories="$categories"
+                    routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
 
         </div>
 

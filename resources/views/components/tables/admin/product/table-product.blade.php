@@ -1,5 +1,7 @@
 @props(['id', 'products', 'categories', 'routeUpdate', 'routeDelete'])
 
+@vite(['resources/js/data-product.js'])
+
 <div class="overflow-x-auto">
     <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -72,3 +74,4 @@
 <div class="flex">
     {{ $products->links() }}
 </div>
+
