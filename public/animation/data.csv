@@ -1,0 +1,5 @@
+nama,sku,purchaseprice,sellingprice,description,category
+Produk A,SKU12345,2000,3000,Deskripsi A,celana
+Produk B,SKU124,12000,18000,Deskripsi B,Kategori B
+Produk C,SKU125,11000,16000,Deskripsi C,celana
+Produk D,,,,,

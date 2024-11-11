@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::post('/record-checkbox', [AdminController::class,'recordCheckbox']);
     Route::post('/change_paginate', [AdminController::class, 'changePaginate'])->name('change_paginate');
     Route::post('/filter-product', [AdminController::class, 'filterProduct'])->name('filter-product');
+    Route::post('/import-product', [AdminController::class, 'importProduct'])->name('import-product');
 
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Categories\CategoriesRepository;
-use App\Repositories\Product\ProductRepository;
-use App\Services\Categories\CategoriesService;
-use App\Services\Product\ProductService;
 use Exception;
 use Illuminate\Http\Request;
+use App\Imports\ProductImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Services\Product\ProductService;
+use App\Services\Categories\CategoriesService;
+use App\Repositories\Product\ProductRepository;
+use App\Repositories\Categories\CategoriesRepository;
 
 class AdminController extends Controller
 {
@@ -58,6 +60,24 @@ class AdminController extends Controller
         }
 
 
+    }
+
+    public function importProduct(Request $req){
+        try{
+            $file = $req->file('file');
+            Excel::import(new ProductImport, $file);
+            $name = $file->getClientOriginalName();
+            return response()->json([
+                'success' => true,
+                'data' => $name
+            ]);
+        }catch(Exception $e){
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    
     }
 
     public function recordCheckbox(Request $req)

@@ -9,6 +9,7 @@
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
     @vite(['resources/js/data-product.js'])
 @endsection
 
@@ -38,43 +39,91 @@
                                         <i class="fa-solid fa-file-arrow-up pe-2"></i>Export
                                     </button>
 
-                                    <button data-tooltip-target="import-bottom" data-tooltip-placement="bottom" data-target-modal="import-modal"
-                                        type="button"
+                                    <button data-tooltip-target="import-bottom" data-tooltip-placement="bottom"
+                                        data-target-modal="import-modal" type="button"
                                         class="rounded-lg border text-gray-500 dark:text-gray-50 bg-white dark:bg-gray-700 dark:border-gray-500  text-sm p-3">
                                         <i class="fa-solid fa-file-arrow-down pe-2"></i>Import
                                     </button>
 
 
 
-                                    <div id="import-modal" tabindex="-1" class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
+                                    <div id="import-modal" tabindex="-1"
+                                        class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
 
                                         <div class="relative p-4 w-full max-w-2xl max-h-full">
 
-                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4 animationDrop" data-modal="body">
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4 animationDrop"
+                                                data-modal="body">
                                                 <div class="flex justify-between">
-                                                    <h2 class="text-xl font-semibold mb-4">Import Products</h2>
-                                                    <button data-hide-modal="import-modal" class="absolute right-4 top-4"><i class="fa-solid fa-x text-gray-400"></i></button>
+                                                    <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-50">Import Products
+                                                    </h2>
+                                                    <button data-hide-modal="import-modal" class="absolute right-4 top-4"><i
+                                                            class="fa-solid fa-x text-gray-400"></i></button>
                                                 </div>
                                                 <div class="flex items-center justify-center w-full">
-                                                    <label for="product_image" data-dropfile="product_image"
-                                                        class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-sky-500 rounded-lg cursor-pointer bg-sky-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                                        <img class="w-full h-full rounded-lg" src="" alt=""
-                                                            data-image="product_image" hidden>
-                                                        <div class="flex flex-col items-center justify-center pt-5 pb-6" data-noImage="product_image">
-                                                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                                            </svg>
-                                                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click
-                                                                    to upload</span> or drag and drop</p>
-                                                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)
-                                                            </p>
+                                                    <label for="import_csv" data-dropfile="import_csv"
+                                                        class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-sky-500 dark:border-gray-100 rounded-lg cursor-pointer disabled:cursor-default bg-white dark:hover:bg-gray-600 dark:bg-gray-70">
+                                                        <div class="flex flex-col items-center justify-center pt-5 pb-6 text-sky-500">
+                                                            <div class="" id="icon-import">
+                                                                <i class="fa-regular fa-file font-thin text-4xl mb-4"></i>
+                                                            </div>
+                                                            <div id="no-file" class="flex flex-col items-center">
+                                                                <p class="mb-2 text-sm"
+                                                                    data-changed="import_csv">
+                                                                    Drag and drop file here or
+                                                                    <span class="font-bold underline">click to upload</span>
+                                                                </p>
+                                                            </div>
+                                                            <div id="filechange" class="hidden">
+                                                                <p class="mb-2 text-sm">
+                                                                    <span id="file_name"></span>
+                                                                    <span class="font-bold underline">change</span>
+                                                                </p>
+                                                            </div>
+                                                            <div id="uploading-file" class="hidden w-96">
+                                                                <p
+                                                                    class="mb-2 w-full text-center text-sm">
+                                                                    Uploading...
+                                                                </p>
+                                                                <div
+                                                                    class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+                                                                    <div id="progress-bar-import-file"
+                                                                        class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full">
+                                                                        0%
+                                                                    </div>
+                                                                </div>
+                                                                <div class="w-full text-center mt-4">
+                                                                    <button id="button-cancel-upload" class="bg-gray-50 rounded border border-gray-500 p-2">Cancel</button>
+                                                                </div>
+                                                            </div>
+                                                            <div id="uploaded" class="hidden">
+                                                                <p  class="mb-2 w-full text-center text-sm text-gray-600 dark:text-gray-400">
+                                                                    Uploaded
+                                                                </p>
+                                                                <div id="animation-uploaded" data-json-animated="{{asset('animation/success.json')}}" class="w-40 h-40"></div>
+                                                            </div>
                                                         </div>
-                                                        <input id="product_image" name="product_image" type="file" data-file="product_image"
-                                                            accept="image/*" hidden />
+                                                        <input id="import_csv" name="import_csv" type="file"
+                                                            accept=".csv" hidden />
                                                     </label>
+                                                </div>
+                                                <div class="flex justify-between items-center w-full mb-4">
+                                                    <p class="mt-2 text-gray-500 text-sm dark:text-gray-300">Supported
+                                                        format : CSV</p>
+                                                    <p class="mt-2 text-gray-500 text-sm dark:text-gray-300">Maximum size :
+                                                        5 MB</p>
+                                                </div>
+                                                <div class="flex justify-end">
+                                                    <form id="form-import-file" action="{{ route('import-product') }}"
+                                                        class="inline" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <button id="submit-import-file" disabled type="submit"
+                                                            class="bg-gray-700 dark:bg-gray-800 hover:bg-gray-600
+                                                            p-3 rounded-lg border text-gray-50 dark:border-gray-500 transition-all ease-in-out 
+                                                            duration-200 dark:hover:bg-gray-500 dark:text-gray-100 disabled:opacity-50 disabled:hover:">
+                                                            Import File
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
 
@@ -94,7 +143,8 @@
                                         <div class="tooltip-arrow" data-popper-arrow></div>
                                     </div>
                                     {{-- Delete Check Modal --}}
-                                    <button data-button-delete-selected="selected_delete" data-tooltip-target="delete-button" data-target-modal="selected_delete"
+                                    <button data-button-delete-selected="selected_delete"
+                                        data-tooltip-target="delete-button" data-target-modal="selected_delete"
                                         data-tooltip-placement="bottom" id="delete_selected" type="button"
                                         class="bg-red-500 rounded-lg text-white text-sm p-3 disabled:bg-red-400">
                                         <i class="fa-solid fa-trash-can pe-2"></i>Delete
@@ -104,25 +154,31 @@
                                         class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
                                         <div class="relative w-full max-w-md max-h-full">
                                             <!-- Modal content -->
-                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 animationDrop" data-modal="body">
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 animationDrop"
+                                                data-modal="body">
 
                                                 <!-- Modal body -->
                                                 <div class="p-4 md:p-5 space-y-4 ">
-                                                    <h3 class="text-gray-500 dark:text-gray-50">Apakah anda yakin ingin menghapus data yang
+                                                    <h3 class="text-gray-500 dark:text-gray-50">Apakah anda yakin ingin
+                                                        menghapus data yang
                                                         dipilih ?</h3>
-                                                    <div class="modal_body min-h-40 w-full border rounded-lg p-3 text-gray-500 dark:text-gray-50">
+                                                    <div
+                                                        class="modal_body min-h-40 w-full border rounded-lg p-3 text-gray-500 dark:text-gray-50">
 
                                                     </div>
                                                     <div class="flex justify-end">
                                                         <button data-hide-modal="selected_delete" type="button"
                                                             class="py-2.5 px-5  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
-                                                    <form action="{{ route('admin.product.data-produk.delete-selected') }}" method="POST" class="inline-flex">
-                                                        @csrf
-                                                        @method('delete')
-                                                        <button type="submit" class="ms-3 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                            accept
-                                                        </button>
-                                                    </form>
+                                                        <form
+                                                            action="{{ route('admin.product.data-produk.delete-selected') }}"
+                                                            method="POST" class="inline-flex">
+                                                            @csrf
+                                                            @method('delete')
+                                                            <button type="submit"
+                                                                class="ms-3 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                                accept
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                                 <!-- Modal footer -->
@@ -153,7 +209,8 @@
                             <label for="products-search" class="sr-only">Search</label>
                             <div class="relative w-48 sm:w-64 xl:w-72">
                                 <form action="{{ route('admin.product.data-produk') }}" method="GET" class="inline">
-                                    <input type="text" name="search" id="products-search" value="{{ $search }}"
+                                    <input type="text" name="search" id="products-search"
+                                        value="{{ $search }}"
                                         class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Search products by name">
                                 </form>
@@ -230,8 +287,8 @@
                 </div>
             </div>
 
-                <x-tables.admin.product.table-product :products="$products" :categories="$categories"
-                    routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
+            <x-tables.admin.product.table-product :products="$products" :categories="$categories"
+                routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
 
         </div>
 
