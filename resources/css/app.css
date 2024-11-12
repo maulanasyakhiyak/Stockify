@@ -194,6 +194,20 @@
     @apply transform translate-y-0 opacity-100
 }
 
+.button{
+  @apply flex items-center gap-2 justify-center w-full px-4 py-2 text-sm font-medium
+      text-gray-600 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none
+      hover:bg-gray-100 hover:text-gray-500 focus:z-10 focus:ring-4 focus:ring-gray-200
+      dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700
+}
+.button-delete{
+  @apply  flex items-center gap-2 justify-center w-full px-4 py-2 text-sm font-medium
+        text-red-500 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none
+        hover:bg-gray-100 hover:text-red-600 focus:z-10 focus:ring-4 focus:ring-gray-200
+        dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700
+        disabled:hover:bg-white disabled:text-red-300
+}
+
 /* feed styles */
 
 @media (min-width: 1280px) {

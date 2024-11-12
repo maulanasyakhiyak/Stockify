@@ -365,9 +365,14 @@ function checkallselected() {
 async function ifHereSelected() {
     var hidden = true;
     const data = await getSelectedId();
-    console.log(data);
+    $("[data-attr='selected-data']").text(data);
     if (data > 0) {
         hidden = false;
+        $("#export_selected").removeClass("pointer-events-none text-gray-300 dark:text-gray-500");
+        $("#export_selected").addClass("text-gray-700 dark:text-gray-300");
+    }else{
+        $("#export_selected").removeClass("text-gray-700 dark:text-gray-300");
+        $("#export_selected").addClass("pointer-events-none text-gray-300 dark:text-gray-500");
     }
     $("#delete_selected").prop("disabled", hidden);
 }

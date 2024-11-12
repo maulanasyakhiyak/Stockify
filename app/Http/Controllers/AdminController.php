@@ -14,7 +14,9 @@ use App\Repositories\Categories\CategoriesRepository;
 
 class AdminController extends Controller
 {
-    protected $paginate = 10;
+    protected $productPaginate = 10;
+
+    protected $categoriesPaginate = 10;
 
     protected $checkboxSession;
 
@@ -87,6 +89,16 @@ class AdminController extends Controller
     {
         $date = now()->format('Y-m-d');
         return Excel::download(new ProductExport, "products-{$date}.xlsx");
+    }
+
+    public function exportProductSelected()
+    {
+        $selectedData = session('checkbox', []);
+        $date = now()->format('Y-m-d');
+        if (empty($selectedData)) {
+            return back()->with('error', 'Tidak ada produk yang dipilih untuk diekspor.');
+        }
+        return Excel::download(new ProductExport($selectedData), "products-{$date}.xlsx");
     }
 
     public function recordCheckbox(Request $req)
@@ -162,7 +174,7 @@ class AdminController extends Controller
     public function dataProduk(Request $req)
     {
         // dd(session()->all());
-        $paginate = session('paginate', $this->paginate);
+        $paginate = session('paginate', $this->productPaginate);
         $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
         $categories = $this->categoriesRepository->getCategories();
 
@@ -273,11 +285,18 @@ class AdminController extends Controller
         return view('adminpage.settings');
     }
 
-    public function categoriesProduk()
+    // .CATEGORY
+
+    public function categoriesProduk(Request $req)
     {
-        $paginate = session('paginate', $this->paginate);
-        $categories = $this->categoriesRepository->getCategories($paginate);
-        return view('adminpage.product.categories-product', compact('categories', 'paginate'));
+        $paginate = session('paginate', $this->categoriesPaginate);
+        if($req->has('categorySearch')){
+            $categories = $this->categoriesRepository->getCategories($paginate,$req->get('categorySearch'));
+        }else{
+            $categories = $this->categoriesRepository->getCategories($paginate);
+        }
+        $search = $req->get('categorySearch');
+        return view('adminpage.product.categories-product', compact('categories', 'paginate','search'));
     }
 
     public function newCategoriesProduk(Request $req)

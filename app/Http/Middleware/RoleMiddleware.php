@@ -14,8 +14,7 @@ class RoleMiddleware
         if (Auth::check() && Auth::user()->role === $role) {
             return $next($request);
         }
-
-        // Jika tidak, redirect atau tampilkan pesan
+        
         abort(403, 'Anda tidak memiliki izin untuk mengakses halaman ini.');
     }
 }

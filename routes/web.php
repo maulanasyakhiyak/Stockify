@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::post('/filter-product', [AdminController::class, 'filterProduct'])->name('filter-product');
     Route::post('/import-product', [AdminController::class, 'importProduct'])->name('import-product');
     Route::get('/export-product', [AdminController::class, 'exportProduct'])->name('export-product');
+    Route::get('/export-product-selected', [AdminController::class, 'exportProductSelected'])->name('export-product-selected');
 
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 

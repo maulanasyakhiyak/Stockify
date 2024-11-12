@@ -20,13 +20,13 @@ class CategoriesRepositoryImplement extends Eloquent implements CategoriesReposi
         $this->model = $model;
     }
 
-    public function getCategories($paginate = null)
+    public function getCategories($paginate = null,$search = null)
     {
-        if($paginate){
-            return $this->model->paginate($paginate);
-        }else{
-            return $this->model->all();
+        $query = $this->model->query();
+        if($search){
+            $query->where('name', 'like', '%'.$search.'%');
         }
+        return $query->paginate($paginate);
     }
 
     public function createCategories($data)

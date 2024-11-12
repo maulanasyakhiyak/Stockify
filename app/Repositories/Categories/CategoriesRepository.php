@@ -6,7 +6,7 @@ use LaravelEasyRepository\Repository;
 
 interface CategoriesRepository extends Repository
 {
-    public function getCategories($paginate = null);
+    public function getCategories($paginate = null,$search =  null);
 
     public function createCategories($data);
 
