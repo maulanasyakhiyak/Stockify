@@ -81,19 +81,22 @@
                                                                 </p>
                                                             </div>
                                                             <div id="uploading-file" class="hidden w-96">
-                                                                <p
-                                                                    class="mb-2 w-full text-center text-sm">
+                                                                <p class="mb-2 w-full text-center text-sm uploading_text">
                                                                     Uploading...
                                                                 </p>
                                                                 <div
                                                                     class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
                                                                     <div id="progress-bar-import-file"
-                                                                        class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full">
+                                                                        class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-2 leading-none rounded-full">
                                                                         0%
                                                                     </div>
                                                                 </div>
                                                                 <div class="w-full text-center mt-4">
-                                                                    <button id="button-cancel-upload" class="bg-gray-50 rounded border border-gray-500 p-2">Cancel</button>
+                                                                    <button id="button-cancel-upload" class="bg-gray-700 dark:bg-gray-800 hover:bg-gray-600
+                                                                            p-3 rounded-lg border text-gray-50 dark:border-gray-500 transition-all ease-in-out
+                                                                            duration-200 dark:hover:bg-gray-500 dark:text-gray-100 disabled:opacity-30 disabled:hover:bg-gray-700">
+                                                                        Cancel
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                             <div id="uploaded" class="hidden">
@@ -103,13 +106,13 @@
                                                                 <div id="animation-uploaded" data-json-animated="{{asset('animation/success.json')}}" class="w-40 h-40"></div>
                                                             </div>
                                                         </div>
-                                                        <input id="import_csv" name="import_csv" type="file"
-                                                            accept=".csv" hidden />
+                                                        <input id="import_csv" name="import_csv" type="file" accept=".csv, .xlsx" hidden />
+
                                                     </label>
                                                 </div>
                                                 <div class="flex justify-between items-center w-full mb-4">
                                                     <p class="mt-2 text-gray-500 text-sm dark:text-gray-300">Supported
-                                                        format : CSV</p>
+                                                        format : .csv, .xlsx</p>
                                                     <p class="mt-2 text-gray-500 text-sm dark:text-gray-300">Maximum size :
                                                         5 MB</p>
                                                 </div>
@@ -119,8 +122,8 @@
                                                         @csrf
                                                         <button id="submit-import-file" disabled type="submit"
                                                             class="bg-gray-700 dark:bg-gray-800 hover:bg-gray-600
-                                                            p-3 rounded-lg border text-gray-50 dark:border-gray-500 transition-all ease-in-out 
-                                                            duration-200 dark:hover:bg-gray-500 dark:text-gray-100 disabled:opacity-50 disabled:hover:">
+                                                            p-3 rounded-lg border text-gray-50 dark:border-gray-500 transition-all ease-in-out
+                                                            duration-200 dark:hover:bg-gray-500 dark:text-gray-100 disabled:opacity-30 disabled:hover:">
                                                             Import File
                                                         </button>
                                                     </form>
@@ -193,9 +196,7 @@
                         </div>
 
                         <div class="flex gap-3">
-
-
-                            <div class="flex items-center">
+                            {{-- <div class="flex items-center">
                                 <label for="items_per_page" class="pe-2 text-gray-700 dark:text-gray-400">Rows per
                                     page</label>
                                 <select name="items_per_page" id="items_per_page"
@@ -205,31 +206,12 @@
                                     <option value="15" {{ $paginate == 15 ? 'selected' : '' }}>15</option>
                                     <option value="25" {{ $paginate == 25 ? 'selected' : '' }}>25</option>
                                 </select>
-                            </div>
-                            <label for="products-search" class="sr-only">Search</label>
-                            <div class="relative w-48 sm:w-64 xl:w-72">
-                                <form action="{{ route('admin.product.data-produk') }}" method="GET" class="inline">
-                                    <input type="text" name="search" id="products-search"
-                                        value="{{ $search }}"
-                                        class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Search products by name">
-                                </form>
-                            </div>
-
-                            <button id="createProductButton"
-                                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
-                                type="button" data-drawer-target="drawer-create-product-default"
-                                data-drawer-show="drawer-create-product-default"
-                                aria-controls="drawer-create-product-default" data-drawer-placement="right">
-                                <i class="fa-solid fa-plus pe-2"></i>New product
-                            </button>
+                            </div> --}}
 
                             <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots"
-                                class="inline-flex items-center p-2 text-sm font-medium text-center border text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                                type="button">
-                                <i class="fa-solid fa-filter"></i>
+                                class="rounded-lg border text-gray-500 dark:text-gray-50 bg-white dark:bg-gray-700 dark:border-gray-500  text-sm p-3" type="button">
+                                <i class="fa-solid fa-filter pe-2"></i>Filter
                             </button>
-
                             <!-- Dropdown menu -->
                             <div id="dropdownDots"
                                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-72 dark:bg-gray-700 dark:divide-gray-600">
@@ -280,6 +262,36 @@
                                 </form>
                             </div>
 
+                            <form action="{{ route('admin.product.data-produk') }}" method="GET" class="w-80">
+                                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                        </svg>
+                                    </div>
+                                    <input  type="search" name="search" id="products-search" value="{{ $search }}" placeholder="Search products by name"
+                                            class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+                                </div>
+                            </form>
+
+                            {{-- <label for="products-search" class="sr-only">Search</label>
+                            <div class="relative w-48 sm:w-64 xl:w-72">
+                                <form action="{{ route('admin.product.data-produk') }}" method="GET" class="inline">
+                                    <input type="text" name="search" id="products-search"
+                                        value="{{ $search }}"
+                                        class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Search products by name">
+                                </form>
+                            </div> --}}
+
+                            <button id="createProductButton"
+                                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                                type="button" data-drawer-target="drawer-create-product-default"
+                                data-drawer-show="drawer-create-product-default"
+                                aria-controls="drawer-create-product-default" data-drawer-placement="right">
+                                <i class="fa-solid fa-plus pe-2"></i>New product
+                            </button>
 
                         </div>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
+use App\Exports\ProductExport;
 use App\Imports\ProductImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Product\ProductService;
@@ -25,11 +26,12 @@ class AdminController extends Controller
 
     protected $productRepository;
 
-    public function __construct(ProductRepository $productRepository,
-                                ProductService $productService,
-                                CategoriesService $categoriesService,
-                                CategoriesRepository $categoriesRepository)
-    {
+    public function __construct(
+        ProductRepository $productRepository,
+        ProductService $productService,
+        CategoriesService $categoriesService,
+        CategoriesRepository $categoriesRepository
+    ) {
         $this->productService = $productService;
         $this->productRepository = $productRepository;
         $this->categoriesService = $categoriesService;
@@ -46,44 +48,51 @@ class AdminController extends Controller
     public function getSelectedId(Request $req)
     {
         $data = session('checkbox', []);
-        if($req->has('withData')){
+        if ($req->has('withData')) {
             $data_product = $this->productRepository->findMultipleProduct($data);
             return response()->json([
                 'success' => true,
                 'data' => $data_product,
             ]);
-        }else{
+        } else {
             return response()->json([
                 'success' => true,
                 'data' => count($data),
             ]);
         }
-
-
     }
 
-    public function importProduct(Request $req){
-        try{
+    public function importProduct(Request $req)
+    {
+        try {
             $file = $req->file('file');
-            Excel::import(new ProductImport, $file);
+            $import = new ProductImport;
+            Excel::import($import, $file);
             $name = $file->getClientOriginalName();
             return response()->json([
                 'success' => true,
-                'data' => $name
+                'data' => $name,
+                'added' => $import->added,
+                'updated' => $import->updated,
             ]);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage()
             ]);
         }
-    
+    }
+
+    public function exportProduct()
+    {
+        $date = now()->format('Y-m-d');
+        return Excel::download(new ProductExport, "products-{$date}.xlsx");
     }
 
     public function recordCheckbox(Request $req)
     {
         $checkboxSession = session()->get('checkbox', []);
-        try{
+        try {
             if ($req->has('checkedItems')) {
                 $checkedItems = ($req->input('checkedItems'));
                 foreach ($checkedItems as  $item) {
@@ -94,20 +103,19 @@ class AdminController extends Controller
             }
             if ($req->has('uncheckedItems')) {
                 $uncheckedItems = $req->input('uncheckedItems');
-                    foreach ($uncheckedItems as $item) {
-                        $key = array_search((int)$item, $checkboxSession);
-                        if ($key !== false) {
-                            unset($checkboxSession[$key]);
-                        }
+                foreach ($uncheckedItems as $item) {
+                    $key = array_search((int)$item, $checkboxSession);
+                    if ($key !== false) {
+                        unset($checkboxSession[$key]);
                     }
+                }
             }
 
             session(['checkbox' => $checkboxSession]);
             return response()->json(['success' => true]);
-        }catch(Exception $e){
-            return response()->json(['success' => false , 'message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
-
     }
 
     public function changePaginate(Request $req)
@@ -132,7 +140,8 @@ class AdminController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function searchProduct(Request $req){
+    public function searchProduct(Request $req)
+    {
         $val = $req->input('input');
         $productsSearch = $this->productRepository->searchProduct($val, 5);
         $categoriesSearch = $this->categoriesRepository->getCategories();
@@ -157,9 +166,9 @@ class AdminController extends Controller
         $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
         $categories = $this->categoriesRepository->getCategories();
 
-        if($req->has('search')){
-            $products = $this->productService->getProductPaginate($paginate,$filter, $req->get('search'));
-        }else{
+        if ($req->has('search')) {
+            $products = $this->productService->getProductPaginate($paginate, $filter, $req->get('search'));
+        } else {
             $products = $this->productService->getProductPaginate($paginate, $filter);
         }
 
@@ -175,8 +184,8 @@ class AdminController extends Controller
             'categories',
             'paginate',
             'search',
-            'filter' ,
-            ));
+            'filter',
+        ));
     }
 
     public function newDataProduk(Request $r)
@@ -219,7 +228,6 @@ class AdminController extends Controller
         session()->forget('checkbox');
 
         return redirect()->back()->with('success', 'Data berhasil dihapus');
-
     }
     public function updateDataProduk(Request $req, $id)
     {

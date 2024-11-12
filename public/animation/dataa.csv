@@ -1,5 +1,8 @@
-nama,sku,purchaseprice,sellingprice,description,category
-Produk A,SKU12345,2000,3000,Deskripsi A,celana
-Produk B,SKU124,12000,18000,Deskripsi B,Kategori B
-Produk C,SKU125,11000,16000,Deskripsi C,celana
+Name,SKU,purchase price,selling price,description,category
+Produk A,SKU12,2000,3000,Deskripsi A,esse
+Produk B,SKU124,9000,10000,Deskripsi B,fuga
+Produk C,SKU225,1000,11000,Deskripsi C,officiis
+Produk C,SK225,1000,11000,Deskripsi C,officiis
+Produk C,SKU125,1000,11000,Deskripsi C,officiis
+Produk C,SKU1525,1000,11000,Deskripsi C,officiis
 Produk D,,,,,
