@@ -16,6 +16,7 @@ class ProductImport implements ToModel, WithHeadingRow, WithEvents
     protected $requiredHeaders = ['name', 'sku', 'purchase price', 'selling price', 'description', 'category'];
     public $added = 0;  // Untuk menghitung jumlah data yang ditambahkan
     public $updated = 0; // Untuk menghitung jumlah data yang diperbarui
+    public $newCategories = [];
 
     /**
     * @param array $row
@@ -44,8 +45,19 @@ class ProductImport implements ToModel, WithHeadingRow, WithEvents
             return null;
         }
 
-        // Cari kategori berdasarkan nama kategori, gunakan nilai default kosong jika key `category` tidak ada
-        $category = Category::where('name', $row['category'] ?? '')->first();
+        $categoryName = $row['category'] ?? '';
+
+        // Jika kategori tidak ditemukan, tambahkan ke daftar kategori baru
+        $category = Category::where('name', $categoryName)->first();
+        if (!$category && $categoryName !== '' && !in_array($categoryName, $this->newCategories)) {
+            $this->newCategories[] = $categoryName;
+        }
+
+        // Jika ada kategori baru, hentikan proses dan kembalikan daftar kategori baru untuk ditinjau pengguna
+        if (!empty($this->newCategories)) {
+            return null;  // Hentikan proses jika ada kategori baru
+        }
+
 
         // Ambil nama produk dari `nama`, beri nilai default jika kosong
         $productName = $row['name'];
@@ -66,16 +78,25 @@ class ProductImport implements ToModel, WithHeadingRow, WithEvents
         $categoryId = $category ? $category->id : null;
 
         // Cari produk berdasarkan SKU
-        $existingProduct = Product::where('name', $productName)->where('sku', $sku)->first();
+        $existingProduct = Product::where('sku', $sku)->first();
 
         // Jika produk sudah ada, periksa perubahan
         if ($existingProduct) {
+
+            $counter = 2;
+            while (Product::where('name', $productName)->exists()) {
+                $productName = $row['name'] . ' (' . $counter . ')';
+                $counter++;
+            }
+
             // Periksa jika ada perubahan pada atribut produk (nama, harga, deskripsi, kategori)
             if ($existingProduct->name != $productName ||
             $existingProduct->purchase_price != $purchasePrice ||
             $existingProduct->selling_price != $sellingPrice ||
             $existingProduct->description != $description ||
             $existingProduct->category_id != $categoryId) {
+
+
 
             $existingProduct->update([
                 'name' => $productName,
@@ -107,5 +128,10 @@ class ProductImport implements ToModel, WithHeadingRow, WithEvents
         }
 
         return null; // Tidak perlu mengembalikan produk karena updateOrCreate sudah menangani itu
+    }
+    // Method untuk mendapatkan daftar kategori baru
+    public function getNewCategories()
+    {
+        return $this->newCategories;
     }
 }

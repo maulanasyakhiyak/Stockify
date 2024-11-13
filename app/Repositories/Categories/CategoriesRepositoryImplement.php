@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Categories;
 
+use Exception;
 use App\Models\Category;
 use LaravelEasyRepository\Implementations\Eloquent;
 
@@ -31,7 +32,19 @@ class CategoriesRepositoryImplement extends Eloquent implements CategoriesReposi
 
     public function createCategories($data)
     {
-        return $this->model->create($data);
+        try {
+            $validData = array_filter($data, function ($category) {
+                return !empty($category['name']); // Hanya kategori yang 'name'-nya tidak kosong yang akan diproses
+            });
+
+            $inserted = $this->model->insert($validData);
+            if (!$inserted) {
+                throw new Exception('Failed to insert categories');
+            }
+            return $inserted;
+        } catch (Exception $e) {
+            throw new Exception('Error while inserting categories: ' . $e->getMessage());
+        }
     }
 
     public function updateCategories($id, $data)

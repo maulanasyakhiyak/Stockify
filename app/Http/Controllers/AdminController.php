@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Exports\ProductExport;
 use App\Imports\ProductImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use App\Services\Product\ProductService;
 use App\Services\Categories\CategoriesService;
 use App\Repositories\Product\ProductRepository;
@@ -66,20 +68,62 @@ class AdminController extends Controller
 
     public function importProduct(Request $req)
     {
-        try {
+
+
+        if ($req->has('addNewCategory')) {
+
+            try {
+                $categories = $req->input('newCategory');
+                if (is_string($categories)) {
+                    $categories = json_decode($categories, true);
+                }
+
+                $categoryData = array_map(function ($categoryName) {
+                    return ['name' => $categoryName, 'description' => 'no desc'];
+                }, $categories);
+                $this->categoriesRepository->createCategories($categoryData);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+        if (!$req->file('file')) {
+            $file = Cache::get('importTemp' . auth()->id());
+            $file_cache = $file;
+        } else {
             $file = $req->file('file');
+        }
+        try {
+
+
             $import = new ProductImport;
             Excel::import($import, $file);
-            $name = $file->getClientOriginalName();
+            $newCategories = $import->getNewCategories();
+
+            // if($file == $file_cache){
+            //     Cache::forget('importTemp' . auth()->id());
+            //     Storage::delete($file);
+            // }
+
+            if (!empty($newCategories)) {
+                $filePath = $req->file('file')->store('temp_uploads');
+
+                Cache::put('importTemp' . auth()->id(), $filePath, now()->addMinutes(30));
+                return response()->json([
+                    'status' => 'pending',
+                    'newCategory' => $newCategories
+                ]);
+            }
             return response()->json([
-                'success' => true,
-                'data' => $name,
+                'status' => 'success',
                 'added' => $import->added,
                 'updated' => $import->updated,
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'success' => false,
+                'status' => 'fail',
                 'error' => $e->getMessage()
             ]);
         }
@@ -290,13 +334,13 @@ class AdminController extends Controller
     public function categoriesProduk(Request $req)
     {
         $paginate = session('paginate', $this->categoriesPaginate);
-        if($req->has('categorySearch')){
-            $categories = $this->categoriesRepository->getCategories($paginate,$req->get('categorySearch'));
-        }else{
+        if ($req->has('categorySearch')) {
+            $categories = $this->categoriesRepository->getCategories($paginate, $req->get('categorySearch'));
+        } else {
             $categories = $this->categoriesRepository->getCategories($paginate);
         }
         $search = $req->get('categorySearch');
-        return view('adminpage.product.categories-product', compact('categories', 'paginate','search'));
+        return view('adminpage.product.categories-product', compact('categories', 'paginate', 'search'));
     }
 
     public function newCategoriesProduk(Request $req)

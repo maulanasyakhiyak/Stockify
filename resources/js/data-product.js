@@ -117,13 +117,34 @@ $("#import_csv").on("change", function () {
     }
 });
 
+function succesForm() {
+    $('#import_csv').val('')
+    $('#uploading-file').addClass('hidden')
+    $('#uploaded').removeClass('hidden')
+    $('#button-cancel-upload').attr('disabled', true)
+    anim.goToAndStop(0, true);
+    anim.play()
+}
+
+function errorForm() {
+    $("label[for='import_csv']").addClass('cursor-pointer')
+    $("#uploading-file").addClass("hidden");
+    $("#no-file").addClass("hidden");
+    $("#icon-import").removeClass("hidden");
+    $("#filechange").removeClass("hidden");
+    $("#submit-import-file").attr("disabled", false);
+    $("#import_csv").attr('disabled', false)
+    $('label[for="import_csv"]').removeClass('border-sky-500')
+    $('label[for="import_csv"]').addClass('border-red-500')
+    $('label[for="import_csv"]').removeClass('bg-sky-50')
+    $('label[for="import_csv"]').addClass('bg-white')
+}
+
 let xhr;
 $("#form-import-file").on("submit", function (event) {
     event.preventDefault();
     const file = $("#import_csv")[0].files[0];
-    let formData = new FormData();
-    formData.append("_token", csrfToken);
-    formData.append("file", file);
+    importData(file, false, $(this).attr("action"))
     $('#no-file').addClass('hidden')
     $('#icon-import').addClass('hidden')
     $('#filechange').addClass('hidden')
@@ -133,8 +154,18 @@ $("#form-import-file").on("submit", function (event) {
     $("[data-hide-modal='import-modal']").attr('disabled', true)
     $("label[for='import_csv']").removeClass('cursor-pointer')
 
+
+});
+
+function importData(file = null, withconfirm = false, url) {
+    let formData = new FormData();
+    formData.append("_token", csrfToken);
+    formData.append("file", file);
+    if (withconfirm) {
+        formData.append("confirm_add_category", true);
+    }
     xhr = $.ajax({
-        url: $(this).attr("action"), // Ganti dengan URL endpoint server Anda
+        url: url, // Ganti dengan URL endpoint server Anda
         type: "POST",
         data: formData,
         processData: false, // Jangan proses data secara otomatis
@@ -162,51 +193,77 @@ $("#form-import-file").on("submit", function (event) {
             return xhr;
         },
         success: function (response) {
-            if (response.success) {
-                toastr.success(`${response.added} data added, ${response.updated} data updated`)
-                $('#import_csv').val('')
-                $('#uploading-file').addClass('hidden')
-                $('#uploaded').removeClass('hidden')
-                $('#button-cancel-upload').attr('disabled', true)
-                anim.goToAndStop(0, true);
-                anim.play()
+            if (response.status == 'pending') {
+                console.log(response.newCategory);
+                console.log(url);
+
+                if (confirm('ada category baru tambahkan?')) {
+                    var newData = new FormData();
+                    newData.append('addNewCategory', true);
+                    newData.append('newCategory', JSON.stringify(response.newCategory));
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        processData: false, // Jangan proses data secara otomatis
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: newData,
+                        success: function (result) {
+                            if (result.status == 'debug') {
+                                console.log(result.data);
+                            }
+                            if (result.status == 'fail') {
+                                console.log(result.error);
+                            } else if (result.status == 'success') {
+                                toastr.success(`${result.added} data added, ${result.updated} data updated`)
+                                succesForm();
+                                setTimeout(() => {
+                                    window.location.reload()
+                                }, 3000);
+                            }
+
+                        },
+                        error: function (xhr, status, error) {
+                            toastr.error(`Terjadi kesalahan saat memproses konfirmasi,${error}`);
+                        }
+                    });
+                } else {
+                    // Jika pengguna memilih "tidak", hentikan proses lebih lanjut
+                    toastr.info('Proses impor dibatalkan.');
+                    return;  // Menghentikan eksekusi lebih lanjut
+                }
+            }
+            if (response.status == 'debug') {
                 console.log(response.data);
+            }
+            if (response.status == 'success') {
+                toastr.success(`${response.added} data added, ${response.updated} data updated`)
+                succesForm();
                 setTimeout(() => {
                     window.location.reload()
                 }, 3000);
-            } else {
+            } else if (response.status == 'fail') {
                 console.log(response.error);
-                $("label[for='import_csv']").addClass('cursor-pointer')
-                $("#uploading-file").addClass("hidden");
-                $("#no-file").addClass("hidden");
-                $("#icon-import").removeClass("hidden");
-                $("#filechange").removeClass("hidden");
-                $("#submit-import-file").attr("disabled", false);
-                $("#import_csv").attr('disabled', false)
-                $('label[for="import_csv"]').removeClass('border-sky-500')
-                $('label[for="import_csv"]').addClass('border-red-500')
-                $('label[for="import_csv"]').removeClass('bg-sky-50')
-                $('label[for="import_csv"]').addClass('bg-white')
+                errorForm()
             }
+
+
         },
         error: function (xhr, status, error) {
+
             if (status === 'timeout') {
                 console.log('Request timed out.');
                 toastr.error('The request has timed out. Please try again later.');
-                $("label[for='import_csv']").addClass('cursor-pointer')
-                $("#uploading-file").addClass("hidden");
-                $("#no-file").addClass("hidden");
-                $("#icon-import").removeClass("hidden");
-                $("#filechange").removeClass("hidden");
-                $("#submit-import-file").attr("disabled", false);
-                $("#import_csv").attr('disabled', false)
+                errorForm()
             } else {
                 console.log('Error:', error);
                 toastr.error('An error occurred while processing the request.');
             }
         }
     });
-});
+}
 $('#button-cancel-upload').on('click', function () {
     if (xhr) {
         xhr.abort();
@@ -370,7 +427,7 @@ async function ifHereSelected() {
         hidden = false;
         $("#export_selected").removeClass("pointer-events-none text-gray-300 dark:text-gray-500");
         $("#export_selected").addClass("text-gray-700 dark:text-gray-300");
-    }else{
+    } else {
         $("#export_selected").removeClass("text-gray-700 dark:text-gray-300");
         $("#export_selected").addClass("pointer-events-none text-gray-300 dark:text-gray-500");
     }
