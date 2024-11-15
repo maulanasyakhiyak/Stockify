@@ -84,7 +84,8 @@ class ProductImport implements ToModel, WithHeadingRow, WithEvents
         if ($existingProduct) {
 
             $counter = 2;
-            while (Product::where('name', $productName)->exists()) {
+            $n = 1;
+            while ($n < Product::where('name', 'like',"%{$productName}%")->count()) {
                 $productName = $row['name'] . ' (' . $counter . ')';
                 $counter++;
             }
@@ -95,8 +96,6 @@ class ProductImport implements ToModel, WithHeadingRow, WithEvents
             $existingProduct->selling_price != $sellingPrice ||
             $existingProduct->description != $description ||
             $existingProduct->category_id != $categoryId) {
-
-
 
             $existingProduct->update([
                 'name' => $productName,

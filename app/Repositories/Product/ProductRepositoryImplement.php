@@ -32,7 +32,7 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
 
     public function getProductPaginate($num, $filter = null, $search = null)
     {
-        $query = $this->model::query();
+        $query = $this->model->with('attributes');
 
         if($search){
 

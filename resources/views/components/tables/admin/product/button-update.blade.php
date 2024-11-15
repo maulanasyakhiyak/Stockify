@@ -4,14 +4,13 @@
     data-drawer-show="drawer-update-product-{{ $target }}"
     aria-controls="drawer-update-product-{{ $target }}" data-drawer-placement="right"
     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
         <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z">
         </path>
         <path fill-rule="evenodd"
             d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
             clip-rule="evenodd"></path>
     </svg>
-    Update
 </button>
 <!-- Edit Product Drawer -->
 <div id="drawer-update-product-{{ $target }}"
@@ -45,6 +44,77 @@
                     @enderror
             </div>
             <div>
+                <div class="flex justify-between w-full">
+                    <label for="atribute"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Atribute <span class="text-gray-500 text-xs">(optional)</span></label>
+                    <button type="button" data-add-atribute-target="addFormData-{{$product['id']}}" class="cursor-pointer mb-2">
+                        <i
+                            class="fa-solid fa-plus text-white bg-blue-500 hover:bg-blue-600 p-[0.2rem] text-xs rounded-full"></i>
+                    </button>
+                </div>
+
+                <div id="addFormData-{{$product['id']}}">
+                    @if ($product->attributes)
+                        @forelse ($product->attributes as $index => $atribute)
+                            <div data-atribute-form={{ Str::uuid() }} data-atribute-index="{{$index}}"
+                                class="mt-2 relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <div class="">
+                                    <input type="text" name="atributes[{{ $index }}][atribute]"
+                                        class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                        placeholder="Nama"
+                                        value="{{ old('atributes.' . $index . '.atribute', $atribute->name) }}">
+                                </div>
+                                <div class="">
+                                    <input type="text" name="atributes[{{ $index }}][value]"
+                                        class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                        placeholder="Value"
+                                       value="{{ old('atributes.' . $index . '.value', $atribute->value) }}">
+                                </div>
+                                <button type="button" @if ($index == 0) disabled @endif
+                                    data-remove-atribute-form={{ Str::uuid()}}
+                                    class="flex items-center justify-center flex-grow text-gray-900 dark:text-white disabled:text-gray-300 dark:disabled:text-gray-500 dark:hover:text-red-500 hover:text-red-500">
+                                    <i class="fa-solid fa-minus "></i>
+                                </button>
+                            </div>
+                            @empty
+                            <div data-atribute-form={{ Str::uuid() }} data-atribute-index="0" class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <div class="">
+                                    <input type="text" name="atributes[0][atribute]"
+                                        class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                        placeholder="Nama">
+                                </div>
+                                <div class="">
+                                    <input type="text" name="atributes[0][value]"
+                                        class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                        placeholder="Val (optional)">
+                                </div>
+                                <button disabled type="button"
+                                    class="flex items-center justify-center flex-grow text-gray-900 dark:text-white disabled:text-gray-300 dark:disabled:text-gray-500 dark:hover:text-red-500 hover:text-red-500">
+                                    <i class="fa-solid fa-minus "></i>
+                                </button>
+                            </div>
+                        @endforelse
+                        @else
+                        <div data-atribute-form={{ Str::uuid() }} data-atribute-index="0" class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <div class="">
+                                <input type="text" name="atributes[0][atribute]"
+                                    class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Nama">
+                            </div>
+                            <div class="">
+                                <input type="text" name="atributes[0][value]"
+                                    class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Val (optional)">
+                            </div>
+                            <button disabled type="button"
+                                class="flex items-center justify-center flex-grow text-gray-900 dark:text-white disabled:text-gray-300 dark:disabled:text-gray-500 dark:hover:text-red-500 hover:text-red-500">
+                                <i class="fa-solid fa-minus "></i>
+                            </button>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            <div>
                 <label for="category-update"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
                 <select id="category-update" name="category-update"
@@ -68,7 +138,7 @@
                     <label for="purchase_price"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Purchase
                         price</label>
-                    <input type="number" name="purchase_price" id="purchase_price"
+                    <input type="text" name="purchase_price" id="purchase_price"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         placeholder="Rp." value="{{ $product['purchase_price'] }}">
                 </div>

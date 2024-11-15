@@ -217,7 +217,6 @@ class AdminController extends Controller
 
     public function dataProduk(Request $req)
     {
-        // dd(session()->all());
         $paginate = session('paginate', $this->productPaginate);
         $filter = session()->only(['category', 'selling_price_min', 'selling_price_max']);
         $categories = $this->categoriesRepository->getCategories();
@@ -229,7 +228,7 @@ class AdminController extends Controller
         }
 
         $search = $req->get('search');
-        $page = $req->get('page');
+        $page = $req->get('page', 1);
 
         if ($page > $products->lastPage()) {
             return redirect()->route('admin.product.data-produk');
@@ -240,15 +239,16 @@ class AdminController extends Controller
             'categories',
             'paginate',
             'search',
+            'page',
             'filter',
         ));
     }
 
     public function newDataProduk(Request $r)
-    {
-
+    {   
         $result = $this->productService->createProduct([
             'name' => $r->input('name'),
+            'atributes' => $r->input('atributes'),
             'image' => $r->file('product_image'),
             'category_id' => $r->input('category'),
             'sku' => $r->input('product_stock'),

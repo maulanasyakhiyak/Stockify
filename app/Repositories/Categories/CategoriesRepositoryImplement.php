@@ -27,8 +27,12 @@ class CategoriesRepositoryImplement extends Eloquent implements CategoriesReposi
         if($search){
             $query->where('name', 'like', '%'.$search.'%');
         }
-        return $query->paginate($paginate);
+        if($paginate){
+            return $query->paginate($paginate);
+        } 
+        return $query->get();
     }
+    
 
     public function createCategories($data)
     {

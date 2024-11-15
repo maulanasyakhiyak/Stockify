@@ -14,6 +14,7 @@
 @endsection
 
 @section('other_meta')
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="original" content="{{ route('admin.product.data-produk') }}">
 @endsection
@@ -318,10 +319,9 @@
                         class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
 
                         <div class="md:flex items-center w-full md:w-auto grid gap-2 grid-cols-2">
-                            <button data-button-delete-selected="selected_delete"
-                                    data-tooltip-target="delete-button" data-target-modal="selected_delete"
-                                    data-tooltip-placement="bottom" id="delete_selected"
-                                    class="button-delete" type="button" disabled>
+                            <button data-button-delete-selected="selected_delete" data-tooltip-target="delete-button"
+                                data-target-modal="selected_delete" data-tooltip-placement="bottom" id="delete_selected"
+                                class="button-delete" type="button" disabled>
                                 <i class="fa-solid fa-trash "></i>
                                 Delete
                             </button>
@@ -329,20 +329,25 @@
                                 <i class="fa-solid fa-file-arrow-up"></i>
                                 Export
                             </button>
-                            <div id="export-dropdown" class="z-10 overflow-hidden hidden bg-white divide-y  divide-gray-100 rounded-lg shadow-lg border dark:border-gray-600 w-44 dark:bg-gray-700">
-                                <ul class="text-sm  text-gray-700 dark:text-gray-200" aria-labelledby="export-dropdownButton">
-                                  <li>
-                                    <a href="{{ route('export-product') }}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Export all</a>
-                                  </li>
-                                  <li>
-                                    <a href="{{ route('export-product-selected') }}" id="export_selected" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                        Export Selected (<span data-attr="selected-data">0</span>)
-                                    </a>
-                                  </li>
+                            <div id="export-dropdown"
+                                class="z-10 overflow-hidden hidden bg-white divide-y  divide-gray-100 rounded-lg shadow-lg border dark:border-gray-600 w-44 dark:bg-gray-700">
+                                <ul class="text-sm  text-gray-700 dark:text-gray-200"
+                                    aria-labelledby="export-dropdownButton">
+                                    <li>
+                                        <a href="{{ route('export-product') }}"
+                                            class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Export
+                                            all</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('export-product-selected') }}" id="export_selected"
+                                            class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            Export Selected (<span data-attr="selected-data">0</span>)
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <button data-tooltip-target="import-bottom" data-tooltip-placement="bottom"
-                                data-target-modal="import-modal"  class="button" type="button">
+                                data-target-modal="import-modal" class="button" type="button">
                                 <i class="fa-solid fa-file-arrow-down" class="-ml-1 mr-1.5 w-5 h-5"></i>
                                 Import
                             </button>
@@ -361,7 +366,8 @@
                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                 </svg>
                             </button>
-                            <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg border dark:border-gray-600 shadow dark:bg-gray-700">
+                            <div id="filterDropdown"
+                                class="z-10 hidden w-48 p-3 bg-white rounded-lg border dark:border-gray-600 shadow dark:bg-gray-700">
                                 <form action="{{ route('filter-product') }}" method="POST" id="filter_product"
                                     class="text-sm text-gray-700 dark:text-gray-200"
                                     aria-labelledby="dropdownMenuIconButton">
@@ -412,7 +418,8 @@
                         </div>
                     </div>
                     <div class="w-full md:w-1/2">
-                        <form class="flex items-center" action="{{ route('admin.product.data-produk') }}" method="GET">
+                        <form class="flex items-center" action="{{ route('admin.product.data-produk') }}"
+                            method="GET">
                             <label for="simple-search" class="sr-only">Search</label>
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -425,7 +432,7 @@
                                 </div>
                                 <input type="text" id="search" name="search"
                                     class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Search" value="{{$search}}">
+                                    placeholder="Search" value="{{ $search }}">
                             </div>
                         </form>
                     </div>
@@ -433,6 +440,10 @@
                 </div>
                 <x-tables.admin.product.table-product :products="$products" :categories="$categories"
                     routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
+
+                    <div class="flex">
+                        {{ $products->links() }}
+                    </div>
             </div>
         </div>
 
@@ -454,8 +465,8 @@
                 </svg>
                 <span class="sr-only">Close menu</span>
             </button>
-            <form action="{{ route('admin.product.data-produk.new') }}" method="POST" class="overflow-x-auto h-5/6"
-                enctype="multipart/form-data">
+            <form action="{{ route('admin.product.data-produk.new') }}" method="POST"
+                class="overflow-x-auto h-5/6 p-1  " enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -467,6 +478,60 @@
                         @error('name')
                             <span class="text-red-500">{{ $message }}</span>
                         @enderror
+                    </div>
+                    <div>
+                        <div class="flex justify-between w-full">
+                            <label for="atribute"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Atribute</label>
+                            <button type="button" data-add-atribute-target="addFormData" class="cursor-pointer mb-2">
+                                <i
+                                    class="fa-solid fa-plus text-white bg-blue-500 hover:bg-blue-600 p-[0.2rem] text-xs rounded-full"></i>
+                            </button>
+                        </div>
+
+                        <div id="addFormData">
+                            @if (old('atributes'))
+                                @foreach (old('atributes') as $index => $atribute)
+                                    <div data-atribute-form={{ $index }} data-atribute-index="{{$index}}"
+                                        class="mt-2 relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                        <div class="atribute">
+                                            <input type="text" data-index="{{$index}}" name="atributes[{{ $index }}][atribute]"
+                                                class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                                placeholder="Nama"
+                                                value="{{ old('atributes.' . $index . '.atribute') }}">
+                                        </div>
+                                        <div class="value">
+                                            <input type="text" data-index="{{$index}}" name="atributes[{{ $index }}][value]"
+                                                class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                                placeholder="Val (optional)"
+                                                value="{{ old('atributes.' . $index . '.value') }}">
+                                        </div>
+                                        <button type="button" @if ($index == 0) disabled @endif
+                                            data-remove-atribute-form="{{ $index }}"
+                                            class="flex items-center justify-center flex-grow text-gray-900 dark:text-white disabled:text-gray-300 dark:disabled:text-gray-500 dark:hover:text-red-500 hover:text-red-500">
+                                            <i class="fa-solid fa-minus "></i>
+                                        </button>
+                                    </div>
+                                @endforeach
+                                @else
+                                <div data-atribute-form="0" data-atribute-index="0"  class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                    <div class="atribute">
+                                        <input type="text" name="atributes[0][atribute]"
+                                            class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Nama">
+                                    </div>
+                                    <div class="value">
+                                        <input type="text" name="atributes[0][value]"
+                                            class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Val (optional)">
+                                    </div>
+                                    <button disabled type="button" data-remove-atribute-form="0"
+                                        class="flex items-center justify-center flex-grow text-gray-900 dark:text-white disabled:text-gray-300 dark:disabled:text-gray-500 dark:hover:text-red-500 hover:text-red-500">
+                                        <i class="fa-solid fa-minus "></i>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                     <div>
                         <label for="category-create"
