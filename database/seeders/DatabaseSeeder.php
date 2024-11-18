@@ -21,4 +21,5 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com'
         ]);
     }
+
 }

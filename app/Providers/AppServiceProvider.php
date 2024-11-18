@@ -6,6 +6,8 @@ use App\Repositories\Categories\CategoriesRepository;
 use App\Repositories\Categories\CategoriesRepositoryImplement;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Product\ProductRepositoryImplement;
+use App\Repositories\StockTransaction\StockTransactionRepository;
+use App\Repositories\StockTransaction\StockTransactionRepositoryImplement;
 use App\Services\Categories\CategoriesService;
 use App\Services\Categories\CategoriesServiceImplement;
 use App\Services\Product\ProductService;
@@ -26,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CategoriesRepository::class, CategoriesRepositoryImplement::class);
 
         $this->app->bind(CategoriesService::class, CategoriesServiceImplement::class);
+        
+        $this->app->bind(StockTransactionRepository::class, StockTransactionRepositoryImplement::class);
     }
 
     /**
