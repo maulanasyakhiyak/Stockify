@@ -23,7 +23,7 @@ class StockTransactionFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id,       // Mengambil ID user secara acak
             'type' => $this->faker->randomElement(['in', 'out']),  // Nilai acak untuk tipe transaksi
             'quantity' => $this->faker->numberBetween(1, 100),     // Nilai acak untuk kuantitas
-            'date' => $this->faker->date(),                       // Tanggal acak
+            'date' => $this->faker->dateTimeBetween('2023-01-01', '2024-12-31')->format('Y-m-d'),
             'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']), // Contoh status
             'notes' => $this->faker->optional()->sentence(),       // Catatan opsional
         ];

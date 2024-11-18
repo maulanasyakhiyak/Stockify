@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Exports\ProductExport;
 use App\Imports\ProductImport;
-use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -49,7 +50,7 @@ class AdminController extends Controller
         $term = $req->get('term');
         $tables = [
             '2c6ee24b09816a6f14f95d1698b24ead' => 'users',   // Misalnya, 'table_1' adalah nama tabel yang diizinkan
-            '2d2d2c4b9e1d2f6f2bcd345b223ee6d4' => 'products',
+            '2d2d2c4b9e1d2f6f2bcd345b223ee6d4' => 'product',
         ];
 
         if (array_key_exists($encryptedTable, $tables)) {
@@ -59,12 +60,15 @@ class AdminController extends Controller
             }else{
                 switch($encryptedTable){
                     case '2c6ee24b09816a6f14f95d1698b24ead':
-                        $data = User::where('name' , 'like' ,"%{$term}%");
+                        $data = User::where('name' , 'like' ,"%{$term}%")->get();
+                        break;
+                    case '2d2d2c4b9e1d2f6f2bcd345b223ee6d4':
+                        $data = Product::where('name' , 'like' ,"%{$term}%")->get();
                         break;
                 }
             }
+            return response()->json($data);
         } else {
-
             return response()->json(['error' => 'Invalid table'], 400);
         }
     }

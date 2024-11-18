@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
     Route::get('admin/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
 
+    Route::post('admin/stok/filter', [StokAdminController::class, 'filterStock'])->name('admin.stok.filter');
     Route::get('admin/stok', [StokAdminController::class, 'stok'])->name('admin.stok');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
 

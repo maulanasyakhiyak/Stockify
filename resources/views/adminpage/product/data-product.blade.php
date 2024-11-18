@@ -9,11 +9,11 @@
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @vite(['resources/js/data-product.js'])
 @endsection
 
 @section('other_meta')
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="original" content="{{ route('admin.product.data-produk') }}">
 @endsection

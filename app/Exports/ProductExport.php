@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Product;
+use App\Models\ProductAttribute;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -28,9 +29,14 @@ class ProductExport implements FromCollection, WithHeadings
 
         $products = $query->get();
 
+
         return $products->map(function ($product) {
+            $atributeProduct = ProductAttribute::where('product_id' , $product->id)->get()->map(function($atribute){
+                return  "{$atribute->name} = {$atribute->value}";
+            })->implode(', ');
             return [
                 'nama' => $product->name,
+                'atribute' => $atributeProduct,
                 'sku' => $product->sku,
                 'purchase_price' => $product->purchase_price,
                 'selling_price' => $product->selling_price,
@@ -49,6 +55,7 @@ class ProductExport implements FromCollection, WithHeadings
     {
         return [
             'Name',
+            'atribute',
             'SKU',
             'Purchase price',
             'Selling price',
