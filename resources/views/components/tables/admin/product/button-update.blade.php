@@ -56,34 +56,34 @@
                 <div id="addFormData-{{$product['id']}}">
                     @if ($product->attributes)
                         @forelse ($product->attributes as $index => $atribute)
-                            <div data-atribute-form={{ Str::uuid() }} data-atribute-index="{{$index}}"
+                            <div data-atribute-form={{ $index }} data-atribute-index="{{$index}}"
                                 class="mt-2 relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <div class="">
-                                    <input type="text" name="atributes[{{ $index }}][atribute]"
+                                <div class="atribute">
+                                    <input type="text" name="atributes[{{ $index }}][name]"
                                         class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                         placeholder="Nama"
                                         value="{{ old('atributes.' . $index . '.atribute', $atribute->name) }}">
                                 </div>
-                                <div class="">
+                                <div class="value">
                                     <input type="text" name="atributes[{{ $index }}][value]"
                                         class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                         placeholder="Value"
                                        value="{{ old('atributes.' . $index . '.value', $atribute->value) }}">
                                 </div>
                                 <button type="button" @if ($index == 0) disabled @endif
-                                    data-remove-atribute-form={{ Str::uuid()}}
+                                    data-remove-atribute-form={{ $index}} data-atribute-parent="addFormData-{{$product['id']}}"
                                     class="flex items-center justify-center flex-grow text-gray-900 dark:text-white disabled:text-gray-300 dark:disabled:text-gray-500 dark:hover:text-red-500 hover:text-red-500">
                                     <i class="fa-solid fa-minus "></i>
                                 </button>
                             </div>
                             @empty
-                            <div data-atribute-form={{ Str::uuid() }} data-atribute-index="0" class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <div class="">
-                                    <input type="text" name="atributes[0][atribute]"
+                            <div data-atribute-form="0" data-atribute-index="0" class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <div class="atribute">
+                                    <input type="text" name="atributes[0][name]"
                                         class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                         placeholder="Nama">
                                 </div>
-                                <div class="">
+                                <div class="value">
                                     <input type="text" name="atributes[0][value]"
                                         class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                         placeholder="Val (optional)">
@@ -95,13 +95,13 @@
                             </div>
                         @endforelse
                         @else
-                        <div data-atribute-form={{ Str::uuid() }} data-atribute-index="0" class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <div class="">
-                                <input type="text" name="atributes[0][atribute]"
+                        <div data-atribute-form="0" data-atribute-index="0" class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <div class="atribute">
+                                <input type="text" name="atributes[0][name]"
                                     class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     placeholder="Nama">
                             </div>
-                            <div class="">
+                            <div class="value">
                                 <input type="text" name="atributes[0][value]"
                                     class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     placeholder="Val (optional)">
@@ -164,13 +164,13 @@
             <div class="flex items-center justify-center w-full" >
                 <label for="product_update_image_{{$product['id']}}" data-dropfile="product_update_image_{{$product['id']}}"
                     class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    @if ($product['imagse'])    
+                    @if ($product['imagse'])
                     <img class="w-full h-full rounded-lg" src="{{ asset('images/original/'.$product['image']) }}" alt=""
                         data-image="product_update_image_{{$product['id']}}">
                         @else
                         <img class="w-full h-full rounded-lg" src="{{ asset('images/original/default.png') }}" alt=""
                             data-image="product_update_image_{{$product['id']}}" hidden>
-                        
+
                     @endif
                     <div class="{{$product['image'] ? 'hidden' : 'flex'}} flex-col items-center justify-center pt-5 pb-6" data-noImage="product_update_image_{{$product['id']}}">
                         <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"

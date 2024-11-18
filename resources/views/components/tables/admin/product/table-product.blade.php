@@ -73,8 +73,11 @@
                                 <div class="flex h-full w-full gap-2 flex-wrap">
                                     @if ($product->attributes)
                                         @forelse ($product->attributes as $item)
-                                            <div class="bg-sky-300 rounded p-1">{{$item->name}}</div>
-                                            
+                                            <div data-tooltip-target="{{ $item->name.$item->id }}" data-tooltip-placement="bottom" class="bg-sky-300 rounded p-1">{{$item->name}}</div>
+                                            <div id="{{ $item->name.$item->id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                                {{ $item->value }}
+                                                <div class="tooltip-arrow" data-popper-arrow></div>
+                                            </div>
                                             @empty
                                             <div class="border border-gray-400 rounded p-1">Belum ada atribut</div>
                                         @endforelse

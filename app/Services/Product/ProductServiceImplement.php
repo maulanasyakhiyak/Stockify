@@ -108,32 +108,32 @@ class ProductServiceImplement extends Service implements ProductService
             'name.string' => 'Nama produk harus berupa teks.',
             'name.max' => 'Nama produk maksimal 255 karakter.',
             'name.unique' => 'Nama produk sudah terdaftar, silakan pilih nama lain.',
-        
+
             'category_id.required' => 'Kategori produk wajib dipilih.',
             'category_id.exists' => 'Kategori yang dipilih tidak valid.',
-        
+
             'sku.required' => 'SKU produk wajib diisi.',
             'sku.string' => 'SKU harus berupa teks.',
             'sku.unique' => 'SKU produk sudah terdaftar, silakan pilih SKU lain.',
-        
+
             'purchase_price.required' => 'Harga beli produk wajib diisi.',
             'purchase_price.numeric' => 'Harga beli produk harus berupa angka.',
             'purchase_price.min' => 'Harga beli produk tidak boleh kurang dari 0.',
-        
+
             'selling_price.required' => 'Harga jual produk wajib diisi.',
             'selling_price.numeric' => 'Harga jual produk harus berupa angka.',
             'selling_price.min' => 'Harga jual produk tidak boleh kurang dari 0.',
             'selling_price.gt' => 'Harga jual produk harus lebih besar dari harga beli.',
-        
+
             'description.required' => 'Deskripsi produk wajib diisi.',
             'description.string' => 'Deskripsi produk harus berupa teks.',
             'description.min' => 'Deskripsi produk minimal 10 karakter.',
-        
+
             'image.image' => 'File yang diunggah harus berupa gambar.',
             'image.mimes' => 'Gambar harus bertipe JPEG, PNG, JPG, atau GIF.',
             'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
-        
+
 
         if ($validator->fails()) {
             return [
@@ -154,7 +154,7 @@ class ProductServiceImplement extends Service implements ProductService
                 'value' => $attribute['value'],
             ]);
         }
-        
+
 
         return [
             'success' => true,
@@ -236,6 +236,22 @@ class ProductServiceImplement extends Service implements ProductService
             }
 
             $this->mainRepository->updateProduct($data, $id);
+            foreach ($data['atributes'] as $attribute) {
+                $existingAttribute = ProductAttribute::where('product_id', $id)
+                                        ->where('name', $attribute['name'])
+                                        ->first();
+                if ($existingAttribute){
+                    $existingAttribute->update([
+                        'value' => $attribute['value']
+                    ]);
+                }else{
+                    ProductAttribute::create([
+                        'product_id' => $id, // Mengaitkan dengan produk yang baru disimpan
+                        'name' => $attribute['name'],
+                        'value' => $attribute['value'],
+                    ]);
+                }
+            }
 
             return [
                 'success' => true,

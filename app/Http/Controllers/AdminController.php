@@ -124,7 +124,7 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'fail',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage() .',on ' . $e->getFile() . ', at ' . $e->getLine()
             ]);
         }
     }
@@ -245,7 +245,7 @@ class AdminController extends Controller
     }
 
     public function newDataProduk(Request $r)
-    {   
+    {
         $result = $this->productService->createProduct([
             'name' => $r->input('name'),
             'atributes' => $r->input('atributes'),
@@ -289,6 +289,7 @@ class AdminController extends Controller
     {
         $result = $this->productService->serviceUpdateProduct([
             'name' => $req->input('name'),
+            'atributes' => $req->input('atributes'),
             'image' => $req->file('product_update_image_' . $id),
             'category_id' => $req->input('category-update'),
             'sku' => $req->input('sku'),

@@ -39,7 +39,7 @@
             </div>
             {{-- <div class="block sm:flex items-center rounded-t-lg justify-between mb-3 lg:mt-1.5">
                 <div class="w-full mb-1">
-                    
+
 
                     <div class="items-center justify-between block sm:flex dark:divide-gray-700">
                         <div class="md:flex items-center mb-4 hidden sm:mb-0">
@@ -492,7 +492,7 @@
                         <div id="addFormData">
                             @if (old('atributes'))
                                 @foreach (old('atributes') as $index => $atribute)
-                                    <div data-atribute-form={{ $index }} data-atribute-index="{{$index}}"
+                                    <div data-atribute-form={{ $index }} data-atribute-index="{{$index}}" data-atribute-parent="addFormData"
                                         class="mt-2 relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         <div class="atribute">
                                             <input type="text" data-index="{{$index}}" name="atributes[{{ $index }}][atribute]"

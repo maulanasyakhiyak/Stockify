@@ -1,8 +1,7 @@
-Name,SKU,purchase price,selling price,description,category
-Produk A,SKU12,2000,3000,Deskripsi A,a
-Produk B,SKU124,9000,10000,Deskripsi B,b
-Produk C,SKU225,1000,11000,Deskripsi C,c
-Produk C,SK225,1000,11000,Deskripsi C,c
-Produk C,SKU125,1000,11000,Deskripsi C,c
-Produk C,SKU1525,1000,11000,Deskripsi C,c
-Produk D,,,,,
+name,sku,purchase price,selling price,description,category,atributes
+Produk A,SKU12,2000,3000,Deskripsi A,a,"warna=jingga,ukuran=xl,berat=2kg"
+Produk B,SKU124,9000,10000,Deskripsi B,b,"warna=biru,ukuran=l,berat=2.1kg"
+Produk C,SKU225,1000,11000,Deskripsi C,c,"warna=hitam,ukuran=m"
+Produk D,SK225,1000,11000,Deskripsi C,c,"warna=merah,ukuran=xl"
+Produk C,SKU125,1000,11000,Deskripsi C,c,"warna=putih,ukuran=xxl"
+Produk C,SKU1525,1000,11000,Deskripsi C,c,"warna=biru,ukuran=s"
