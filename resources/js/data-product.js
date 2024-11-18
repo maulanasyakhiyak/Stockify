@@ -1,4 +1,4 @@
-$("#import-btn").tooltip();
+
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
 var originalUrl = $('meta[name="original"]').attr("content");
 

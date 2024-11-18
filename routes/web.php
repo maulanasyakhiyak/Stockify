@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StokAdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/admin', function () {
         return redirect(route('admin.dashboard'));
     });
+    Route::get('admin/simple-search', [AdminController::class, 'simpleSearch'])->name('simpleSearch');
     Route::get('/get-selected-id', [AdminController::class,'getSelectedId']);
     Route::post('/record-checkbox', [AdminController::class,'recordCheckbox']);
     Route::post('/change_paginate', [AdminController::class, 'changePaginate'])->name('change_paginate');
@@ -52,7 +54,9 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
     Route::get('admin/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
 
-    Route::get('admin/stok', [AdminController::class, 'stok'])->name('admin.stok');
+    Route::get('admin/stok', [StokAdminController::class, 'stok'])->name('admin.stok');
+    Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
+
     Route::get('admin/suplier', [AdminController::class, 'suplier'])->name('admin.suplier');
     Route::get('admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
     Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
