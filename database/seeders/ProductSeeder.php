@@ -21,7 +21,7 @@ class ProductSeeder extends Seeder
         ]);
         Category::factory()->count(5)->create();
         Supplier::factory()->count(5)->create();
-        Product::factory(50)->create([
+        Product::factory(25)->create([
         ]);
     }
 }

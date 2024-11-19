@@ -7,15 +7,24 @@
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
                         <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">id</th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Name
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Name
                         </th>
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Description</th>
+                            SKU
+                        </th>
                         <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Actions
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Stok
+                        </th>
+                        <th scope="col"
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Updated
+                        </th>
+                        <th scope="col"
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Actions
                         </th>
                     </tr>
                 </thead>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductStockView;
 use App\Repositories\StockTransaction\StockTransactionRepository;
 use Exception;
 use Illuminate\Http\Request;
@@ -38,13 +39,14 @@ class StokAdminController extends Controller
         }
 
     }
+    public function clearAllFilter(){
+        session()->forget('filterRiwayatTransaksi');
+        return redirect()->back();
+    }
+
     public function stokRiwayatTransaksi(){
         $stockTransaction = $this->stokTransRepo->getStockTransaction();
         $filter = session('filterRiwayatTransaksi');
-        // dd(gettype($filter));
-
-        // dd($filter);
-
         if($filter){
             $stockTransaction = $this->stokTransRepo->getStockTransaction(
             $filter['search'] ?? null,
@@ -53,9 +55,24 @@ class StokAdminController extends Controller
             $filter['start'] ?? null,
             $filter['end'] ?? null
             );
+        }else{
+            $filter = [
+                'search' => null,
+                'status' => null,
+                'type' => null,
+                'start' => null,
+                'end' => null
+            ];
         }
 
         $earliestDate =  $this->stokTransRepo->getFirstDate();
         return view('adminpage.stok.riwayat-transaksi', compact('stockTransaction','earliestDate','filter'));
     }
+
+    public function productStok(){
+        $data = ProductStockView::all();
+        return view('adminpage.stok.produk-stok', compact('data'));
+    }
+
+
 }

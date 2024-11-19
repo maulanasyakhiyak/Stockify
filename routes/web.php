@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\ApiTransactionController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StokAdminController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect(route('login'));
+});
+
+Route::middleware('auth.token')->group(function () {
+    Route::apiResource('stock-transaction', ApiTransactionController::class);
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
@@ -54,8 +60,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
     Route::get('admin/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
 
+    Route::post('admin/stok/filter-clear', [StokAdminController::class, 'clearAllFilter'])->name('admin.stok.filter.clear');
     Route::post('admin/stok/filter', [StokAdminController::class, 'filterStock'])->name('admin.stok.filter');
-    Route::get('admin/stok', [StokAdminController::class, 'stok'])->name('admin.stok');
+    Route::get('admin/stok', [StokAdminController::class, 'index'])->name('admin.stok');
+    Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
 
     Route::get('admin/suplier', [AdminController::class, 'suplier'])->name('admin.suplier');

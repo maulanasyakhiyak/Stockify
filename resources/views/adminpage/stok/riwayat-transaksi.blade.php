@@ -10,12 +10,13 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     @vite(['resources/js/stock.js'])
 @endsection
-@section('content')
-
 @section('other_meta')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="original" content="{{ route('admin.stok.riwayat-transaksi') }}">
 @endsection
+
+@section('content')
+
 
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="flex flex-col">
@@ -46,16 +47,6 @@
                     <div
                         class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
                         <div class="flex items-center w-full space-x-3 md:w-auto">
-                            {{-- <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown"
-                                class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                type="button">
-                                <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path clip-rule="evenodd" fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                </svg>
-                                Status --}}
-                            {{-- <div class="relative"> --}}
                                 <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
                                 data-dropdown-ignore-click-outside-class="ignore-dropdown"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -82,7 +73,10 @@
                                             <h3 class="p-2 text-gray-900 dark:text-gray-50 font-semibold">Filter</h3>
                                             <div class="p-2 flex gap-4 text-sm">
                                                 <button id="applyFilter" class="hover:underline ">Apply</button>
-                                                <button class="hover:underline ">Clear all</button>
+                                                <form action="{{ route('admin.stok.filter.clear') }}" class="inline" method="POST">
+                                                    <button type="submit" class="hover:underline ">Clear all</button>
+                                                    @csrf
+                                                </form>
                                             </div>
                                         </div>
                                             <div class="w-full">
@@ -118,7 +112,7 @@
                                                         aria-labelledby="filter-status">
                                                         <li>
                                                             <div class="flex items-center">
-                                                                <input id="checkbox-item-1" {{ in_array('completed', $filter['status']) ? 'checked' : '' }}
+                                                                <input id="checkbox-item-1" {{isset($filter['status']) && in_array('completed', $filter['status']) ? 'checked' : '' }}
                                                                     type="checkbox" name="completed" value="1" data-checkbox="status"
                                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                                                                 <label for="checkbox-item-1"
@@ -130,7 +124,7 @@
                                                         <li>
                                                             <div class="flex items-center">
                                                                 <input id="checkbox-item-2"
-                                                                    {{ in_array('pending', $filter['status']) ? 'checked' : '' }}
+                                                                    {{isset($filter['status']) && in_array('pending', $filter['status']) ? 'checked' : '' }}
                                                                     type="checkbox" name="pending" value="1" data-checkbox="status"
                                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                                                                 <label for="checkbox-item-2"
@@ -142,7 +136,7 @@
                                                         <li>
                                                             <div class="flex items-center">
                                                                 <input id="checkbox-item-3"
-                                                                {{ in_array('cancelled', $filter['status']) ? 'checked' : '' }}
+                                                                {{isset($filter['status']) && in_array('cancelled', $filter['status']) ? 'checked' : '' }}
                                                                 type="checkbox" name="cancelled" value="1" data-checkbox="status"
                                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                                                                 <label for="checkbox-item-3"

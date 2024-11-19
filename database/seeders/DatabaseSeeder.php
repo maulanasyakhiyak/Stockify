@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Category;
+
 use App\Models\Product;
-use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +18,10 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'role' => 'admin',
             'email' => 'admin@example.com'
+        ]);
+        $this->call([
+            ProductSeeder::class,
+            StockTransactionSeeder::class,
         ]);
     }
 
