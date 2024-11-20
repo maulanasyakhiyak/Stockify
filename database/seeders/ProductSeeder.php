@@ -18,10 +18,10 @@ class ProductSeeder extends Seeder
     {
         User::factory()->create([
             'role' => 'admin',
+            'email' => 'admin@example.com'
         ]);
         Category::factory()->count(5)->create();
         Supplier::factory()->count(5)->create();
-        Product::factory(25)->create([
-        ]);
+        Product::factory(25)->create([]);
     }
 }

@@ -20,7 +20,7 @@
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="flex flex-col">
             <div class="mb-4 flex justify-between">
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Data products</h1>
+                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Product Stock</h1>
             </div>
             <div class="relative bg-white shadow dark:bg-gray-800 sm:rounded-lg">
                 <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
@@ -36,15 +36,17 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                                <input type="text" id="simple-search"
-                                    class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Search" required="">
+                                <form action="{{ route('admin.stok.productStok') }}" method="GET">
+                                    <input type="text" id="simple-search"
+                                        class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Search by product name" name="search" value="{{ request()->get('search') ?? '' }}">
+                                </form>
 
                             </div>
                         </form>
                     </div>
                 </div>
-                <x-tables.admin.riwayatTransaksi.table-riwayat_transaksi :stockTransaction="$stockTransaction" />
+                <x-tables.admin.product-stock.table-product-stock :productStock="$productStock" />
             </div>
         </div>
 

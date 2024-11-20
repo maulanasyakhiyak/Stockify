@@ -1,4 +1,4 @@
-@props(['id', 'categories', 'routeUpdate', 'routeDelete'])
+@props(['productStock'])
 
 <div class="overflow-x-auto">
     <div class="inline-block min-w-full align-middle">
@@ -8,7 +8,7 @@
                     <tr>
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Name
+                            Product name
                         </th>
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -29,20 +29,14 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                    @forelse ($categories as $category)
+                    @forelse ($productStock as $item)
                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                            
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $category['id'] }}</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <div class="text-base font-semibold">{{ $category['name'] }}</div>
-                            </td>
-                            <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400"> {{ $category['description'] }}</td>
-                            <td class="p-4 space-x-2 whitespace-nowrap">
-                                <x-tables.admin.category.button-update :id="$category['id']" :target="$category['id']"
-                                    :item="$category['name']" :routeUpdate="$routeUpdate" :category="$category" />
-                                <x-tables.admin.category.button-delete :id="$category['id']" :target="$category['id']"
-                                    :item="$category['name']" :routeDelete="$routeDelete" />
-                            </td>
+
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['product_name']  }}</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['sku']  }} </td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['stock_akhir']  }} </td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['updated_at']  }} </td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['stock_akhir']  }} </td>
                         </tr>
                     @empty
                         <tr>
@@ -57,5 +51,5 @@
 </div>
 
 <div class="flex">
-    {{ $categories->links() }}
+    {{ $productStock->links() }}
 </div>

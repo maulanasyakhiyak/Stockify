@@ -82,13 +82,12 @@ class CreateTablesForInventory extends Migration
         DB::statement("DROP VIEW IF EXISTS product_stock_view");
         DB::statement("
         CREATE VIEW product_stock_view AS
-        SELECT p.id AS product_id, 
+        SELECT p.id AS product_id,
                p.name AS product_name,
                p.sku,
-               COALESCE(SUM(CASE WHEN st.type = 'in' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0) AS stock_masuk,
-               COALESCE(SUM(CASE WHEN st.type = 'out' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0) AS stock_keluar,
-               (COALESCE(SUM(CASE WHEN st.type = 'in' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0) - 
-                COALESCE(SUM(CASE WHEN st.type = 'out' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0)) AS stock_akhir
+               (COALESCE(SUM(CASE WHEN st.type = 'in' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0) -
+                COALESCE(SUM(CASE WHEN st.type = 'out' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0)) AS stock_akhir,
+                MAX(st.updated_at) AS updated_at
         FROM products p
         LEFT JOIN stock_transactions st ON p.id = st.product_id
         GROUP BY p.id, p.name, p.sku;
@@ -102,13 +101,13 @@ class CreateTablesForInventory extends Migration
      */
     public function down()
     {
-        
+
         Schema::dropIfExists('stock_transactions');
         Schema::dropIfExists('product_attributes');
         Schema::dropIfExists('products');
         Schema::dropIfExists('suppliers');
         Schema::dropIfExists('categories');
         Schema::dropIfExists('users');
-        
+
     }
 }

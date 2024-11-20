@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductStockView;
+use App\Repositories\ProductStock\ProductStockRepository;
 use App\Repositories\StockTransaction\StockTransactionRepository;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,15 +12,20 @@ use Illuminate\Http\Request;
 class StokAdminController extends Controller
 {
     protected $stokTransRepo;
+    protected $productStockRepository;
 
-    public function __construct(StockTransactionRepository $StockTransactionRepository)
+    public function __construct(StockTransactionRepository $StockTransactionRepository,
+                                ProductStockRepository $productStockRepository
+                                )
     {
         $this->stokTransRepo = $StockTransactionRepository;
+        $this->productStockRepository = $productStockRepository;
     }
     public function index(){
         return redirect()->route('admin.stok.riwayat-transaksi');
     }
-    public function filterStock(Request $req){
+    // ====================================================================== FILTER
+    public function filterTransaction(Request $req){
         $riwayatTransaksiFilter = [
             'search' => $req->input('filterSearch'),
             'status' => $req->input('status'),
@@ -40,9 +47,21 @@ class StokAdminController extends Controller
 
     }
     public function clearAllFilter(){
-        session()->forget('filterRiwayatTransaksi');
+        $previousUrl = strtok(url()->previous(), '?');
+        switch($previousUrl){
+            case route('admin.stok.riwayat-transaksi'):
+                session()->forget('filterRiwayatTransaksi');
+                break;
+            case route('admin.stok.productStok'):
+                break;
+        }
         return redirect()->back();
     }
+
+    public function filterStock(Request $req){
+
+    }
+    // ====================================================================== FILTER END
 
     public function stokRiwayatTransaksi(){
         $stockTransaction = $this->stokTransRepo->getStockTransaction();
@@ -69,9 +88,15 @@ class StokAdminController extends Controller
         return view('adminpage.stok.riwayat-transaksi', compact('stockTransaction','earliestDate','filter'));
     }
 
-    public function productStok(){
-        $data = ProductStockView::all();
-        return view('adminpage.stok.produk-stok', compact('data'));
+    public function productStok(Request $r){
+        $productStock = $this->productStockRepository->getAll(null,10);
+        if($r->has('search')){
+            if($r->get('search') == ''){
+                return redirect()->route('admin.stok.productStok');
+            }
+            $productStock = $this->productStockRepository->getAll($r->get('search'),10);
+        }
+        return view('adminpage.stok.produk-stok', compact('productStock'));
     }
 
 

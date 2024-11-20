@@ -61,7 +61,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('admin/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
 
     Route::post('admin/stok/filter-clear', [StokAdminController::class, 'clearAllFilter'])->name('admin.stok.filter.clear');
-    Route::post('admin/stok/filter', [StokAdminController::class, 'filterStock'])->name('admin.stok.filter');
+    Route::post('admin/stok/filter', [StokAdminController::class, 'filterTransaction'])->name('admin.stok.filter');
     Route::get('admin/stok', [StokAdminController::class, 'index'])->name('admin.stok');
     Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
