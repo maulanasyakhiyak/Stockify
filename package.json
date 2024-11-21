@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "apexcharts": "^3.54.0",
+        "axios": "^1.7.7",
         "flowbite-typography": "^1.0.4",
         "simple-datatables": "^9.2.1",
         "toastr": "^2.1.4"

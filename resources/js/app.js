@@ -5,5 +5,6 @@ import './bootstrap';
 import './sidebar';
 import './charts';
 import './dark-mode';
+import './modal.js'
 
 

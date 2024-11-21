@@ -63,16 +63,17 @@ class StokAdminController extends Controller
     }
     // ====================================================================== FILTER END
 
-    public function stokRiwayatTransaksi(){
+    public function stokRiwayatTransaksi(Request $req){
         $stockTransaction = $this->stokTransRepo->getStockTransaction();
         $filter = session('filterRiwayatTransaksi');
-        if($filter){
+        if($filter || $req->has('search')){
             $stockTransaction = $this->stokTransRepo->getStockTransaction(
             $filter['search'] ?? null,
             $filter['status'] ?? null,
             $filter['type'] ?? null,
             $filter['start'] ?? null,
-            $filter['end'] ?? null
+            $filter['end'] ?? null,
+            $req->get('search') ?? null,
             );
         }else{
             $filter = [
@@ -80,9 +81,11 @@ class StokAdminController extends Controller
                 'status' => null,
                 'type' => null,
                 'start' => null,
-                'end' => null
+                'end' => null,
+                $req->get('search') ?? null,
             ];
         }
+        // dd($filter);
 
         $earliestDate =  $this->stokTransRepo->getFirstDate();
         return view('adminpage.stok.riwayat-transaksi', compact('stockTransaction','earliestDate','filter'));

@@ -60,7 +60,7 @@ $('#applyFilter').on('click', function(){
         },
         success: function (data) {
             if(data.status == 'success'){
-                window.location.reload();
+                window.location.replace('/admin/stok/riwayat-transaksi');
             }
             if(data.status == 'fail'){
                 console.log(data.message);
@@ -75,15 +75,42 @@ $('#simple-search-filter').autocomplete({
             url: '/admin/simple-search',
             dataType: 'json',
             data: {
-                table: "2c6ee24b09816a6f14f95d1698b24ead",
+                table: [
+                    '2c6ee24b09816a6f14f95d1698b24ead',   // Misalnya, 'table_1' adalah nama tabel yang diizinkan
+                    '2d2d2c4b9e1d2f6f2bcd345b223ee6d4'
+                ],
                 term: request.term
             },
             success: function (data) {
-                var results = data.map(function (item) {
-                    return {
-                        label: item.name, // Nilai yang akan disimpan di input
-                    };
-                });
+                if(data.debuging){
+                    console.log(data.debuging);
+                    
+                }
+                if(data.user && data.product){
+                    var results = [];
+                    var results = results.concat(
+                        data.user.map(function (item) {
+                            return {
+                                label: item.name + ' (user)', // Nilai yang akan disimpan di input
+                                value: item.name 
+                            };
+                        })
+                    );
+                    var results = results.concat(
+                        data.product.map(function (item) {
+                            return {
+                                label: item.name + ' (produk)', // Nilai yang akan disimpan di input
+                                value: item.name 
+                            };
+                        })
+                    );
+                }else{
+                    var results = data.map(function (item) {
+                        return {
+                            label: item.name, // Nilai yang akan disimpan di input
+                        };
+                    });
+                }
                 response(results);
             }
         })
@@ -110,5 +137,13 @@ $('[data-filter-collapse]').each(function () {
         });
 
     })
+})
+
+$(document).on('click', 'input[data-input-minimum-stock]', function(){
+    console.log('asdasd');
+    
+    if($(this).val() === $(this).data('stock-current')){
+        $('#button-save-minimum').attr('disabled', false)
+    }
 })
 

@@ -53,23 +53,40 @@ class AdminController extends Controller
             '2d2d2c4b9e1d2f6f2bcd345b223ee6d4' => 'product',
         ];
 
-        if (array_key_exists($encryptedTable, $tables)) {
+        if (is_array($encryptedTable)) {
 
-            if(is_array($encryptedTable)){
-
-            }else{
-                switch($encryptedTable){
-                    case '2c6ee24b09816a6f14f95d1698b24ead':
-                        $data = User::where('name' , 'like' ,"%{$term}%")->get();
-                        break;
-                    case '2d2d2c4b9e1d2f6f2bcd345b223ee6d4':
-                        $data = Product::where('name' , 'like' ,"%{$term}%")->get();
-                        break;
+            foreach ($encryptedTable as $item) {
+                if (isset($tables[$item])) {
+                    
+                    switch($tables[$item]){
+                        case 'users':
+                            $user = User::where('name' , 'like' ,"%{$term}%")->get();
+                            break;
+                        case 'product':
+                            $product = Product::where('name' , 'like' ,"%{$term}%")->get();
+                            break;
+                    }
                 }
             }
-            return response()->json($data);
+            return response()->json([
+                'user' => $user,
+                'product' => $product,
+            ]);
+            
         } else {
-            return response()->json(['error' => 'Invalid table'], 400);
+            if(array_key_exists($encryptedTable, $tables)){
+                switch($encryptedTable){
+                    case '2c6ee24b09816a6f14f95d1698b24ead':
+                        $data = User::where('name' , 'like' ,"%{$term}%")->get()->name;
+                        break;
+                    case '2d2d2c4b9e1d2f6f2bcd345b223ee6d4':
+                        $data = Product::where('name' , 'like' ,"%{$term}%")->get()->name;
+                        break;
+                }
+                return response()->json($data);
+            } else {
+                return response()->json(['error' => 'Invalid table'], 400);
+            }
         }
     }
 

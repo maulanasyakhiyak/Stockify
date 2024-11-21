@@ -379,7 +379,7 @@
     </div>
 
     {{-- MODAL --}}
-    <div id="import-modal" tabindex="-1"
+    <div id="import-modal" tabindex="-1" 
         class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
 
         <div class="relative p-4 w-full max-w-2xl max-h-full">

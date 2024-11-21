@@ -23,7 +23,7 @@
                             Updated
                         </th>
                         <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            class="w-20 text-center p-4 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
                             Actions
                         </th>
                     </tr>
@@ -36,7 +36,9 @@
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['sku']  }} </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['stock_akhir']  }} </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['updated_at']  }} </td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> {{ $item['stock_akhir']  }} </td>
+                            <td class="p-4 text-center text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"> 
+                                <x-tables.admin.product-stock.button-settings :item="$item" />
+                            </td>
                         </tr>
                     @empty
                         <tr>
