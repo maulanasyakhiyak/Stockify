@@ -98,6 +98,7 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
 
     public function updateProduct($data, $id)
     {
+        // dd($data);
         $product = $this->findProduct($id);
         if (! $product) {
             throw new ModelNotFoundException("Produk dengan ID {$id} tidak ditemukan.");

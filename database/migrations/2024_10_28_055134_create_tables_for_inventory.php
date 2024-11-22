@@ -51,9 +51,10 @@ class CreateTablesForInventory extends Migration
             $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('set null');
             $table->string('name');
             $table->string('sku')->unique()->comment('Stock Keeping Unit');
+            $table->integer('minimal_stock')->default(0);
             $table->text('description')->nullable();
-            $table->decimal('purchase_price', 10, 2);
-            $table->decimal('selling_price', 10, 2);
+            $table->integer('purchase_price');
+            $table->integer('selling_price');
             $table->string('image')->nullable()->comment('Path ke file gambar');
             $table->timestamps();
         });
@@ -86,6 +87,7 @@ class CreateTablesForInventory extends Migration
                 p.id AS product_id,
                 p.name AS product_name,
                 p.sku,
+                p.minimal_stock,
                 (COALESCE(SUM(CASE WHEN st.type = 'in' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0) -
                     COALESCE(SUM(CASE WHEN st.type = 'out' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0)) AS stock_akhir,
                     MAX(st.updated_at) AS updated_at

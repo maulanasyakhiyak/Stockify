@@ -8,7 +8,9 @@
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    @vite(['resources/js/stock.js'])
 @endsection
+
 @section('other_meta')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="original" content="{{ route('admin.stok.riwayat-transaksi') }}">
