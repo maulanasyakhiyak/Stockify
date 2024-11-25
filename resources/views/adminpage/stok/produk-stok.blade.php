@@ -41,11 +41,21 @@
                                 <form action="{{ route('admin.stok.productStok') }}" method="GET">
                                     <input type="text" id="simple-search"
                                         class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Search by product name" name="search" value="{{ request()->get('search') ?? '' }}">
+                                        placeholder="Search by product name" name="search"
+                                        value="{{ request()->get('search') ?? '' }}">
                                 </form>
 
                             </div>
                         </form>
+                    </div>
+                    <div class="">
+                        <button type="button" data-target-modal="stock-opname-modal" id="stock-opname-button"
+                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text
+                        text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm focus:outline-none
+                        focus:ring-2 focus:ring-offset-2 
+                        focus:ring-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus
+                        ring-blue-600 dark:focus:ring-blue-700">Mulai
+                            stock opname</button>
                     </div>
                 </div>
                 <x-tables.admin.product-stock.table-product-stock :productStock="$productStock" />
@@ -54,4 +64,35 @@
 
     </div>
 
+
+    <div class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0"
+        tabindex="-1" id="stock-opname-modal">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4 animationDrop" data-modal="body">
+
+                <div class="flex justify-between border-b">
+                    <h2 class="text-xl font-semibold mb-3 text-gray-700 dark:text-gray-50">
+                        Item Setting
+                    </h2>
+                    <button data-hide-modal="stock-opname-modal" class="absolute right-4 top-4"><i
+                            class="fa-solid fa-x text-gray-400"></i></button>
+                </div>
+
+                <div class="">
+
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload
+                        file</label>
+                    <input
+                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        aria-describedby="file_input_help" id="file_input" type="file">
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX.
+                        800x400px).</p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 @endsection

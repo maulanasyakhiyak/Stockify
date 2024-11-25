@@ -13,18 +13,15 @@
                 <h2 class="text-xl font-semibold mb-3 text-gray-700 dark:text-gray-50">
                     Item Setting
                 </h2>
-                <button data-hide-modal="product-stock-setting-{{ $item['product_id'] }}" class="absolute right-4 top-4"><i
-                        class="fa-solid fa-x text-gray-400"></i></button>
+                <button data-hide-modal="product-stock-setting-{{ $item['product_id'] }}"
+                    class="absolute right-4 top-4"><i class="fa-solid fa-x text-gray-400"></i></button>
             </div>
-            <div class="grid grid-cols-3 text-left gap-x-2 pt-4 mb-4">
-                <div class="flex justify-between items-center">
-                    Minimum stok
-                    <span>:</span>
-                </div>
-                <div class=" col-span-2">
-                    <input type="text" data-input-minimum-stock="{{ $item['product_id'] }}" name="minimal_stock"
-                        class="p-1 rounded w-full border-0 focus:ring-0" data-stock-current="{{ $item['minimal_stock'] }}" value="{{ $item['minimal_stock'] }}">
-                </div>
+            {{-- <div class="text-left my-4">
+                <label for="minimal_stock" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Minimal
+                    Stock</label>
+                <input type="text" data-input-minimum-stock="{{ $item['product_id'] }}" name="minimal_stock"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    data-stock-current="{{ $item['minimal_stock'] }}" value="{{ $item['minimal_stock'] }}">
             </div>
             <div class="flex justify-end gap-1">
                 <div class="">
@@ -35,8 +32,9 @@
                     <button class="button-delete end" data-save-minimum-stock="{{ $item['product_id'] }}"
                         disabled>Save</button>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
+        
     </div>
-
+</div>

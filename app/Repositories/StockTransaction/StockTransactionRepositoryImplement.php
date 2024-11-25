@@ -94,11 +94,6 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
     }
 
     public function getFirstDate(){
-        return $this->model->orderBy('date', 'asc')->first()->date;
-        if ($firstDate) {
-            return $firstDate; // Jika ada data, kembalikan data tersebut
-        } else {
-            return null; // Jika tidak ada data, kembalikan null atau pesan tertentu
-        }
+        $this->model->orderBy('date', 'asc')->first()->date ?? 0;
     }
 }
