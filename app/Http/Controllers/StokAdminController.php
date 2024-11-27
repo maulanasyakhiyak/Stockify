@@ -127,5 +127,9 @@ class StokAdminController extends Controller
 
     }
 
+    public function productStokOpname(){
+        return view('adminpage.stok.stock-opname');
+    }
+
 
 }

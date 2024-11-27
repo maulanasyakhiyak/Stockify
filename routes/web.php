@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Api\ApiTransactionController;
+use App\Http\Controllers\Admin\SuppliersController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StokAdminController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ApiTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,10 +65,12 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::post('admin/stok/filter', [StokAdminController::class, 'filterTransaction'])->name('admin.stok.filter');
     Route::get('admin/stok', [StokAdminController::class, 'index'])->name('admin.stok');
     Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
+    Route::get('admin/stok/product-stock/opname', [StokAdminController::class, 'productStokOpname'])->name('admin.stok.productStok.opname');
     Route::post('admin/stok/product-stock/update-minimum-stock', [StokAdminController::class, 'updateMinimumStock'])->name('admin.stok.productStok.update-minimum-stock');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
 
-    Route::get('admin/suplier', [AdminController::class, 'suplier'])->name('admin.suplier');
+    Route::get('admin/suplier', [SuppliersController::class, 'index'])->name('admin.suplier');
+
     Route::get('admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
     Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
     Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');

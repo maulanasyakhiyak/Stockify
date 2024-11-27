@@ -26,7 +26,7 @@
             <main>
                 @yield('content')
             </main>
-            <x-footer-dashboard />
+            {{-- <x-footer-dashboard /> --}}
         </div>
     </div>
 @endsection

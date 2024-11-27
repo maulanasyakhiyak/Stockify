@@ -15,6 +15,7 @@ use App\Services\Product\ProductService;
 use App\Services\Categories\CategoriesService;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Categories\CategoriesRepository;
+use App\Repositories\Supplier\SupplierRepository;
 
 class AdminController extends Controller
 {
@@ -32,16 +33,20 @@ class AdminController extends Controller
 
     protected $productRepository;
 
+    protected $supplierRepository;
+
     public function __construct(
         ProductRepository $productRepository,
         ProductService $productService,
         CategoriesService $categoriesService,
-        CategoriesRepository $categoriesRepository
+        CategoriesRepository $categoriesRepository,
+        SupplierRepository $supplierRepository
     ) {
         $this->productService = $productService;
         $this->productRepository = $productRepository;
         $this->categoriesService = $categoriesService;
         $this->categoriesRepository = $categoriesRepository;
+        $this->supplierRepository = $supplierRepository;
         $this->checkboxSession = session('checkbox', []);
     }
 
@@ -57,7 +62,7 @@ class AdminController extends Controller
 
             foreach ($encryptedTable as $item) {
                 if (isset($tables[$item])) {
-                    
+
                     switch($tables[$item]){
                         case 'users':
                             $user = User::where('name' , 'like' ,"%{$term}%")->get();
@@ -72,18 +77,20 @@ class AdminController extends Controller
                 'user' => $user,
                 'product' => $product,
             ]);
-            
+
         } else {
             if(array_key_exists($encryptedTable, $tables)){
                 switch($encryptedTable){
                     case '2c6ee24b09816a6f14f95d1698b24ead':
-                        $data = User::where('name' , 'like' ,"%{$term}%")->get()->name;
+                        $data = User::where('name' , 'like' ,"%{$term}%")->get();
                         break;
                     case '2d2d2c4b9e1d2f6f2bcd345b223ee6d4':
-                        $data = Product::where('name' , 'like' ,"%{$term}%")->get()->name;
+                        $data = Product::where('name' , 'like' ,"%{$term}%")->get();
                         break;
                 }
-                return response()->json($data);
+                return response()->json([
+                    'data' => $data
+                ]);
             } else {
                 return response()->json(['error' => 'Invalid table'], 400);
             }
@@ -359,11 +366,6 @@ class AdminController extends Controller
     public function stok()
     {
         return view('adminpage.stok');
-    }
-
-    public function suplier()
-    {
-        return view('adminpage.suplier');
     }
 
     public function pengguna()
