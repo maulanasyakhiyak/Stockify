@@ -21,7 +21,7 @@ class RiwayatOpnameRepositoryImplement extends Eloquent implements RiwayatOpname
         $this->model = $model;
     }
 
-    public function createRiwayat()
+    public function createRiwayat($keterangan)
     {
         $today = Carbon::now()->format('Y-m-d');
 
@@ -37,6 +37,7 @@ class RiwayatOpnameRepositoryImplement extends Eloquent implements RiwayatOpname
             'token' => Str::random(10),
             'tanggal_opname' => $today,
             'user_id' => auth()->id(),
+            'notes' => $keterangan
         ]);
 
         return $riwayatOpname;

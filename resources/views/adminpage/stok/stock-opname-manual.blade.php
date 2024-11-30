@@ -62,14 +62,19 @@
                     </table>
                 </div>
             </div>
-
+            <div class="mt-4">
+                <label for="keterangan-opname" class="block mb-2 text-sm font-medium text-gray-500 dark:text-white">Keterangan</label>
+                <input type="text" id="keterangan-opname" autocomplete="off" name="keterangan-opname"
+                        class="mt-2 no-enter block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Tambahkan alasan opname">
+            </div>
         </div>
         <div class="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 hidden" role="alert" id="alert-opname">
             <p class="font-bold">Tidak Bisa opname</p>
             <p id="error-message-opname"></p>
         </div>
         <div class="w-full flex justify-end mt-4">
-            <button data-button-start-opname="manual"
+            <button data-button-start-opname="manual" id="button-start-opname"
                         class="flex items-center gap-2 justify-center w-full px-4 py-2 text-sm font-medium
                         text-gray-50 bg-blue-500 border border-gray-100 rounded-lg md:w-auto focus:outline-none
                         hover:bg-blue-600 focus:z-10 focus:ring-4 focus:ring-gray-200

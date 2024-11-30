@@ -6,7 +6,7 @@ use LaravelEasyRepository\Repository;
 
 interface RiwayatOpnameRepository extends Repository{
 
-    public function createRiwayat();
+    public function createRiwayat($keterangan);
     public function findById($id);
     public function RiwayatAll();
     public function update($id,$data);

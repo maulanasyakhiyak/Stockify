@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\stockOpname;
 use App\Models\Product;
 use App\Models\ProductStockView;
 use App\Models\StockTransaction;
@@ -13,6 +14,7 @@ use App\Repositories\StockTransaction\StockTransactionRepository;
 use App\Services\StockTransaction\StockTransactionService;
 use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StokAdminController extends Controller
 {
@@ -142,20 +144,23 @@ class StokAdminController extends Controller
     }
 
     public function productStokOpname(Request $req){
-        if($req->has('data')){
-
+        if($req->has('data') && $req->has('keterangan')){
+            // return response()->json([
+            //     'status' => 'debuging',
+            //     'message' => $req->all(),
+            // ]);
             $data = $req->input('data');
             try{
-                $token = $this->stockTransactionService->stockOpname($data);
+                $token = $this->stockTransactionService->stockOpname($data, $req->input('keterangan'));
                 return response()->json([
                     'status' => 'success',
                     'data' => $data,
-                    'url' => route('admin.stok.productStok.Riwayatopname',$token)
+                    'url' => route('admin.stok.productStok.Detailopname',$token)
                 ]);
             }catch(Exception $e){
                 return response()->json([
                     'status' => 'error',
-                    'message' => $e->getMessage(),
+                    'message' => $e->getMessage() . $e->getFile() . $e->getLine(),
                 ]);
             }
 
@@ -167,7 +172,31 @@ class StokAdminController extends Controller
     public function productStokOpnameManual(){
         return view('adminpage.stok.stock-opname-manual');
     }
-    public function productStokOpnameCSV(){
+    public function productStokOpnameCSV(Request $req){
+        if($req->has('file-opname-csv')){
+            if(!$req->file('file-opname-csv')){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'file not found'
+                    ]);
+            }
+            try{
+                $import = new stockOpname;
+                Excel::import($import, $req->file('file-opname-csv'));
+                $data = $import->getProducts();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'success',
+                    'data' => $data
+                ]);
+            }catch(Exception $e){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ]);
+                
+            }
+        }
         return view('adminpage.stok.stock-opname-csv');
     }
     public function productStokOpnameRiwayat(){

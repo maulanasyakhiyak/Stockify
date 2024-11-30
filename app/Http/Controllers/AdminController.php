@@ -441,8 +441,16 @@ class AdminController extends Controller
 
     // Download
     public function downloadSampleImport(){
-        $filePath = storage_path('app/private/sample_import.xlsx');
     
+        $routeName = request()->route()->getName();
+
+        if ($routeName === 'download-sample-import') {
+            $filePath = storage_path('app/private/sample_import.xlsx');
+        } else {
+            $filePath = storage_path('app/private/sample_opname.xlsx');
+        }
+
+        // Pastikan file ada sebelum di-download
         if (!file_exists($filePath)) {
             abort(404, 'File not found');
         }

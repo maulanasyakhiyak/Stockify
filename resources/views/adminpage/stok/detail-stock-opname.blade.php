@@ -7,17 +7,20 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr class="">
-                        <th scope="col" class="p-2 w-80">
+                        <th scope="col" class="p-2">
                             Product name
                         </th>
-                        <th scope="col" class="p-2 w-60">
+                        <th scope="col" class="p-2">
                             Stock fisik
                         </th>
                         <th scope="col" class="p-2">
                             Stock sistem
                         </th>
-                        <th scope="col" class="p-2 w-10">
+                        <th scope="col" class="p-2">
                             Selisih
+                        </th>
+                        <th scope="col" class="p-2">
+                            keterangan
                         </th>
                         
                     </tr>
@@ -35,8 +38,11 @@
                         <td class="p-2">
                             {{$item->stok_sistem}}
                         </td>
-                        <td class="p-2">
+                        <td class="p-2 {{$item->selisih < 0 ? 'text-red-500' : ($item->selisih > 0 ? 'text-green-500' : 'text-gray-500')}}">
                             {{$item->selisih}}
+                        </td>
+                        <td class="p-2">
+                            {{$item->keterangan}}
                         </td>
 
                     </tr>

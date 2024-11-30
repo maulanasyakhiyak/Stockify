@@ -36,7 +36,7 @@ class StockTransactionServiceImplement extends Service implements StockTransacti
       $this->productRepository = $productRepository;
     }
 
-    public function stockOpname($data)
+    public function stockOpname($data,$keterangan)
     {
         // Validasi data
         $validator = Validator::make($data, [
@@ -50,7 +50,7 @@ class StockTransactionServiceImplement extends Service implements StockTransacti
         } 
         
         // Buat riwayat opname
-        $riwayat = $this->riwayatOpnameRepository->createRiwayat();
+        $riwayat = $this->riwayatOpnameRepository->createRiwayat($keterangan);
         if (!$riwayat) {
             throw new \Exception('Gagal membuat riwayat opname.');
         }else{

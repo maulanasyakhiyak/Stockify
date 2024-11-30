@@ -79,19 +79,11 @@ $("#stock-opname-search").on("input", function () {
 });
 
 function detectInputProduct() {
-  if (
-    $("[data-input-stock-id]").length < 1 &&
-    !$("[data-input-stock-id]").val()
-  ) {
-    $("[data-button-start-opname]").attr("disabled", true);
-  }
-  $("[data-input-stock-id]").each(function () {
-    if ($(this).val()) {
-      $("[data-button-start-opname]").attr("disabled", false);
-    } else {
-      $("[data-button-start-opname]").attr("disabled", true);
-    }
-  });
+  const disabled =
+    !$("[data-input-stock-id]")
+      .toArray()
+      .some((input) => $(input).val()) || !$("#keterangan-opname").val();
+  $("[data-button-start-opname]").prop("disabled", disabled);
 }
 
 var maskOptions = {
@@ -100,10 +92,6 @@ var maskOptions = {
   max: 100000,
   rightAlign: false,
 };
-
-
-
-
 
 $(document).on("click", "[data-autocomplete-id]", function () {
   var selectedId = $(this).data("autocomplete-id");
@@ -153,13 +141,17 @@ $(document).on("click", "[data-delete-row-stock-opname]", function () {
   detectInputProduct();
 });
 
-$(document).on("input", "[data-input-stock-id]", function () {
-  detectInputProduct();
-});
+$(document).on(
+  "input",
+  "[data-input-stock-id] , #keterangan-opname",
+  function () {
+    detectInputProduct();
+  }
+);
 
 $("[data-button-start-opname]").on("click", function () {
+  
   var dataOpname = [];
-
   $("input[data-input-stock-id]").each(function () {
     var inputValue = $(this).val();
     var inputId = $(this).data("input-stock-id");
@@ -168,27 +160,93 @@ $("[data-button-start-opname]").on("click", function () {
       value: inputValue,
     });
   });
-
+  
   $.ajax({
     type: "POST",
     url: "/admin/stok/product-stock/opname",
     data: {
       _token: csrfToken,
       data: dataOpname,
+      keterangan: $("#keterangan-opname").val(),
     },
     success: function (response) {
       if (response.status == "debuging") {
-        console.log(response.data);
+        console.log(response.message);
       }
       if (response.status == "success") {
         console.log(response.data);
-        window.location.replace(response.url)
+        window.location.replace(response.url);
       }
       if (response.status == "error") {
-        $('#alert-opname').removeClass('hidden')
-        $('#error-message-opname').text(response.message)
-        $('#button-start-opname').attr('disabled', true)
+        $("#alert-opname").removeClass("hidden");
+        $("#error-message-opname").text(response.message);
+        $("#button-start-opname").attr("disabled", true);
       }
     },
   });
+});
+
+$("#upload-opname-csv").on("change", function () {
+  $("#item-csv-append").empty();
+  var $this = $(this);
+  $("#product-list-result-csv").addClass("hidden");
+  $("#loading-csv-opname").removeClass("hidden");
+  $this.attr("disabled", true);
+  var file = this.files[0];
+  var formData = new FormData();
+  formData.append("file-opname-csv", file);
+  formData.append("_token", csrfToken);
+  $.ajax({
+    type: "POST",
+    url: "/admin/stok/product-stock/opname-withcsv",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response.status == "success") {
+        console.log(response.message);
+        $.each(response.data, function (index, dat) {
+          
+          var row = $(
+            `<tr data-row-id="${dat.id}" class="bg-white dark:bg-gray-800 dark:border-gray-700 divide-x-2 divide-gray-200 dark:divide-gray-700">`
+          );
+          row.append(
+            `<th scope="row" class="p-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"> ${dat.name} </th>`
+          );
+          row.append(
+            `<th scope="row" class="p-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"> ${dat.sku} </th>`
+          );
+          row.append(
+            `<td class="p-2"> <input type="text" data-input-stock-id="${dat.id}" value="${dat.value}" id="${dat.id}" name="stockopname[${dat.id}]" readonly class="w-full border-none focus:ring-0 py-1 px-2 placeholder:text-sm bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white"></td>`
+          );
+          if( dat.error == 'Not Found'){
+            var row = $(
+              `<tr  class="bg-white border-y dark:bg-gray-800 dark:border-gray-700 divide-x-2 divide-gray-200 dark:divide-gray-700">`
+            );
+            row.append(
+              `<td class="p-2 text-center" colspan='3'>
+              <span class="inline-flex w-1/3 items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        ${dat.error} ( <span class="font-thin">${dat.message}</span> )
+                                    </span>
+               
+               </td>`
+            );
+          }
+          $("#item-csv-append").append(row);
+        });
+        detectInputProduct();
+        $this.attr("disabled", false);
+        $("#loading-csv-opname").addClass("hidden");
+        $("#product-list-result-csv").removeClass("hidden");
+      }
+      if(response.status == "error") {
+        $this.attr("disabled", false);
+        $("#loading-csv-opname").addClass("hidden");
+        $("#item-csv-append").empty();
+        toastr.error(response.message)
+      }
+    },
+  });
+  setTimeout(function () {}, 3000);
 });

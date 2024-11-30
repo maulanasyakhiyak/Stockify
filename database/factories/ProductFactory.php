@@ -11,13 +11,16 @@ class ProductFactory extends Factory
 
     public function definition()
     {
+        $defaultSKU = 'DEFAULT-'. rand(1000, 9999);
+        while(Product::where('sku', $defaultSKU)->exists()){
+            $defaultSKU = 'DEFAULT-'. rand(1000, 9999);
+        }
         return [
             'name' => $this->faker->word,
-            'sku' => $this->faker->unique()->word,
+            'sku' => $defaultSKU,
             'purchase_price' => $this->faker->numberBetween(1, 100) * 1000,
             'selling_price' => $this->faker->numberBetween(2, 200) * 1000,
             'description' => $this->faker->sentence,
-            'category_id' => $this->faker->randomElement(\App\Models\Category::pluck('id')->toArray()), // Ambil ID kategori yang ada
             'supplier_id' => $this->faker->randomElement(\App\Models\Supplier::pluck('id')->toArray()), // Ambil ID supplier yang ada
         ];
     }

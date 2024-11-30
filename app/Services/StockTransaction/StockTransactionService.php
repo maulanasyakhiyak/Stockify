@@ -6,5 +6,5 @@ use LaravelEasyRepository\BaseService;
 
 interface StockTransactionService extends BaseService{
 
-    public function stockOpname($data);
+    public function stockOpname($data,$keterangan);
 }

@@ -2,6 +2,8 @@
 
 namespace App\Services\Product;
 
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Repositories\Product\ProductRepository;
 use Exception;
@@ -93,6 +95,17 @@ class ProductServiceImplement extends Service implements ProductService
         return $this->mainRepository->findProduct($id);
     }
 
+    private function makeSku($idCategory){
+        $category = Category::find($idCategory)->name;
+        $pref = strtoupper(substr($category, 0, 4));
+        $lastSku = Product::where('sku', 'like', $pref . '%')
+                      ->orderByDesc('sku')
+                      ->first();
+        $increment = $lastSku ? (int)substr($lastSku->sku, -4) + 1 : 1;
+        $code = str_pad($increment, 4, '0', STR_PAD_LEFT);
+        return $pref . $code;
+    }
+
     public function createProduct($data)
     {
         $validator = Validator::make($data, [
@@ -111,10 +124,6 @@ class ProductServiceImplement extends Service implements ProductService
 
             'category_id.required' => 'Kategori produk wajib dipilih.',
             'category_id.exists' => 'Kategori yang dipilih tidak valid.',
-
-            'sku.required' => 'SKU produk wajib diisi.',
-            'sku.string' => 'SKU harus berupa teks.',
-            'sku.unique' => 'SKU produk sudah terdaftar, silakan pilih SKU lain.',
 
             'purchase_price.required' => 'Harga beli produk wajib diisi.',
             'purchase_price.numeric' => 'Harga beli produk harus berupa angka.',
@@ -144,17 +153,27 @@ class ProductServiceImplement extends Service implements ProductService
         if($data['image']){
             $data['image'] = $this->serviceSaveImage($data['image'], 'product');
         }
+        
+        $data['sku'] = $this->makeSku($data['category_id']);
+        
+        $data['atributes'] = array_filter($data['atributes'], function($item) {
+            return $item['atribute'] !== null && $item['value'] !== null;
+        });
+
+        $data['atributes'] = !empty($data['atributes']) ? $data['atributes'] : null;
 
         $product = $this->mainRepository->createProduct($data);
 
-        foreach ($data['atributes'] as $attribute) {
-            ProductAttribute::create([
-                'product_id' => $product->id, // Mengaitkan dengan produk yang baru disimpan
-                'name' => $attribute['atribute'],
-                'value' => $attribute['value'],
-            ]);
+        if($data['atributes']){
+            foreach ($data['atributes'] as $attribute) {
+                ProductAttribute::create([
+                    'product_id' => $product->id, // Mengaitkan dengan produk yang baru disimpan
+                    'name' => $attribute['atribute'],
+                    'value' => $attribute['value'],
+                ]);
+            }
+    
         }
-
 
         return [
             'success' => true,
@@ -188,7 +207,6 @@ class ProductServiceImplement extends Service implements ProductService
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
-            'sku' => 'required|string|unique:products,sku,'.$id,
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0|gt:purchase_price',
             'description' => 'nullable|string',
@@ -200,11 +218,6 @@ class ProductServiceImplement extends Service implements ProductService
             'category_id.required' => 'ID kategori harus diisi.',
             'category_id.integer' => 'ID kategori harus berupa angka.',
             'category_id.exists' => 'ID kategori tidak valid.',
-
-            'sku.required' => 'SKU harus diisi.',
-            'sku.string' => 'SKU harus berupa teks.',
-            'sku.max' => 'SKU tidak boleh lebih dari 100 karakter.',
-            'sku.unique' => 'SKU sudah digunakan oleh produk lain.',
 
             'purchase_price.required' => 'Harga beli harus diisi.',
             'purchase_price.numeric' => 'Harga beli harus berupa angka.',
@@ -235,23 +248,35 @@ class ProductServiceImplement extends Service implements ProductService
                 unset($data['image']);
             }
 
+            $data['sku'] = $this->makeSku($data['category_id']);
+
             $this->mainRepository->updateProduct($data, $id);
-            foreach ($data['atributes'] as $attribute) {
-                $existingAttribute = ProductAttribute::where('product_id', $id)
-                                        ->where('name', $attribute['name'])
-                                        ->first();
-                if ($existingAttribute){
-                    $existingAttribute->update([
-                        'value' => $attribute['value']
-                    ]);
-                }else{
-                    ProductAttribute::create([
-                        'product_id' => $id, // Mengaitkan dengan produk yang baru disimpan
-                        'name' => $attribute['name'],
-                        'value' => $attribute['value'],
-                    ]);
+
+            $data['atributes'] = array_filter($data['atributes'], function($item) {
+                return $item['name'] !== null && $item['value'] !== null;
+            });
+    
+            $data['atributes'] = !empty($data['atributes']) ? $data['atributes'] : null;
+
+            if($data['atributes']){
+                foreach ($data['atributes'] as $attribute) {
+                    $existingAttribute = ProductAttribute::where('product_id', $id)
+                                            ->where('name', $attribute['name'])
+                                            ->first();
+                    if ($existingAttribute){
+                        $existingAttribute->update([
+                            'value' => $attribute['value']
+                        ]);
+                    }else{
+                        ProductAttribute::create([
+                            'product_id' => $id, // Mengaitkan dengan produk yang baru disimpan
+                            'name' => $attribute['name'],
+                            'value' => $attribute['value'],
+                        ]);
+                    }
                 }
             }
+            
 
             return [
                 'success' => true,
@@ -260,7 +285,7 @@ class ProductServiceImplement extends Service implements ProductService
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage() . $e->getFile() . $e->getLine(),
             ];
         }
     }

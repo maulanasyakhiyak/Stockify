@@ -25,7 +25,7 @@
 @endsection
 
 @section('content')
-    <div class="mx-40 my-10 p-4">
+    <div class="mx-0 md:mx-32 lg:mx-40 my-10 p-4">
         <div class="flex items-center gap-2">
             <a href="/admin/stok/product-stock"
                 class=" flex items-center justify-center rounded-full w-8 h-8 bg-gray-200 text-gray-500">

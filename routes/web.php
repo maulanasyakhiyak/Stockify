@@ -33,6 +33,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/download/sample-import', [AdminController::class,'downloadSampleImport'])->name('download-sample-import');
+    Route::get('/download/sample-opname', [AdminController::class,'downloadSampleImport'])->name('download-sample-opname');
     Route::get('/admin', function () {
         return redirect(route('admin.dashboard'));
     });
@@ -68,6 +69,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
     Route::get('admin/stok/product-stock/opname-manual', [StokAdminController::class, 'productStokOpnameManual'])->name('admin.stok.productStok.opname-manual');
     Route::get('admin/stok/product-stock/opname-withcsv', [StokAdminController::class, 'productStokOpnameCSV'])->name('admin.stok.productStok.opname-withcsv');
+    Route::post('admin/stok/product-stock/opname-withcsv', [StokAdminController::class, 'productStokOpnameCSV'])->name('admin.stok.productStok.opname-withcsv');
     Route::get('admin/stok/product-stock/opname-riwayat', [StokAdminController::class, 'productStokOpnameRiwayat'])->name('admin.stok.productStok.opname-riwayat');
     Route::post('admin/stok/product-stock/opname', [StokAdminController::class, 'productStokOpname'])->name('admin.stok.productStok.opname');
     Route::get('admin/stok/product-stock/opname/{token}', [StokAdminController::class, 'productStokOpnameDetail'])->name('admin.stok.productStok.Detailopname');
