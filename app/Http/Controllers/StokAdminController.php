@@ -4,26 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductStockView;
+use App\Models\StockTransaction;
+use App\Repositories\DetailOpname\DetailOpnameRepository;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\ProductStock\ProductStockRepository;
+use App\Repositories\RiwayatOpname\RiwayatOpnameRepository;
 use App\Repositories\StockTransaction\StockTransactionRepository;
+use App\Services\StockTransaction\StockTransactionService;
 use Exception;
 use Illuminate\Http\Request;
 
 class StokAdminController extends Controller
 {
     protected $stokTransRepo;
+    protected $stockTransactionService;
     protected $productStockRepository;
     protected $productRepository;
+    protected $riwayatOpnameRepository;
+    protected $detailOpnameRepository;
 
     public function __construct(StockTransactionRepository $StockTransactionRepository,
+                                StockTransactionService $stockTransactionService,
                                 ProductStockRepository $productStockRepository,
-                                ProductRepository $productRepository
+                                ProductRepository $productRepository,
+                                DetailOpnameRepository $detailOpnameRepository,
+                                RiwayatOpnameRepository $riwayatOpnameRepository
                                 )
     {
+        $this->stockTransactionService = $stockTransactionService;
         $this->stokTransRepo = $StockTransactionRepository;
         $this->productStockRepository = $productStockRepository;
         $this->productRepository = $productRepository;
+        $this->detailOpnameRepository = $detailOpnameRepository;
+        $this->riwayatOpnameRepository = $riwayatOpnameRepository;
+        
     }
     public function index(){
         return redirect()->route('admin.stok.riwayat-transaksi');
@@ -127,9 +141,47 @@ class StokAdminController extends Controller
 
     }
 
-    public function productStokOpname(){
-        return view('adminpage.stok.stock-opname');
+    public function productStokOpname(Request $req){
+        if($req->has('data')){
+
+            $data = $req->input('data');
+            try{
+                $token = $this->stockTransactionService->stockOpname($data);
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $data,
+                    'url' => route('admin.stok.productStok.Riwayatopname',$token)
+                ]);
+            }catch(Exception $e){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+
+        }else{
+            
+        }
     }
 
+    public function productStokOpnameManual(){
+        return view('adminpage.stok.stock-opname-manual');
+    }
+    public function productStokOpnameCSV(){
+        return view('adminpage.stok.stock-opname-csv');
+    }
+    public function productStokOpnameRiwayat(){
+        $riwayat = $this->riwayatOpnameRepository->RiwayatAll();
+        return view('adminpage.stok.stock-opname-riwayat', compact('riwayat'));
+    }
+
+    public function productStokOpnameDetail($token){
+        $data=$this->detailOpnameRepository->getDataByToken($token);
+        if(!$data){
+            return abort(404);
+        }
+        // dd($data->detailOpnames->first()->product->name);
+        return view('adminpage.stok.detail-stock-opname',compact('data'));
+    }
 
 }

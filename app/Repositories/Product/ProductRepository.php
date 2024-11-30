@@ -23,4 +23,6 @@ interface ProductRepository extends Repository
     public function findMultipleProduct($data);
 
     public function createProduct($data);
+
+    public function checkItem($id);
 }

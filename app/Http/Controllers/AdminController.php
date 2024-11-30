@@ -135,7 +135,6 @@ class AdminController extends Controller
                 if (is_string($categories)) {
                     $categories = json_decode($categories, true);
                 }
-
                 $categoryData = array_map(function ($categoryName) {
                     return ['name' => $categoryName, 'description' => 'no desc'];
                 }, $categories);
@@ -149,7 +148,6 @@ class AdminController extends Controller
         }
         if (!$req->file('file')) {
             $file = Cache::get('importTemp' . auth()->id());
-            $file_cache = $file;
         } else {
             $file = $req->file('file');
         }
@@ -182,7 +180,8 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'fail',
-                'error' => $e->getMessage() .',on ' . $e->getFile() . ', at ' . $e->getLine()
+                'error' => $e->getMessage() .',on ' . $e->getFile() . ', at ' . $e->getLine(),
+                'message' => $e->getMessage()
             ]);
         }
     }
@@ -438,5 +437,16 @@ class AdminController extends Controller
                 $result['error']
             );
         }
+    }
+
+    // Download
+    public function downloadSampleImport(){
+        $filePath = storage_path('app/private/sample_import.xlsx');
+    
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found');
+        }
+    
+        return response()->download($filePath);
     }
 }

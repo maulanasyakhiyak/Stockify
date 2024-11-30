@@ -32,6 +32,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
+    Route::get('/download/sample-import', [AdminController::class,'downloadSampleImport'])->name('download-sample-import');
     Route::get('/admin', function () {
         return redirect(route('admin.dashboard'));
     });
@@ -65,7 +66,11 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::post('admin/stok/filter', [StokAdminController::class, 'filterTransaction'])->name('admin.stok.filter');
     Route::get('admin/stok', [StokAdminController::class, 'index'])->name('admin.stok');
     Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
-    Route::get('admin/stok/product-stock/opname', [StokAdminController::class, 'productStokOpname'])->name('admin.stok.productStok.opname');
+    Route::get('admin/stok/product-stock/opname-manual', [StokAdminController::class, 'productStokOpnameManual'])->name('admin.stok.productStok.opname-manual');
+    Route::get('admin/stok/product-stock/opname-withcsv', [StokAdminController::class, 'productStokOpnameCSV'])->name('admin.stok.productStok.opname-withcsv');
+    Route::get('admin/stok/product-stock/opname-riwayat', [StokAdminController::class, 'productStokOpnameRiwayat'])->name('admin.stok.productStok.opname-riwayat');
+    Route::post('admin/stok/product-stock/opname', [StokAdminController::class, 'productStokOpname'])->name('admin.stok.productStok.opname');
+    Route::get('admin/stok/product-stock/opname/{token}', [StokAdminController::class, 'productStokOpnameDetail'])->name('admin.stok.productStok.Detailopname');
     Route::post('admin/stok/product-stock/update-minimum-stock', [StokAdminController::class, 'updateMinimumStock'])->name('admin.stok.productStok.update-minimum-stock');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
 

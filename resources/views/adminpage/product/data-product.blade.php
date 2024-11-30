@@ -9,7 +9,9 @@
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"
+        integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @vite(['resources/js/data-product.js'])
 @endsection
 
@@ -39,7 +41,8 @@
             <div class="relative bg-white shadow dark:bg-gray-800 sm:rounded-lg">
                 <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
 
-                    <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                    <div
+                        class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
 
                         <div class="md:flex items-center w-full md:w-auto grid gap-2 grid-cols-2">
                             <button data-button-delete-selected="selected_delete" data-tooltip-target="delete-button"
@@ -164,9 +167,9 @@
                 <x-tables.admin.product.table-product :products="$products" :categories="$categories"
                     routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
 
-                    <div class="flex">
-                        {{ $products->links() }}
-                    </div>
+                <div class="flex">
+                    {{ $products->links() }}
+                </div>
             </div>
         </div>
 
@@ -215,16 +218,19 @@
                         <div id="addFormData">
                             @if (old('atributes'))
                                 @foreach (old('atributes') as $index => $atribute)
-                                    <div data-atribute-form={{ $index }} data-atribute-index="{{$index}}" data-atribute-parent="addFormData"
+                                    <div data-atribute-form={{ $index }} data-atribute-index="{{ $index }}"
+                                        data-atribute-parent="addFormData"
                                         class="mt-2 relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         <div class="atribute">
-                                            <input type="text" data-index="{{$index}}" name="atributes[{{ $index }}][atribute]"
+                                            <input type="text" data-index="{{ $index }}"
+                                                name="atributes[{{ $index }}][atribute]"
                                                 class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                                 placeholder="Nama"
                                                 value="{{ old('atributes.' . $index . '.atribute') }}">
                                         </div>
                                         <div class="value">
-                                            <input type="text" data-index="{{$index}}" name="atributes[{{ $index }}][value]"
+                                            <input type="text" data-index="{{ $index }}"
+                                                name="atributes[{{ $index }}][value]"
                                                 class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                                 placeholder="Val (optional)"
                                                 value="{{ old('atributes.' . $index . '.value') }}">
@@ -236,8 +242,9 @@
                                         </button>
                                     </div>
                                 @endforeach
-                                @else
-                                <div data-atribute-form="0" data-atribute-index="0"  class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            @else
+                                <div data-atribute-form="0" data-atribute-index="0"
+                                    class="relative w-full flex overflow-hidden bg-white border divide-x-2 divide-solid dark:divide-gray-500 border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                     <div class="atribute">
                                         <input type="text" name="atributes[0][atribute]"
                                             class="border-none focus:ring-0 p-2 placeholder:text-sm w-28 bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
@@ -379,7 +386,7 @@
     </div>
 
     {{-- MODAL --}}
-    <div id="import-modal" tabindex="-1" 
+    <div id="import-modal" tabindex="-1"
         class="hidden transition-all duration-500 ease-in-out fixed h-screen w-full z-50 top-0 right-0 flex items-center justify-center bg-gray-800 bg-opacity-0">
 
         <div class="relative p-4 w-full max-w-2xl max-h-full">
@@ -442,9 +449,12 @@
 
                     </label>
                 </div>
+                <div id="error-import">
+                </div>
+
                 <div class="flex justify-between items-center w-full mb-4">
                     <p class="mt-2 text-gray-500 text-sm dark:text-gray-300">Supported
-                        format : .csv, .xlsx</p>
+                        format : .csv, .xlsx - <a href="{{ route('download-sample-import') }}" class="hover:text-blue-400">Download sample import</a></p>
                     <p class="mt-2 text-gray-500 text-sm dark:text-gray-300">Maximum size :
                         5 MB</p>
                 </div>

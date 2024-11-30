@@ -106,4 +106,9 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
 
         return $product->update($data);
     }
+    public function checkItem($id)
+    {
+        $item = $this->model::find($id);
+        return $item !== null;
+    }
 }

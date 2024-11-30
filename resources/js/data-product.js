@@ -174,6 +174,7 @@ $("#form-import-file").on("submit", function (event) {
 });
 
 function importData(file = null, withconfirm = false, url) {
+    $('#error-import').empty()
     let formData = new FormData();
     formData.append("_token", csrfToken);
     formData.append("file", file);
@@ -268,6 +269,10 @@ function importData(file = null, withconfirm = false, url) {
                     window.location.reload();
                 }, 3000);
             } else if (response.status == "fail") {
+                $('#error-import').append(`<div class="bg-red-100 border mt-2 rounded-md border-red-500 text-red-700 px-4 py-3" role="alert">
+                            <p class="font-bold">Error</p>
+                            <p class="text-sm">${response.message}</p>
+                            </div>`)
                 console.log(response.error);
                 errorForm();
             }

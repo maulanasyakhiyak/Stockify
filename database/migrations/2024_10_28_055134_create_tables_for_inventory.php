@@ -80,6 +80,30 @@ class CreateTablesForInventory extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
         });
+
+        // Table riwayat_opname
+        Schema::create('riwayat_opname', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('token');
+            $table->date('tanggal_opname');  // Menghapus spasi ekstra
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('notes')->nullable();
+            $table->timestamps();  // Untuk mencatat waktu pembuatan dan pembaruan
+        });
+
+        // Tabel detail_opname
+        Schema::create('detail_opname', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('riwayat_opname_id');
+            $table->foreign('riwayat_opname_id')->references('id')->on('riwayat_opname')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->integer('stok_fisik');
+            $table->integer('stok_sistem');
+            $table->integer('selisih');
+            $table->string('keterangan');
+            $table->timestamps();  // Untuk mencatat waktu pembuatan dan pembaruan
+        });
+
         DB::statement("DROP VIEW IF EXISTS product_stock_view");
         DB::statement("
         CREATE VIEW product_stock_view AS
