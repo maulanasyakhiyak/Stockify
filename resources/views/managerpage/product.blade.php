@@ -12,16 +12,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"
         integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    @vite(['resources/js/admin/data-product.js'])
+    @vite(['resources/js/manager/data-product.js'])
 @endsection
 
 @section('other_meta')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="original" content="{{ route('admin.product.data-produk') }}">
+    <meta name="original" content="{{ route('manager.product') }}">
 @endsection
 
 @section('content')
-    <div class="grid grid-cols-1 gap-4 p-4">
+    <div class="grid grid-cols-1 gap-4 p-4 min-h-96">
         <div class="flex flex-col">
             <div class="mb-4 flex justify-between">
                 <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Data products</h1>
@@ -39,9 +39,9 @@
                 </button>
             </div>
             <div class="relative bg-white shadow dark:bg-gray-800 sm:rounded-lg">
-                <div class="flex flex-col items-center  justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
-                    <div
-                        class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+
+                    <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
 
                         <div class="md:flex items-center w-full md:w-auto grid gap-2 grid-cols-2">
                             <button data-button-delete-selected="selected_delete" data-tooltip-target="delete-button"
@@ -92,7 +92,7 @@
                                 </svg>
                             </button>
                             <div id="filterDropdown"
-                                class="z-10 hidden w-48 p-3 bg-white rounded-lg border dark:border-gray-600 shadow dark:bg-gray-700">
+                                class="hidden w-48 p-3 bg-white rounded-lg border dark:border-gray-600 shadow dark:bg-gray-700">
                                 <form action="{{ route('filter-product') }}" method="POST" id="filter_product"
                                     class="text-sm text-gray-700 dark:text-gray-200"
                                     aria-labelledby="dropdownMenuIconButton">
@@ -143,7 +143,7 @@
                         </div>
                     </div>
                     <div class="w-full md:w-1/2">
-                        <form class="flex items-center" action="{{ route('admin.product.data-produk') }}"
+                        <form class="flex items-center" action="{{ route('manager.product') }}"
                             method="GET">
                             <label for="simple-search" class="sr-only">Search</label>
                             <div class="relative w-full">

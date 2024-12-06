@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 @section('subtitle', 'Detail Opname ')
 @section('content')
 <div class="p-4 bg-gray-700">
@@ -22,11 +22,11 @@
                         <th scope="col" class="p-2">
                             keterangan
                         </th>
-                        
+
                     </tr>
                 </thead>
                 <tbody id="item-search-append">
-                    @foreach ($data->detailOpnames as $item)    
+                    @foreach ($data->detailOpnames as $item)
                     <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 divide-x-2 divide-gray-200 dark:divide-gray-700">
 
                         <td class="p-2">

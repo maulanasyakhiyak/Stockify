@@ -1,24 +1,26 @@
 @extends('layouts.app')
 
-@section('subtitle', 'Stok')
-
-@section('css')
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-@endsection
+@section('subtitle', 'Suplier')
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    @vite(['resources/js/stock.js'])
-@endsection
-
-@section('other_meta')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="original" content="{{ route('admin.stok.riwayat-transaksi') }}">
+    @vite(['resources/js/admin/supplier.js'])
+    @if (session('openDrawer'))
+        {{-- <script>
+            $(document).ready(function(){
+                var id = {{ session('openDrawer') }};
+                setTimeout(function () {
+                    document.getElementById(`drawer-update-button-product-${id}`).click();
+                }, 500);
+            })
+            document.addEventListener("DOMContentLoaded", function(event) {
+            });
+        </script> --}}
+        {{-- @vite(['resources/js/admin/openDrawer.js']) --}}
+    @endif
 @endsection
 
 @section('content')
-
-
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="flex flex-col">
             <div class="mb-4 flex justify-between">
@@ -38,7 +40,7 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                                <form action="{{ route('admin.stok.productStok') }}" method="GET">
+                                <form action="{{ route('manager.supplier') }}" method="GET">
                                     <input type="text" id="simple-search"
                                         class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Search by product name" name="search"
@@ -48,20 +50,10 @@
                             </div>
                         </form>
                     </div>
-                    <div class="">
-                        <a href="{{ route('stockOpname') }}" data-target-modal="stock-opname-modal" id="stock-opname-button"
-                            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text
-                        text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm focus:outline-none
-                        focus:ring-2 focus:ring-offset-2
-                        focus:ring-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus
-                        ring-blue-600 dark:focus:ring-blue-700">Mulai
-                            stock opname</a>
-                    </div>
                 </div>
-                <x-tables.admin.product-stock.table-product-stock :productStock="$productStock" />
+                <x-tables.manager.suppliers.table-suppliers :suppliers="$suppliers" />
             </div>
         </div>
 
     </div>
-
 @endsection

@@ -76,7 +76,7 @@ $('#applyFilter').on('click', function(){
         },
         success: function (data) {
             if(data.status == 'success'){
-                window.location.replace('/admin/stok/riwayat-transaksi');
+                window.location.reload();
             }
             if(data.status == 'fail'){
                 console.log(data.message);

@@ -50,6 +50,10 @@ class AdminController extends Controller
         $this->checkboxSession = session('checkbox', []);
     }
 
+    public function index(){
+        return redirect(route('admin.dashboard'));
+    }
+
     public function simpleSearch(Request $req){
         $encryptedTable = $req->get('table');
         $term = $req->get('term');
@@ -441,7 +445,7 @@ class AdminController extends Controller
 
     // Download
     public function downloadSampleImport(){
-    
+
         $routeName = request()->route()->getName();
 
         if ($routeName === 'download-sample-import') {
@@ -454,7 +458,7 @@ class AdminController extends Controller
         if (!file_exists($filePath)) {
             abort(404, 'File not found');
         }
-    
+
         return response()->download($filePath);
     }
 }

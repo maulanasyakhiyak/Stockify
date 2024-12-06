@@ -39,7 +39,7 @@ class StokAdminController extends Controller
         $this->productRepository = $productRepository;
         $this->detailOpnameRepository = $detailOpnameRepository;
         $this->riwayatOpnameRepository = $riwayatOpnameRepository;
-        
+
     }
     public function index(){
         return redirect()->route('admin.stok.riwayat-transaksi');
@@ -66,15 +66,16 @@ class StokAdminController extends Controller
         }
 
     }
+
     public function clearAllFilter(){
         $previousUrl = strtok(url()->previous(), '?');
-        switch($previousUrl){
-            case route('admin.stok.riwayat-transaksi'):
+        // switch($previousUrl){
+        //     case route('admin.stok.riwayat-transaksi'):
                 session()->forget('filterRiwayatTransaksi');
-                break;
-            case route('admin.stok.productStok'):
-                break;
-        }
+        //         break;
+        //     case route('admin.stok.productStok'):
+        //         break;
+        // }
         return redirect()->back();
     }
 
@@ -143,6 +144,14 @@ class StokAdminController extends Controller
 
     }
 
+    public function opname(){
+        $url = url()->previous();
+        if (session('previous_url_opname') !== $url) {
+            session(['previous_url_opname' => $url]);
+        }
+        return redirect()->route('admin.stok.productStok.opname-manual');
+    }
+
     public function productStokOpname(Request $req){
         if($req->has('data') && $req->has('keterangan')){
             // return response()->json([
@@ -165,7 +174,7 @@ class StokAdminController extends Controller
             }
 
         }else{
-            
+
         }
     }
 
@@ -194,7 +203,7 @@ class StokAdminController extends Controller
                     'status' => 'error',
                     'message' => $e->getMessage(),
                 ]);
-                
+
             }
         }
         return view('adminpage.stok.stock-opname-csv');

@@ -15,10 +15,10 @@ class SupplierFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->company,          // Nama perusahaan supplier acak
-            'address' => $this->faker->address,       // Alamat acak
-            'phone' => $this->faker->phoneNumber,     // Nomor telepon acak
-            'email' => $this->faker->unique()->safeEmail, // Email acak dan unik
+            'name' => $this->faker->company,
+            'address' => $this->faker->address,
+            'phone' =>  '+62' . $this->faker->numberBetween(800000000000, 899999999999),
+            'email' => $this->faker->unique()->safeEmail,
         ];
     }
 }

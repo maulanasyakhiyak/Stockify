@@ -8,11 +8,10 @@
 
 @section('js')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    @vite(['resources/js/stock.js'])
+    {{-- @vite(['resources/js/stock.js']) --}}
 @endsection
 @section('other_meta')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="original" content="{{ route('admin.stok.riwayat-transaksi') }}">
 @endsection
 
 @section('content')
@@ -398,6 +397,10 @@
                             {{-- </div> --}}
 
                         </div>
+                        <a href="{{ route('stockOpname') }}"
+                            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                            Start Opname
+                        </a>
                     </div>
 
                 </div>

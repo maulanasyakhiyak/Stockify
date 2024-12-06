@@ -22,6 +22,8 @@ use App\Services\Product\ProductService;
 use App\Services\Product\ProductServiceImplement;
 use App\Services\StockTransaction\StockTransactionService;
 use App\Services\StockTransaction\StockTransactionServiceImplement;
+use App\Services\Supplier\SupplierService;
+use App\Services\Supplier\SupplierServiceImplement;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -47,8 +49,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(SupplierRepository::class, SupplierRepositoryImplement::class);
 
+        $this->app->bind(SupplierService::class, SupplierServiceImplement::class);
+
         $this->app->bind(RiwayatOpnameRepository::class, RiwayatOpnameRepositoryImplement::class);
-        
+
         $this->app->bind(DetailOpnameRepository::class, DetailOpnameRepositoryImplement::class);
     }
 

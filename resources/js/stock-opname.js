@@ -150,7 +150,7 @@ $(document).on(
 );
 
 $("[data-button-start-opname]").on("click", function () {
-  
+
   var dataOpname = [];
   $("input[data-input-stock-id]").each(function () {
     var inputValue = $(this).val();
@@ -160,10 +160,10 @@ $("[data-button-start-opname]").on("click", function () {
       value: inputValue,
     });
   });
-  
+
   $.ajax({
     type: "POST",
-    url: "/admin/stok/product-stock/opname",
+    url: "/stok/product-stock/opname",
     data: {
       _token: csrfToken,
       data: dataOpname,
@@ -198,7 +198,7 @@ $("#upload-opname-csv").on("change", function () {
   formData.append("_token", csrfToken);
   $.ajax({
     type: "POST",
-    url: "/admin/stok/product-stock/opname-withcsv",
+    url: "/stok/product-stock/opname-withcsv",
     data: formData,
     processData: false,
     contentType: false,
@@ -206,7 +206,7 @@ $("#upload-opname-csv").on("change", function () {
       if (response.status == "success") {
         console.log(response.message);
         $.each(response.data, function (index, dat) {
-          
+
           var row = $(
             `<tr data-row-id="${dat.id}" class="bg-white dark:bg-gray-800 dark:border-gray-700 divide-x-2 divide-gray-200 dark:divide-gray-700">`
           );
@@ -229,7 +229,7 @@ $("#upload-opname-csv").on("change", function () {
                                         <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                         ${dat.error} ( <span class="font-thin">${dat.message}</span> )
                                     </span>
-               
+
                </td>`
             );
           }
@@ -248,5 +248,5 @@ $("#upload-opname-csv").on("change", function () {
       }
     },
   });
-  setTimeout(function () {}, 3000);
+
 });

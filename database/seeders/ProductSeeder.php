@@ -70,11 +70,6 @@ class ProductSeeder extends Seeder
             ["name" => "Beauty Mirror", "category" => "Personal Care"],
         ];
 
-        User::factory()->create([
-            'role' => 'admin',
-            'email' => 'admin@example.com'
-        ]);
-
         $categories = collect($products)->pluck('category')->unique();
         $categoryMap = [];
         foreach ($categories as $categoryName) {

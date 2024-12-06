@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('subtitle', 'Stok')
 
@@ -27,7 +27,7 @@
 @section('content')
     <div class="mx-0 md:mx-32 lg:mx-40 my-10 p-4">
         <div class="flex items-center gap-2">
-            <a href="/admin/stok/product-stock"
+            <a href="{{ session('previous_url_opname', ''); }}"
                 class=" flex items-center justify-center rounded-full w-8 h-8 bg-gray-200 text-gray-500">
                 <i class="fa-solid fa-angle-left"></i>
             </a>
@@ -40,21 +40,21 @@
                 <li class="me-2">
                     <a href="{{ route('admin.stok.productStok.opname-manual') }}"
                         class="inline-block cursor-pointer p-4 border-b-2 rounded-t-lg
-                        {{request()->routeIs('admin.stok.productStok.opname-manual') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500' 
+                        {{request()->routeIs('admin.stok.productStok.opname-manual') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500'
                         : ' hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }} ">
                         Manual</a>
                 </li>
                 <li class="me-2">
                     <a href="{{ route('admin.stok.productStok.opname-withcsv') }}"
                     class="inline-block cursor-pointer p-4 border-b-2 rounded-t-lg
-                    {{request()->routeIs('admin.stok.productStok.opname-withcsv') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500' 
+                    {{request()->routeIs('admin.stok.productStok.opname-withcsv') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500'
                     : ' hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }} "
                         aria-current="page">With CSV</a>
                 </li>
                 <li class="me-2">
                     <a href="{{ route('admin.stok.productStok.opname-riwayat') }}"
                     class="inline-block cursor-pointer p-4 border-b-2 rounded-t-lg
-                    {{request()->routeIs('admin.stok.productStok.opname-riwayat') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500' 
+                    {{request()->routeIs('admin.stok.productStok.opname-riwayat') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500'
                     : ' hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }} "
                         aria-current="page">Riwayat</a>
                 </li>

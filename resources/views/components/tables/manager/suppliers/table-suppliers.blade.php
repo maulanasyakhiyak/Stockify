@@ -18,9 +18,6 @@
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             email</th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
-                            Action</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
@@ -35,9 +32,6 @@
                                 {{ $item->phone }}</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->email }}</td>
-                            <td class="p-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <x-tables.admin.suppliers.button-update routeUpdate='admin.suplier.update' :supplier="$item" />
-                            </td>
                         </tr>
                     @empty
                         <tr>

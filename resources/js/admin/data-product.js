@@ -1,9 +1,129 @@
+export async function addDataToModal(target) {
+    var $children = $(`#${target}`).find(".modal_body");
+
+    let data = await getSelectedId(true);
+
+    console.log($children);
+
+    let html = "";
+
+    $.each(data, function (index, item) {
+        html += ` ${item.id}-${item.name}, `;
+    });
+
+    // Menghapus konten lama di modal_body
+    $children.empty();
+    $children.append(html);
+}
+
+export function succesForm() {
+    $("#import_csv").val("");
+    $("#uploading-file").addClass("hidden");
+    $("#uploaded").removeClass("hidden");
+    $("#button-cancel-upload").attr("disabled", true);
+    anim.goToAndStop(0, true);
+    anim.play();
+}
+
+export function errorForm() {
+    $("label[for='import_csv']").addClass("cursor-pointer");
+    $("#uploading-file").addClass("hidden");
+    $("#no-file").addClass("hidden");
+    $("#icon-import").removeClass("hidden");
+    $("#filechange").removeClass("hidden");
+    $("#submit-import-file").attr("disabled", false);
+    $("#import_csv").attr("disabled", false);
+    $('label[for="import_csv"]').removeClass("border-sky-500");
+    $('label[for="import_csv"]').addClass("border-red-500");
+    $('label[for="import_csv"]').removeClass("bg-sky-50");
+    $('label[for="import_csv"]').addClass("bg-white");
+}
+
+export function getSelectedId(data = false) {
+    if (data === true) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "GET",
+                url: "/get-selected-id",
+                data: {
+                    _token: csrfToken,
+                    withData: true,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        resolve(response.data);
+                    } else {
+                        toastr.error("Error processing unchecked items");
+                        reject("Error processing unchecked items");
+                    }
+                },
+                error: function () {
+                    toastr.error("Error sending data");
+                    reject("Error sending data");
+                },
+            });
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "GET",
+                url: "/get-selected-id",
+                success: function (response) {
+                    if (response.success) {
+                        resolve(response.data); // Jika berhasil, resolve dengan data
+                    } else {
+                        toastr.error("Error processing unchecked items");
+                        reject("Error processing unchecked items");
+                    }
+                },
+                error: function () {
+                    toastr.error("Error sending data");
+                    reject("Error sending data");
+                },
+            });
+        });
+    }
+}
+
+export function checkallselected() {
+    var allChecked = true;
+
+    $("[data-checkbox_item]").each(function () {
+        if (!$(this).prop("checked")) {
+            allChecked = false;
+        }
+    });
+
+    $("#checkbox-all-product").prop("checked", allChecked);
+}
+
+export async function ifHereSelected() {
+    var hidden = true;
+    const data = await getSelectedId();
+    $("[data-attr='selected-data']").text(data);
+    if (data > 0) {
+        hidden = false;
+        $("#export_selected").removeClass(
+            "pointer-events-none text-gray-300 dark:text-gray-500"
+        );
+        $("#export_selected").addClass("text-gray-700 dark:text-gray-300");
+    } else {
+        $("#export_selected").removeClass("text-gray-700 dark:text-gray-300");
+        $("#export_selected").addClass(
+            "pointer-events-none text-gray-300 dark:text-gray-500"
+        );
+    }
+    $("#delete_selected").prop("disabled", hidden);
+}
+
+
+
 
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
 var originalUrl = $('meta[name="original"]').attr("content");
 
 var animation = $("#animation-uploaded");
-const anim = lottie.loadAnimation({
+export const anim = lottie.loadAnimation({
     container: animation.get(0), // Elemen target
     renderer: "svg", // Tipe render: 'svg', 'canvas', atau 'html'
     loop: false, // Apakah animasi akan berulang
@@ -60,24 +180,6 @@ $(document).on('click', 'button[data-remove-atribute-form]', function () {
     })
 });
 
-async function addDataToModal(target) {
-    var $children = $(`#${target}`).find(".modal_body");
-
-    let data = await getSelectedId(true);
-
-    console.log($children);
-
-    let html = "";
-
-    $.each(data, function (index, item) {
-        html += ` ${item.id}-${item.name}, `;
-    });
-
-    // Menghapus konten lama di modal_body
-    $children.empty();
-    $children.append(html);
-}
-
 // FILTER PAGE FUNCTION =========================================================================
 $("#items_per_page").on("change", function () {
     $.ajax({
@@ -105,7 +207,7 @@ $("#filter_product").on("submit", function (event) {
         data: formData,
         success: function (response) {
             if (response.success) {
-                location.replace(originalUrl);
+                window.location.reload();
             } else {
                 toastr.error("error");
             }
@@ -134,29 +236,6 @@ $("#import_csv").on("change", function () {
         $("#submit-import-file").attr("disabled", true);
     }
 });
-
-function succesForm() {
-    $("#import_csv").val("");
-    $("#uploading-file").addClass("hidden");
-    $("#uploaded").removeClass("hidden");
-    $("#button-cancel-upload").attr("disabled", true);
-    anim.goToAndStop(0, true);
-    anim.play();
-}
-
-function errorForm() {
-    $("label[for='import_csv']").addClass("cursor-pointer");
-    $("#uploading-file").addClass("hidden");
-    $("#no-file").addClass("hidden");
-    $("#icon-import").removeClass("hidden");
-    $("#filechange").removeClass("hidden");
-    $("#submit-import-file").attr("disabled", false);
-    $("#import_csv").attr("disabled", false);
-    $('label[for="import_csv"]').removeClass("border-sky-500");
-    $('label[for="import_csv"]').addClass("border-red-500");
-    $('label[for="import_csv"]').removeClass("bg-sky-50");
-    $('label[for="import_csv"]').addClass("bg-white");
-}
 
 let xhr;
 $("#form-import-file").on("submit", function (event) {
@@ -319,8 +398,50 @@ $("input[data-file]").on("change", function () {
     }
 });
 
-// CHECKALL FUNCTION=============================================================================
+// CHECK FUNCTION
+$("[data-checkbox_item]").on("change", function () {
+    if ($(this).prop("checked")) {
+        $.ajax({
+            type: "POST",
+            url: "/record-checkbox",
+            data: {
+                _token: csrfToken,
+                checkedItems: [$(this).data("checkbox_item")],
+            },
+            success: function (response) {
+                if (response.success) {
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function () {
+                toastr.error("Error sending data");
+            },
+        });
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/record-checkbox",
+            data: {
+                _token: csrfToken,
+                uncheckedItems: [$(this).data("checkbox_item")],
+            },
+            success: function (response) {
+                if (response.success) {
+                } else {
+                    toastr.error("Error processing unchecked items");
+                }
+            },
+            error: function () {
+                toastr.error("Error sending data");
+            },
+        });
+    }
+    ifHereSelected();
+    checkallselected();
+});
 
+// CHECKALL FUNCTION=============================================================================
 $('[data-checkbox_all="true"]').on("change", function () {
     var checkedItems = [];
     var uncheckedItems = [];
@@ -385,129 +506,6 @@ $('[data-checkbox_all="true"]').on("change", function () {
     }
     // checkallselected()
 });
-
-function getSelectedId(data = false) {
-    if (data === true) {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "GET",
-                url: "/get-selected-id",
-                data: {
-                    _token: csrfToken,
-                    withData: true,
-                },
-                success: function (response) {
-                    if (response.success) {
-                        resolve(response.data);
-                    } else {
-                        toastr.error("Error processing unchecked items");
-                        reject("Error processing unchecked items");
-                    }
-                },
-                error: function () {
-                    toastr.error("Error sending data");
-                    reject("Error sending data");
-                },
-            });
-        });
-    } else {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "GET",
-                url: "/get-selected-id",
-                success: function (response) {
-                    if (response.success) {
-                        resolve(response.data); // Jika berhasil, resolve dengan data
-                    } else {
-                        toastr.error("Error processing unchecked items");
-                        reject("Error processing unchecked items");
-                    }
-                },
-                error: function () {
-                    toastr.error("Error sending data");
-                    reject("Error sending data");
-                },
-            });
-        });
-    }
-}
-
-function checkallselected() {
-    var allChecked = true;
-
-    $("[data-checkbox_item]").each(function () {
-        if (!$(this).prop("checked")) {
-            allChecked = false;
-        }
-    });
-
-    $("#checkbox-all-product").prop("checked", allChecked);
-}
-
-async function ifHereSelected() {
-    var hidden = true;
-    const data = await getSelectedId();
-    $("[data-attr='selected-data']").text(data);
-    if (data > 0) {
-        hidden = false;
-        $("#export_selected").removeClass(
-            "pointer-events-none text-gray-300 dark:text-gray-500"
-        );
-        $("#export_selected").addClass("text-gray-700 dark:text-gray-300");
-    } else {
-        $("#export_selected").removeClass("text-gray-700 dark:text-gray-300");
-        $("#export_selected").addClass(
-            "pointer-events-none text-gray-300 dark:text-gray-500"
-        );
-    }
-    $("#delete_selected").prop("disabled", hidden);
-}
-
-// CHECK FUNCTION
-$("[data-checkbox_item]").on("change", function () {
-    if ($(this).prop("checked")) {
-        $.ajax({
-            type: "POST",
-            url: "/record-checkbox",
-            data: {
-                _token: csrfToken,
-                checkedItems: [$(this).data("checkbox_item")],
-            },
-            success: function (response) {
-                if (response.success) {
-                } else {
-                    toastr.error(response.message);
-                }
-            },
-            error: function () {
-                toastr.error("Error sending data");
-            },
-        });
-    } else {
-        $.ajax({
-            type: "POST",
-            url: "/record-checkbox",
-            data: {
-                _token: csrfToken,
-                uncheckedItems: [$(this).data("checkbox_item")],
-            },
-            success: function (response) {
-                if (response.success) {
-                } else {
-                    toastr.error("Error processing unchecked items");
-                }
-            },
-            error: function () {
-                toastr.error("Error sending data");
-            },
-        });
-    }
-    ifHereSelected();
-    checkallselected();
-});
-
-// FITUR SEARCH ---------------------------------------------------------------------------------------------------------
-$("#products-search").on("enter", function () { });
 
 $(function () {
     checkallselected();

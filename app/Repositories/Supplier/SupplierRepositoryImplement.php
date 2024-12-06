@@ -2,8 +2,9 @@
 
 namespace App\Repositories\Supplier;
 
-use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Supplier;
+use LaravelEasyRepository\Implementations\Eloquent;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SupplierRepositoryImplement extends Eloquent implements SupplierRepository{
 
@@ -31,5 +32,12 @@ class SupplierRepositoryImplement extends Eloquent implements SupplierRepository
         }
 
         return $query->get();
+    }
+    public function updateSupplier($data, $id){
+        $product = $this->model->find($id);
+        if (! $product) {
+            throw new ModelNotFoundException("Produk dengan ID {$id} tidak ditemukan.");
+        }
+        return $product->update($data);
     }
 }
