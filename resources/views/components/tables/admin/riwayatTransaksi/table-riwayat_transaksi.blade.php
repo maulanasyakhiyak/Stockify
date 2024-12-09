@@ -1,7 +1,5 @@
 @props(['stockTransaction'])
 
-@vite(['resources/js/data-product.js'])
-
 <div class="overflow-x-auto">
     <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow">
@@ -45,7 +43,7 @@
                                         <i class="fa-solid fa-arrow-down"></i>
                                         {{$item->type}}
                                     </span>
-                                        
+
                                     @break
                                     @case('out')
                                     <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500">
@@ -54,7 +52,7 @@
                                     </span>
                                         @break
                                     @default
-                                        
+
                                 @endswitch
                             </td>
                             <td
@@ -83,7 +81,7 @@
                                     </span>
                                         @break
                                     @default
-                                        
+
                                 @endswitch
                             </td>
                             <td

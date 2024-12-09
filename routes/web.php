@@ -25,6 +25,9 @@ use App\Http\Controllers\StockManager;
 Route::get('/', function () {
     return redirect(route('login'));
 });
+Route::get('/test', function () {
+    return view('tetst');
+});
 
 Route::middleware('auth.token')->group(function () {
     Route::apiResource('stock-transaction', ApiTransactionController::class);
