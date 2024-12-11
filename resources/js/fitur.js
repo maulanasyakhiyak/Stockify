@@ -9,7 +9,7 @@ class searchAutocomplete {
     }
     init() {
         this.inputEle.on('input', () => {
-            console.log(this.inputEle.val());
+            // console.log(this.inputEle.val());
             var term = this.inputEle.val()
             if (term.length < 2) {
                 $(this.resultTarget).empty(); // Mengosongkan hasil jika input kurang dari 2 karakter

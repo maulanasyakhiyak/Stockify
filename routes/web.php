@@ -37,7 +37,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middl
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::group(['middleware' => ['auth', 'role:admin,manager']], function () {
+Route::group(['middleware' => ['auth', 'role:admin,manager,staff']], function () {
     Route::get('/download/sample-import', [AdminController::class,'downloadSampleImport'])->name('download-sample-import');
     Route::get('/download/sample-opname', [AdminController::class,'downloadSampleImport'])->name('download-sample-opname');
     Route::get('/get-selected-id', [AdminController::class, 'getSelectedId']);

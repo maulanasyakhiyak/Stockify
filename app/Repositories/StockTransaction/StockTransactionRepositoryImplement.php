@@ -35,44 +35,16 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
 
     }
 
-    public function getStockTransaction($searchFilter = null, $status = null, $type = null ,$start = null,$end = null, $search = null){
+    public function getStockTransaction($searchFilter = null, $status = null, $type = null ,$start = null,$end = null){
     //    dd($search);
         $query = $this->model->with('product','user');
         $product_query = Product::query();
         $user_query = User::query();
 
-        if ($searchFilter) {
-            $product_id = $product_query->where('name', 'like', '%' . $search . '%')->first()->id ?? null;
-            $user_id = $user_query->where('name', 'like', '%' . $search . '%')->first()->id ?? null;
-            if($product_id){
-                $query->where('product_id', $product_id);
-            }
-            if($user_id){
-                $query->where('user_id', $user_id);
-            }
+        if($searchFilter){
+            $product_id = $product_query->where('name', 'like', '%' . $searchFilter . '%')->first()->id ?? null;
+            $query->where('product_id', $product_id);
         }
-
-        // Pakai SEARCH
-
-        // $product_id = null;
-        // $user_id = null;
-
-        // if ($searchFilter && $search) {
-        //     $product_id = $product_query->where('name', 'like', '%' . $searchFilter . '%')->first()->id ?? null;
-        //     $user_id = $user_query->where('name', 'like', '%' . $search . '%')->first()->id ?? null;
-        // } elseif ($searchFilter) {
-        //     $product_id = $product_query->where('name', 'like', '%' . $searchFilter . '%')->first()->id ?? null;
-        // } elseif ($search) {
-        //     $product_id = $product_query->where('name', 'like', '%' . $search . '%')->first()->id ?? null;
-        //     $user_id = $user_query->where('name', 'like', '%' . $search . '%')->first()->id ?? null;
-        // }
-
-        // if($product_id){
-        //     $query->where('product_id', $product_id);
-        // }
-        // if($user_id){
-        //     $query->where('user_id', $user_id);
-        // }
 
         // Filter berdasarkan status
         if ($status) {
