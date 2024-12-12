@@ -6,28 +6,22 @@
             <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Product name
                         </th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             SKU
                         </th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Stok
                         </th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Minimal stok
                         </th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Stock updated
                         </th>
-                        <th scope="col"
-                            class="w-20 text-center p-4 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+                        <th scope="col" class="w-20 text-center p-4 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
                             Actions
                         </th>
                     </tr>
@@ -57,6 +51,6 @@
     </div>
 </div>
 
-<div class="flex">
+<div class="p-4 border-t dark:border-gray-500">
     {{ $productStock->links() }}
 </div>

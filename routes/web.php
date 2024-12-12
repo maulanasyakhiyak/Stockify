@@ -123,4 +123,8 @@ Route::group(['middleware' => ['auth', 'role:staff']], function () {
 
     Route::get('staff/stock', [staffController::class, 'stock'])->name('staff.stock');
 
+    Route::post('staff/stock/confirm/{id}', [staffController::class, 'confirm_transation'])->name('confirm_transation');
+    
+    Route::post('staff/stock/reject/{id}', [staffController::class, 'reject_transaction'])->name('reject_transaction');
+
 });

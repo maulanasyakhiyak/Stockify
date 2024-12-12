@@ -35,14 +35,16 @@ class staffController extends Controller
         $this->riwayatOpnameRepository = $riwayatOpnameRepository;
 
     }
-   public function index(){
-    return redirect()->route('staff.dashboard');
-   }
 
-   public function dashboard(){
+    public function index(){
+        return redirect()->route('staff.dashboard');
+    }
+
+    public function dashboard(){
     return view('staffpage.dashboard');
-   }
-   public function stock(Request $req){
+    }
+
+    public function stock(Request $req){
 
     $stockTransaction = $this->stokTransRepo->getStockTransaction();
     $filter = session('filterRiwayatTransaksi');
@@ -69,6 +71,20 @@ class staffController extends Controller
 
     $earliestDate =  $this->stokTransRepo->getFirstDate();
     return view('staffpage.stock', compact('stockTransaction','earliestDate','filter'));
-}
+    }
+
+    public function confirm_transation(Request $request, $id){
+        $this->stokTransRepo->update($id,[
+            'status' => 'completed'
+        ]);
+        return redirect()->back()->with('success', 'Berhasil konfirmasi transaksi');
+    }
+    
+    public function reject_transaction(Request $request, $id){
+        $this->stokTransRepo->update($id,[
+            'status' => 'cancelled'
+        ]);
+        return redirect()->back()->with('success', 'Berhasil menolak transaksi');
+    }
 
 }

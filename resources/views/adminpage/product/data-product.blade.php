@@ -165,8 +165,7 @@
                 </div>
                 <x-tables.admin.product.table-product :products="$products" :categories="$categories"
                     routeUpdate="admin.product.data-produk.update" routeDelete="admin.product.data-produk.delete" />
-
-                <div class="flex">
+                <div class="p-4">
                     {{ $products->links() }}
                 </div>
             </div>
