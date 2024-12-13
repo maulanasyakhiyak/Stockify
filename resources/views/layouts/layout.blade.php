@@ -11,6 +11,7 @@
 
     <title>Stockify - @yield('subtitle')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @yield('jsc')
     <link rel="canonical" href="{{ request()->fullUrl() }}">
 
 

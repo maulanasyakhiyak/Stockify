@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Exports\ProductExport;
 use App\Imports\ProductImport;
+use App\Models\StockTransaction;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Product\ProductService;
 use App\Services\Categories\CategoriesService;
 use App\Repositories\Product\ProductRepository;
-use App\Repositories\Categories\CategoriesRepository;
 use App\Repositories\Supplier\SupplierRepository;
+use App\Repositories\Categories\CategoriesRepository;
+use App\Repositories\StockTransaction\StockTransactionRepository;
 
 class AdminController extends Controller
 {
@@ -35,13 +39,17 @@ class AdminController extends Controller
 
     protected $supplierRepository;
 
+    protected $stockTransactionRepository;
+
     public function __construct(
+        StockTransactionRepository $stockTransactionRepository,
         ProductRepository $productRepository,
         ProductService $productService,
         CategoriesService $categoriesService,
         CategoriesRepository $categoriesRepository,
         SupplierRepository $supplierRepository
     ) {
+        $this->stockTransactionRepository = $stockTransactionRepository;
         $this->productService = $productService;
         $this->productRepository = $productRepository;
         $this->categoriesService = $categoriesService;
@@ -50,11 +58,13 @@ class AdminController extends Controller
         $this->checkboxSession = session('checkbox', []);
     }
 
-    public function index(){
+    public function index()
+    {
         return redirect(route('admin.dashboard'));
     }
 
-    public function simpleSearch(Request $req){
+    public function simpleSearch(Request $req)
+    {
         $encryptedTable = $req->get('table');
         $term = $req->get('term');
         $tables = [
@@ -67,12 +77,12 @@ class AdminController extends Controller
             foreach ($encryptedTable as $item) {
                 if (isset($tables[$item])) {
 
-                    switch($tables[$item]){
+                    switch ($tables[$item]) {
                         case 'users':
-                            $user = User::where('name' , 'like' ,"%{$term}%")->get();
+                            $user = User::where('name', 'like', "%{$term}%")->get();
                             break;
                         case 'product':
-                            $product = Product::where('name' , 'like' ,"%{$term}%")->get();
+                            $product = Product::where('name', 'like', "%{$term}%")->get();
                             break;
                     }
                 }
@@ -81,15 +91,14 @@ class AdminController extends Controller
                 'user' => $user,
                 'product' => $product,
             ]);
-
         } else {
-            if(array_key_exists($encryptedTable, $tables)){
-                switch($encryptedTable){
+            if (array_key_exists($encryptedTable, $tables)) {
+                switch ($encryptedTable) {
                     case '2c6ee24b09816a6f14f95d1698b24ead':
-                        $data = User::where('name' , 'like' ,"%{$term}%")->get();
+                        $data = User::where('name', 'like', "%{$term}%")->get();
                         break;
                     case '2d2d2c4b9e1d2f6f2bcd345b223ee6d4':
-                        $data = Product::where('name' , 'like' ,"%{$term}%")->get();
+                        $data = Product::where('name', 'like', "%{$term}%")->get();
                         break;
                 }
                 return response()->json([
@@ -103,10 +112,34 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+
+
+        // dd($data->toJson(JSON_PRETTY_PRINT));
+
         return view('adminpage.dashboard');
     }
 
-    public function product(){
+    public function get_stock_for_chart(Request $req)
+    {
+        $range = $req->get('params');
+        try{
+            $data = $this->stockTransactionRepository->get_stock_for_chart($range);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
+            ]);
+        }catch (Exception $e){
+            return response()->json([
+                'status' => 'fail',
+                'message' => $e->getMessage() . $e->getLine()
+            ]);
+        }
+
+    }
+
+    public function product()
+    {
         return redirect()->route('admin.product.data-produk');
     }
 
@@ -184,7 +217,7 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'fail',
-                'error' => $e->getMessage() .',on ' . $e->getFile() . ', at ' . $e->getLine(),
+                'error' => $e->getMessage() . ',on ' . $e->getFile() . ', at ' . $e->getLine(),
                 'message' => $e->getMessage()
             ]);
         }
@@ -444,7 +477,8 @@ class AdminController extends Controller
     }
 
     // Download
-    public function downloadSampleImport(){
+    public function downloadSampleImport()
+    {
 
         $routeName = request()->route()->getName();
 

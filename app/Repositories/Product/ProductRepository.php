@@ -25,4 +25,6 @@ interface ProductRepository extends Repository
     public function createProduct($data);
 
     public function checkItem($id);
+
+    public function sumProduct();
 }

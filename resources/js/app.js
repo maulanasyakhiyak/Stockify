@@ -3,10 +3,9 @@ import 'flowbite';
 import './toastr';
 import './bootstrap';
 import './sidebar';
-import './charts';
 import './dark-mode';
 import './modal.js';
-import './filterStock.js'
+// import './filterStock.js'
 
 
 // import './stock-opname.js'

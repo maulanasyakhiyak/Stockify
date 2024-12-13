@@ -11,4 +11,6 @@ interface StockTransactionRepository extends Repository{
     public function getStockTransaction($searchFilter = null, $status = null, $type = null ,$start = null,$end = null);
 
     public function getFirstDate();
+
+    public function get_stock_for_chart($range);
 }

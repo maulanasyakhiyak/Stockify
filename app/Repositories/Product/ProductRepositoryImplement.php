@@ -111,4 +111,9 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
         $item = $this->model::find($id);
         return $item !== null;
     }
+
+    public function sumProduct()
+    {
+        return $this->model::count();
+    }
 }

@@ -32,14 +32,14 @@ class ProductStockRepositoryImplement extends Eloquent implements ProductStockRe
     }
 
     public function getOne($id ,$val = null)
-    {   
+    {
         $query = $this->model->query();
-        
+
         if($val){
             return $query->where('id', $id)->pluck($val)->first();
         }else{
             $query->find($id);
         }
-        
+
     }
 }
