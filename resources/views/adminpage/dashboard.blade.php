@@ -89,11 +89,6 @@
                                         role="menuitem">All time</div>
                                 </li>
                                 <li>
-                                    <div data-item-value="1-day"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Today</div>
-                                </li>
-                                <li>
                                     <div data-item-value="7-days"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                                         role="menuitem">1 week</div>

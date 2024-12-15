@@ -1,84 +1,80 @@
-import ApexCharts from 'apexcharts';
-import { Dropdown } from 'flowbite';
+import ApexCharts from "apexcharts";
+import { Dropdown } from "flowbite";
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
-
 
 // Menggunakan AJAX untuk mengambil data
 async function getdata(params) {
     try {
         const response = await $.ajax({
-            url: '/get_stock_for_chart',
-            method: 'GET',
+            url: "/get_stock_for_chart",
+            method: "GET",
             data: {
                 _token: csrfToken,
-                params: params
+                params: params,
             },
         });
-        if (response.status == 'fail') {
+        if (response.status == "fail") {
             console.log(response.message);
-
         }
         const chartData = response.data;
         console.log(response.data);
 
         return chartData;
     } catch (error) {
-        console.error('Terjadi kesalahan dalam mengambil data:', error.message);
+        console.error("Terjadi kesalahan dalam mengambil data:", error.message);
         return null;
     }
 }
 
 const getMainChartOptions = (data) => {
-    let mainChartColors = {}
+    let mainChartColors = {};
 
-    if (document.documentElement.classList.contains('dark')) {
+    if (document.documentElement.classList.contains("dark")) {
         mainChartColors = {
-            borderColor: '#374151',
-            labelColor: '#9CA3AF',
+            borderColor: "#374151",
+            labelColor: "#9CA3AF",
             opacityFrom: 0,
             opacityTo: 0.15,
         };
     } else {
         mainChartColors = {
-            borderColor: '#F3F4F6',
-            labelColor: '#6B7280',
+            borderColor: "#F3F4F6",
+            labelColor: "#6B7280",
             opacityFrom: 0.45,
             opacityTo: 0,
-        }
+        };
     }
 
-    const dates = data.map(item => item.date);
+    const dates = data.map((item) => item.date);
     const totals = data
-    .map(item => parseFloat(item.total_quantity))  // Mengambil total_quantity dan mengonversi ke angka
-    .filter(total => !isNaN(total));  // Menyaring nilai yang valid (bukan NaN)
-
-
+        .map((item) => parseFloat(item.total_quantity)) // Mengambil total_quantity dan mengonversi ke angka
+        .filter((total) => !isNaN(total)); // Menyaring nilai yang valid (bukan NaN)
 
     return {
         chart: {
             height: 420,
-            type: 'area',
-            fontFamily: 'Inter, sans-serif',
+            type: "area",
+            fontFamily: "Inter, sans-serif",
             foreColor: mainChartColors.labelColor,
             toolbar: {
-                show: false
-            }
+                show: false,
+            },
         },
         fill: {
-            type: 'gradient',
+            type: "gradient",
             gradient: {
                 enabled: true,
                 opacityFrom: mainChartColors.opacityFrom,
-                opacityTo: mainChartColors.opacityTo
-            }
+                opacityTo: mainChartColors.opacityTo,
+            },
         },
         dataLabels: {
-            enabled: false
+            enabled: false,
         },
         tooltip: {
             style: {
-                fontSize: '14px',
-                fontFamily: 'Inter, sans-serif',
+                fontSize: "14px",
+                fontFamily: "Inter, sans-serif",
             },
         },
         grid: {
@@ -87,32 +83,32 @@ const getMainChartOptions = (data) => {
             strokeDashArray: 1,
             padding: {
                 left: 35,
-                bottom: 15
-            }
+                bottom: 15,
+            },
         },
         series: [
             {
-                name: 'Stocks',
+                name: "Stocks",
                 data: totals,
-                color: '#1A56DB'
+                color: "#1A56DB",
             },
         ],
         markers: {
             size: 5,
-            strokeColors: '#ffffff',
+            strokeColors: "#ffffff",
             hover: {
                 size: undefined,
-                sizeOffset: 3
-            }
+                sizeOffset: 3,
+            },
         },
         xaxis: {
             categories: dates,
-            min:1,
-            max:dates.length,
+            min: 1,
+            max: dates.length,
             labels: {
                 style: {
                     colors: [mainChartColors.labelColor],
-                    fontSize: '14px',
+                    fontSize: "14px",
                     fontWeight: 500,
                 },
             },
@@ -124,7 +120,7 @@ const getMainChartOptions = (data) => {
             },
             crosshairs: {
                 show: true,
-                position: 'back',
+                position: "back",
                 stroke: {
                     color: mainChartColors.borderColor,
                     width: 1,
@@ -136,24 +132,24 @@ const getMainChartOptions = (data) => {
             labels: {
                 style: {
                     colors: [mainChartColors.labelColor],
-                    fontSize: '14px',
+                    fontSize: "14px",
                     fontWeight: 500,
                 },
                 formatter: function (value) {
                     return value;
-                }
+                },
             },
         },
         legend: {
-            fontSize: '14px',
+            fontSize: "14px",
             fontWeight: 500,
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: "Inter, sans-serif",
             labels: {
-                colors: [mainChartColors.labelColor]
+                colors: [mainChartColors.labelColor],
             },
             itemMargin: {
-                horizontal: 10
-            }
+                horizontal: 10,
+            },
         },
         responsive: [
             {
@@ -161,91 +157,83 @@ const getMainChartOptions = (data) => {
                 options: {
                     xaxis: {
                         labels: {
-                            show: false
-                        }
-                    }
-                }
-            }
-        ]
+                            show: false,
+                        },
+                    },
+                },
+            },
+        ],
     };
-}
+};
 
 let chart;
 
 async function fetchAndRender(range) {
-
     if (chart) {
         chart.destroy();
     }
     const data = await getdata(range);
 
-    chart = new ApexCharts(document.getElementById('stock-charts'), getMainChartOptions(data.data));
+    chart = new ApexCharts(
+        document.getElementById("stock-charts"),
+        getMainChartOptions(data.data)
+    );
 
-    $('[data-chart="total"]').text(data.total)
-    $('[data-chart="time"]').text(data.message)
+    $('[data-chart="total"]').text(data.total);
+    $('[data-chart="time"]').text(data.message);
     chart.render();
 }
 
+if (document.getElementById("stock-charts")) {
+    const selectedRange = $('[data-selected="true"]').data("item-value");
 
-if (document.getElementById('stock-charts')) {
-;
-    const selectedRange = 'all-time';  // Ambil nilai dari select dropdown
-    fetchAndRender(selectedRange)
-
-    // init again when toggling dark mode
-    document.addEventListener('dark-mode', function () {
-        fetchAndRender(selectedRange)
-    });
+    fetchAndRender(selectedRange);
 }
 
-$('#range-select').on('change', async function () {
+$("#range-select").on("change", async function () {
     const selectedRange = $(this).val();
-    fetchAndRender(selectedRange)
+    fetchAndRender(selectedRange);
 });
 
 // SELECT RANGE CHART ==================================================================================================================================================================
 
 const options = {
-    placement: 'bottom',
-    triggerType: 'click',
+    placement: "bottom",
+    triggerType: "click",
     offsetSkidding: 0,
     offsetDistance: 10,
     delay: 300,
     ignoreClickOutsideClass: false,
-    onHide: () => {
-    },
-    onShow: () => {
-    },
-    onToggle: () => {
-    },
+    onHide: () => {},
+    onShow: () => {},
+    onToggle: () => {},
 };
 
-const $triggerEl = $('#range-button').get(0)
-const $targetEl = $(`#${$('#range-button').data('dropdown-select-target')}`).get(0)
+const $triggerEl = $("#range-button").get(0);
+const $targetEl = $(
+    `#${$("#range-button").data("dropdown-select-target")}`
+).get(0);
 const dropdown = new Dropdown($targetEl, $triggerEl, options);
 
-function changeSelectedItem(){
-    var itemSelected = $('[data-selected="true"]').text()
-    $('#range-button span').text(itemSelected)
+function changeSelectedItem() {
+    var itemSelected = $('[data-selected="true"]').text();
+    $("#range-button span").text(itemSelected);
 }
 
-changeSelectedItem()
+changeSelectedItem();
 
-$("[data-item-value]").on('click', function () {
-;
-    var value = $(this).data('item-value')
+$("[data-item-value]").on("click", function () {
+    var value = $(this).data("item-value");
 
     $("[data-item-value]").each(function () {
-        $(this).attr('data-selected', false)
-    })
+        $(this).removeAttr("data-selected");
+    });
 
-    $(this).attr('data-selected', true)
+    $(this).attr("data-selected", true);
 
-    changeSelectedItem()
+    changeSelectedItem();
 
-    fetchAndRender(value)
+    fetchAndRender(value);
 
     dropdown.hide();
 });
-
-

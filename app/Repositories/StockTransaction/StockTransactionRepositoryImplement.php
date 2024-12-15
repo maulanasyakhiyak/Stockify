@@ -80,11 +80,34 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             $now = Carbon::now();
             switch ($range) {
                 case '7-days':
-                    $data = $this->model->select(DB::raw('DATE(date) as tanggal, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total_quantity'))
+                    $data = $this->model
                         ->where('status', 'completed')
-                        ->where('date', '>=', $now->subWeek())
-                        ->groupBy(DB::raw('DATE(date)'))
+                        ->select(DB::raw(' DAYOFWEEK(date) AS hari, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
+                        ->where('date', '>=', Carbon::now()->subWeek())
+                        ->groupBy(DB::raw(' DAYOFWEEK(date) '))
                         ->get();
+
+                        $days = collect(range(1,7));
+                        $lastDay = $data->sortByDesc('hari')->first();
+
+                        $sumTotal = 0;
+                        $data = $days->map(function ($day) use ($data, &$sumTotal, $lastDay) {
+                            // // Mencari data untuk minggu tertentu
+                            $dataItem = $data->firstWhere('hari', $day);
+                            $sumTotal += $dataItem ? $dataItem->total : 0;
+                            $total = $dataItem ? $dataItem->total : 0;
+                            if($lastDay){
+                                if ( $lastDay->hari < $day) {
+                                    $sumTotal = null;
+                                    $total = null;
+                                }
+                            }
+                            return [
+                                'date' => Carbon::create()->startOfWeek()->addDays($day - 1)->locale('id')->dayName ,
+                                'total' => $total,
+                                'total_quantity' => $sumTotal,
+                            ];
+                        });
                     break;
 
                 case '1-month':
@@ -94,6 +117,10 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                         ->where('date', '>=', Carbon::now()->subMonth())
                         ->groupBy(DB::raw('FLOOR((DAY(date) - 1) / 7) + 1'))
                         ->get();
+                    $totalBefore = $this->model
+                        ->where('status', 'completed')
+                        ->where('date', '<', Carbon::now()->startOfMonth()) // Ambil data sebelum bulan ini
+                        ->sum(DB::raw('CASE WHEN type = "in" THEN quantity ELSE -quantity END'));
 
                     $weeks = collect(range(1, 5));
 
@@ -102,13 +129,19 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                     // Mendeklarasikan $sumTotal untuk menyimpan total keseluruhan
                     $sumTotal = 0;
 
-                    $data = $weeks->map(function ($week) use ($data, &$sumTotal, $lastWeek) {
-                        // // Mencari data untuk minggu tertentu
-                        $dataItem = $data->firstWhere('minggu', $week);
+                    $data = $weeks->map(function ($week) use ($data, &$sumTotal, $lastWeek,$totalBefore) {
+                        $item = $data->firstWhere('minggu',$week);
 
-                        $sumTotal += $dataItem ? $dataItem->total : 0;
-                        $total = $dataItem ? $dataItem->total : 0;
-                        if ($lastWeek->minggu < $week) {
+
+
+                        $sumTotal += $item ? $item->total : 0;
+                        $total = $item ? $item->total : 0;
+
+                        if($week == 1){
+                            $sumTotal += $totalBefore;
+                        }
+
+                        if ( $lastWeek->minggu < $week) {
                             $sumTotal = null;
                             $total = null;
                         }
@@ -129,13 +162,20 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                         ->where('date', '>=', Carbon::now()->subYear())
                         ->groupBy(DB::raw('YEAR(date), MONTH(date)'))
                         ->get();
+                    $totalBefore = $this->model
+                        ->where('status', 'completed')
+                        ->where('date', '<', Carbon::now()->startOfYear()) // Ambil data sebelum bulan ini
+                        ->sum(DB::raw('CASE WHEN type = "in" THEN quantity ELSE -quantity END'));
                     $months = collect(range(1, 12));
                     $sumTotal = 0;
                     $lastMonth = $data->sortByDesc('bulan')->first();
-                    $data = $months->map(function ($month) use ($data, &$sumTotal, $lastMonth) {
+                    $data = $months->map(function ($month) use ($data, &$sumTotal, $lastMonth,$totalBefore) {
                         $dataItem = $data->firstWhere('bulan', $month);
                         $sumTotal += $dataItem ? $dataItem->total : 0;
                         $total = $dataItem ? $dataItem->total : 0;
+                        if($month == 1){
+                            $sumTotal += $totalBefore;
+                        }
                         if ($lastMonth->bulan < $month) {
                             $sumTotal = null;
                             $total = null;
@@ -155,21 +195,37 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                         ];
                     });
 
+                break;
 
-                default:
-                    $dat = $this->model->select(DB::raw('DATE(date) as tanggal, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total_quantity'))
+
+                case 'all-time':
+                    $data = $this->model->select(DB::raw('DATE(date) as tanggal, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
                         ->where('status', 'completed')
                         ->groupBy('date')
                         ->get();
+
+                    $sumTotal = 0 ;
+                    $data = $data->map(function ($item) use(&$sumTotal) {
+                        $sumTotal += $item ? $item->total : 0;
+                        $total = $item ? $item->total : 0;
+                        return [
+                            'date' => $item->tanggal,
+                            'total' => $total,
+                            'total_quantity' => $sumTotal,
+                        ];
+                    });
                     break;
             }
         }
 
-
+        $totalAccumulated = 0;
+        foreach($data as $item){
+            $totalAccumulated += $item->total;
+        }
 
 
         return [
-            // 'total' => $totalAccumulated,
+            'total' => $totalAccumulated,
             // 'message' => $message,
             'data' => $data
         ];
