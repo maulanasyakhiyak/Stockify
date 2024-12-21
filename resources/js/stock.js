@@ -1,5 +1,4 @@
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
-var originalUrl = $('meta[name="original"]').attr("content");
 import Inputmask from "inputmask";
 
 

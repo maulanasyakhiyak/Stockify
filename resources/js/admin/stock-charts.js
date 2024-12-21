@@ -49,6 +49,7 @@ const getMainChartOptions = (data) => {
     const totals = data
         .map((item) => parseFloat(item.total_quantity)) // Mengambil total_quantity dan mengonversi ke angka
         .filter((total) => !isNaN(total)); // Menyaring nilai yang valid (bukan NaN)
+    const maximal = data.map((item) => item.total_all)
 
     return {
         chart: {
@@ -104,7 +105,7 @@ const getMainChartOptions = (data) => {
         xaxis: {
             categories: dates,
             min: 1,
-            max: dates.length,
+            max: maximal,
             labels: {
                 style: {
                     colors: [mainChartColors.labelColor],

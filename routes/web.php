@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ApiTransactionController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\staffController;
 use App\Http\Controllers\StockManager;
+use App\Http\Controllers\Admin\userController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,7 +98,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('admin/suplier', [SuppliersController::class, 'index'])->name('admin.suplier');
     Route::put('admin/suplier/update/{id}', [SuppliersController::class, 'updateSupplier'])->name('admin.suplier.update');
 
-    Route::get('admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
+    Route::get('admin/pengguna', [userController::class, 'index'])->name('admin.pengguna');
+    Route::get('admin/pengguna/tambah_pengguna', [userController::class, 'newUser'])->name('admin.pengguna.new');
+    Route::get('admin/pengguna/tambah_pengguna', [userController::class, 'newUserProcess'])->name('admin.pengguna.new.process');
+    
     Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
     Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
 });

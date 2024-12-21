@@ -7,10 +7,8 @@
 @section('content')
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="w-full flex justify-between pb-0">
-            <div
-                class="grid grid-cols-5 p-1 hidden lg:grid bg-white border border-gray-200 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                <div class=" text-gray-500 text-sm font-bold p-2 text-center rounded-md text-white bg-blue-500">All time
-                </div>
+            <div class="grid grid-cols-5 p-1 hidden lg:grid bg-white border border-gray-200 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                <div class=" text-gray-500 text-sm font-bold p-2 text-center rounded-md text-white bg-blue-500">All time</div>
                 <div class=" text-gray-500 text-sm p-2 text-center">12 Month</div>
                 <div class=" text-gray-500 text-sm p-2 text-center">30 Days</div>
                 <div class=" text-gray-500 text-sm p-2 text-center">7 Days</div>
