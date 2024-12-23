@@ -100,7 +100,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
     Route::get('admin/pengguna', [userController::class, 'index'])->name('admin.pengguna');
     Route::get('admin/pengguna/tambah_pengguna', [userController::class, 'newUser'])->name('admin.pengguna.new');
-    Route::get('admin/pengguna/tambah_pengguna', [userController::class, 'newUserProcess'])->name('admin.pengguna.new.process');
+    Route::put('admin/pengguna/tambah_pengguna', [userController::class, 'newUserProcess'])->name('admin.pengguna.new.process');
     
     Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
     Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');

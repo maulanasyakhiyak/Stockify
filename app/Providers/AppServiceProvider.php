@@ -26,6 +26,8 @@ use App\Services\StockTransaction\StockTransactionService;
 use App\Services\StockTransaction\StockTransactionServiceImplement;
 use App\Services\Supplier\SupplierService;
 use App\Services\Supplier\SupplierServiceImplement;
+use App\Services\User\UserService;
+use App\Services\User\UserServiceImplement;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -36,8 +38,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProductRepository::class, ProductRepositoryImplement::class);
-
         $this->app->bind(ProductService::class, ProductServiceImplement::class);
+
+        $this->app->bind(UserService::class, UserServiceImplement::class);
+        $this->app->bind(UserRepository::class, UserRepositoryImplement::class);
 
         $this->app->bind(CategoriesRepository::class, CategoriesRepositoryImplement::class);
 

@@ -93,4 +93,6 @@ class searchAutocomplete {
     }
 }
 
+
+
 export default searchAutocomplete
