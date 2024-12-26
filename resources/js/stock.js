@@ -1,5 +1,6 @@
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
 import Inputmask from "inputmask";
+import './filterstock'
 
 
 // input mask pada product stock

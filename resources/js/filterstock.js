@@ -1,12 +1,9 @@
 
-import searchAutocomplete from "./fitur";
+import {searchAutocomplete} from "./fitur";
 
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('asdasd');
-
-
     const startDateInput = document.getElementById('datepicker-start');
     const endDateInput = document.getElementById('datepicker-end');
     const earlierDate = startDateInput.getAttribute('data-start-date')

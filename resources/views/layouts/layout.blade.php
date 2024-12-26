@@ -9,7 +9,7 @@
     <meta name="generator" content="Laravel">
     @yield('other_meta')
 
-    <title>Stockify - @yield('subtitle')</title>
+    <title>{{config('app_settings.app_name')}} - @yield('subtitle')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('jsc')
     <link rel="canonical" href="{{ request()->fullUrl() }}">

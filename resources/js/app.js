@@ -5,7 +5,7 @@ import './bootstrap';
 import './sidebar';
 import './dark-mode';
 import './modal.js';
-import './filterStock.js'
+// import './filterStock.js'
 
 
 // import './stock-opname.js'

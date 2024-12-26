@@ -414,11 +414,6 @@ class AdminController extends Controller
         return view('adminpage.laporan');
     }
 
-    public function settings()
-    {
-        return view('adminpage.settings');
-    }
-
     // .CATEGORY
 
     public function categoriesProduk(Request $req)

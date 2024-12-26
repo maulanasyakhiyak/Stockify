@@ -10,7 +10,7 @@
           </button>
           <a href="{{ url('/') }}" class="flex ml-2 md:mr-24">
             <img src="{{ asset('static/images/logo.svg')}}" class="h-8 mr-3" alt="FlowBite Logo" />
-            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Stockify</span>
+            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">{{config('app_settings.app_name')}}</span>
           </a>
         </div>
         <div class="flex items-center">

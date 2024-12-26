@@ -11,6 +11,7 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\staffController;
 use App\Http\Controllers\StockManager;
 use App\Http\Controllers\Admin\userController;
+use App\Http\Controllers\settingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,7 +104,8 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::put('admin/pengguna/tambah_pengguna', [userController::class, 'newUserProcess'])->name('admin.pengguna.new.process');
     
     Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
-    Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::get('admin/settings', [settingsController::class, 'index'])->name('admin.settings');
+    Route::post('admin/settings', [settingsController::class, 'updateSettings'])->name('admin.settings.proccess');
 });
 Route::group(['middleware' => ['auth', 'role:manager']], function () {
 
