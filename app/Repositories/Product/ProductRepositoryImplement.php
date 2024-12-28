@@ -3,9 +3,10 @@
 namespace App\Repositories\Product;
 
 use App\Models\Product;
+use App\Events\UserActivityLogged;
+use LaravelEasyRepository\Implementations\Eloquent;
 use App\Repositories\Categories\CategoriesRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use LaravelEasyRepository\Implementations\Eloquent;
 
 class ProductRepositoryImplement extends Eloquent implements ProductRepository
 {
@@ -77,6 +78,8 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
 
     public function createProduct($data)
     {
+        // dd($data);
+        event(new UserActivityLogged(auth()->id(), 'create', "created a new data product with SKU {$data['sku']}"));
         return $this->model->create($data);
     }
 
@@ -86,13 +89,14 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
         if (! $product) {
             throw new ModelNotFoundException("Produk dengan ID {$id} tidak ditemukan.");
         }
-
+        event(new UserActivityLogged(auth()->id(), 'delete', "deleting a data product with SKU {$product['sku']}"));
         return $product->delete();
     }
 
     public function destroyProduct($data)
     {
-        $this->model->destroy($data);
+        event(new UserActivityLogged(auth()->id(), 'delete', "deleting selected data products"));
+        return $this->model->destroy($data);
 
     }
 
@@ -103,7 +107,7 @@ class ProductRepositoryImplement extends Eloquent implements ProductRepository
         if (! $product) {
             throw new ModelNotFoundException("Produk dengan ID {$id} tidak ditemukan.");
         }
-
+        event(new UserActivityLogged(auth()->id(), 'update', "updating a data product with SKU {$product['sku']}"));
         return $product->update($data);
     }
     public function checkItem($id)

@@ -5,6 +5,7 @@ namespace App\Repositories\RiwayatOpname;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\RiwayatOpname;
+use App\Events\UserActivityLogged;
 use LaravelEasyRepository\Implementations\Eloquent;
 
 class RiwayatOpnameRepositoryImplement extends Eloquent implements RiwayatOpnameRepository{
@@ -23,6 +24,7 @@ class RiwayatOpnameRepositoryImplement extends Eloquent implements RiwayatOpname
 
     public function createRiwayat($keterangan)
     {
+        event(new UserActivityLogged(auth()->id(), 'opname', 'Making Opname'));
         $today = Carbon::now()->format('Y-m-d');
 
         $existingRecords = $this->model->where('user_id', auth()->id())

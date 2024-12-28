@@ -18,7 +18,8 @@ class CreateTablesForInventory extends Migration
         // Table users
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -104,6 +105,15 @@ class CreateTablesForInventory extends Migration
             $table->timestamps();  // Untuk mencatat waktu pembuatan dan pembaruan
         });
 
+        Schema::create('user_activity_logs', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id'); // Relasi ke tabel users
+            $table->string('activity');           // Jenis aktivitas
+            $table->text('description')->nullable(); // Keterangan aktivitas
+            $table->timestamp('logged_at');       // Waktu aktivitas
+            $table->timestamps();                 // Timestamps
+        });
+
         DB::statement("DROP VIEW IF EXISTS product_stock_view");
         DB::statement("
         CREATE VIEW product_stock_view AS
@@ -129,6 +139,7 @@ class CreateTablesForInventory extends Migration
     public function down()
     {
 
+        Schema::dropIfExists('user_activity_logs');
         Schema::dropIfExists('stock_transactions');
         Schema::dropIfExists('product_attributes');
         Schema::dropIfExists('products');

@@ -6,6 +6,8 @@ use LaravelEasyRepository\BaseService;
 
 interface UserService extends BaseService{
 
-    public function new_user($data);
+    public function store($data);
+
+    public function update($data, $id);
 
 }

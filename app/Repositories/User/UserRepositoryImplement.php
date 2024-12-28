@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use LaravelEasyRepository\Implementations\Eloquent;
 
+use function Laravel\Prompts\error;
+
 class UserRepositoryImplement extends Eloquent implements UserRepository{
 
     /**
@@ -18,6 +20,10 @@ class UserRepositoryImplement extends Eloquent implements UserRepository{
     public function __construct(User $model)
     {
         $this->model = $model;
+    }
+
+    public function find($id){
+        return $this->model->find($id);
     }
 
     public function index($page = null, $search = null){
@@ -34,14 +40,30 @@ class UserRepositoryImplement extends Eloquent implements UserRepository{
         return $query->get();
     }
 
-    public function new_user($data){
+    public function store($data){
+        // dd($data);
         $user = $this->model->create([
-            'name' => $data['new_first_name'] . ' ' . $data['new_last_name'],
+            'first_name' => $data['new_first_name'],
+            'last_name' =>  $data['new_last_name'],
             'email' => $data['new_email'],
             'password' => Hash::make($data['new_password']),
             'role' => $data['new_role']
         ]);
         return $user;
+    }
+
+    public function update($data,$id){
+        $user = $this->model->find($id);
+        if ($user->role == 'admin' && isset($data['role']) && $data['role'] == 'admin') {
+            throw new \Exception('Nice try');
+        }
+        if (!empty($data)) {
+            $updatedUser = $user->update($data);
+        } else {
+            $updatedUser = false;
+        }
+        
+        return $updatedUser;
     }
 
     // Write something awesome :)

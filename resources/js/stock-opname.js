@@ -1,5 +1,5 @@
 import Inputmask from "inputmask";
-import searchAutocomplete from "./fitur";
+import {searchAutocomplete} from "./fitur";
 
 // $(function () {
 const autocompleteSearch = new searchAutocomplete($("#stock-opname-search"), { addExcept: true }).itemOnClick(function (item) {

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Exports\ProductExport;
 use App\Imports\ProductImport;
 use App\Models\StockTransaction;
+use App\Events\UserActivityLogged;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
@@ -209,6 +210,7 @@ class AdminController extends Controller
                     'newCategory' => $newCategories
                 ]);
             }
+            event(new UserActivityLogged(auth()->id(), 'import', "importing data product, added {$import->added} updated and {$import->updated} data"));
             return response()->json([
                 'status' => 'success',
                 'added' => $import->added,

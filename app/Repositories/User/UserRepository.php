@@ -8,5 +8,9 @@ interface UserRepository extends Repository{
 
     public function index($page = null, $search = null);
 
-    public function new_user($data);
+    public function store($data);
+
+    public function update($data,$id);
+
+    public function find($id);
 }

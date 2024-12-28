@@ -1,17 +1,19 @@
 <?php
 
-use App\Http\Controllers\Admin\SuppliersController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StockManager;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\StokAdminController;
-use App\Http\Controllers\Api\ApiTransactionController;
-use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\staffController;
-use App\Http\Controllers\StockManager;
-use App\Http\Controllers\Admin\userController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\settingsController;
+use App\Http\Controllers\StokAdminController;
+use App\Http\Controllers\Admin\userController;
+use App\Http\Controllers\Admin\SuppliersController;
+use App\Http\Controllers\Api\ApiTransactionController;
+use App\Http\Controllers\verificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,12 @@ Route::get('/test', function () {
     return view('example.index');
 });
 
+Route::group(['middleware' => ['auth','role:admin,manager,staff']], function () {
+    Route::get('/email/verify',[verificationController::class,'index'] )->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}',[verificationController::class, 'verification'])->middleware(['signed'])->name('verification.verify');
+    Route::get('/email/verification-notification',[verificationController::class, 'send_verification'])->middleware(['throttle:6,1'])->name('verification.send');;
+});
+
 Route::middleware('auth.token')->group(function () {
     Route::apiResource('stock-transaction', ApiTransactionController::class);
 });
@@ -39,7 +47,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middl
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::group(['middleware' => ['auth', 'role:admin,manager,staff']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:admin,manager,staff']], function () {
     Route::get('/get_stock_for_chart', [AdminController::class, 'get_stock_for_chart'])->name('get_stock_for_chart');
 
     Route::get('/download/sample-import', [AdminController::class,'downloadSampleImport'])->name('download-sample-import');
@@ -74,7 +82,7 @@ Route::group(['middleware' => ['auth', 'role:admin,manager,staff']], function ()
 
 });
 
-Route::group(['middleware' => ['auth', 'role:admin']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
 
     Route::get('admin', [AdminController::class, 'index']);
 
@@ -99,15 +107,15 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('admin/suplier', [SuppliersController::class, 'index'])->name('admin.suplier');
     Route::put('admin/suplier/update/{id}', [SuppliersController::class, 'updateSupplier'])->name('admin.suplier.update');
 
-    Route::get('admin/pengguna', [userController::class, 'index'])->name('admin.pengguna');
-    Route::get('admin/pengguna/tambah_pengguna', [userController::class, 'newUser'])->name('admin.pengguna.new');
-    Route::put('admin/pengguna/tambah_pengguna', [userController::class, 'newUserProcess'])->name('admin.pengguna.new.process');
+    Route::prefix('admin')->group(function () {
+        Route::resource('users', userController::class)->names('admin.users');
+    });
     
     Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
     Route::get('admin/settings', [settingsController::class, 'index'])->name('admin.settings');
     Route::post('admin/settings', [settingsController::class, 'updateSettings'])->name('admin.settings.proccess');
 });
-Route::group(['middleware' => ['auth', 'role:manager']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:manager']], function () {
 
     Route::get('manager', [ManagerController::class, 'index']);
 
@@ -122,8 +130,7 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
     Route::get('manager/laporan', [ManagerController::class, 'laporan'])->name('manager.laporan');
 
 });
-
-Route::group(['middleware' => ['auth', 'role:staff']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:staff']], function () {
 
     Route::get('staff', [staffController::class, 'index']);
 

@@ -11,13 +11,10 @@
                             Nama</th>
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Alamat </th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            phone</th>
-                        <th scope="col"
-                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             email</th>
+                        <th scope="col"
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Verified</th>
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             role</th>
@@ -28,23 +25,34 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     @forelse ($users as $item)
+                        @php
+                            if($item->role == 'admin'){
+                                continue;
+                            }
+                        @endphp
                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white overflow-hidden">
-                                {{ $item->name }}</td>
-                            <td class="p-4 text-base font-medium text-gray-500 whitespace-nowrap dark:text-white truncate xl:max-w-xs">
-                                {{ $item->address }}
-                                
-                            </td>
                             <td
-                                class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->phone }}</td>
+                                class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white overflow-hidden">
+                                {{ $item->first_name }} {{ $item->last_name }}</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->email }}</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                @if ($item->email_verified_at)
+                                    <span
+                                        class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Yes</span>
+                                @else
+                                    <span
+                                        class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">no</span>
+                                @endif
+                            </td>
+
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->role }}</td>
                             <td class="p-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <x-tables.admin.pengguna.button-update routeUpdate='admin.suplier.update' :supplier="$item" />
-                                <x-tables.admin.pengguna.button-delete routeDelete='admin.suplier.update' :id="$item->id" :supplier="$item" />
+                                <x-tables.admin.pengguna.button-update routeUpdate='admin.users.update'
+                                    :user="$item" />
+                                <x-tables.admin.pengguna.button-delete routeDelete='admin.suplier.update'
+                                    :id="$item->id" :supplier="$item" />
                             </td>
                         </tr>
                     @empty

@@ -12,14 +12,16 @@
 @section('content')
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="flex flex-col">
-            <div class="mb-4 flex justify-between">
-
+            <div class="flex items-center gap-2 p-4">
+                <a href="{{ session('previous_url_users', ''); }}"
+                    class=" flex items-center justify-center rounded-full w-8 h-8 bg-gray-200 text-gray-500">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+                <div class="font-semibold text-2xl text-gray-900 sm:text-2xl dark:text-white">Tambah User</div>
             </div>
             <div class="">
-                <form class="w-full p-4" action="{{ route('admin.pengguna.new.process') }}" method="POST">
-                    @method('put')
+                <form class="w-full p-4" action="{{ route('admin.users.store') }}" method="POST">
                     @csrf
-                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-4">Tambah User</h1>
                     <div class="grid md:grid-cols-2 md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
                             <input type="text" name="new_first_name" id="new_first_name"
@@ -63,14 +65,14 @@
                     <div class="relative z-0 w-full mb-5 group">
                         <div
                             class="border-b-2 border-gray-300 dark:border-gray-600 focus-within:border-blue-600 transition-colors">
-                            <input type="password" name="confirm_new_password" id="confirm_new_password"
+                            <input type="password" name="new_password_confirmation" id="new_password_confirmation"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent focus:ring-0 border-none focus:outline-none dark:text-white peer"
-                                placeholder=" " value="{{old('confirm_new_password')}}" />
-                            <label for="confirm_new_password"
+                                placeholder=" " value="{{old('new_password_confirmation')}}" />
+                            <label for="new_password_confirmation"
                                 class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm Password</label>
-                            <button type="button" data-toggle="togglePassword" data-toggle-eye="confirm_new_password"
+                            <button type="button" data-toggle="togglePassword" data-toggle-eye="new_password_confirmation"
                                 class="absolute right-0 top-2 text-gray-500 dark:text-gray-400">
-                                <i data-toggle-eye-icon="confirm_new_password" class="fa-regular fa-eye"></i>
+                                <i data-toggle-eye-icon="new_password_confirmation" class="fa-regular fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -81,7 +83,6 @@
                             <select name="new_role"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-400 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                 <option selected hidden>Pilih role</option>
-                                <option value="admin">Admin</option>
                                 <option value="manager">manager</option>
                                 <option value="staff">staff</option>
                             </select>

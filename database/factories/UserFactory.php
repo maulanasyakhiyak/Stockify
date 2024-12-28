@@ -16,7 +16,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password yang di-hash
