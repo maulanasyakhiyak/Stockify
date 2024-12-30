@@ -11,9 +11,18 @@
         <div class="flex flex-col">
             <div class="mb-4 flex justify-between">
                 <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Pengguna</h1>
+                <div class="">
+                    <a href="{{ route('admin.users.create') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text
+                        text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm focus:outline-none
+                        focus:ring-2 focus:ring-offset-2
+                        focus:ring-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus
+                        ring-blue-600 dark:focus:ring-blue-700">
+                        New User
+                    </a>
+                </div>
             </div>
-            <div class="relative bg-white shadow dark:bg-gray-800 sm:rounded-lg">
-                <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+            <div class="relative bg-white shadow border-2 overflow-hidden dark:bg-gray-800 sm:rounded-lg">
+                {{-- <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
                     <div class="w-full md:w-1/2">
                         <form class="flex items-center">
                             <label for="simple-search" class="sr-only">Search</label>
@@ -36,16 +45,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="">
-                        <a href="{{ route('admin.users.create') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text
-                            text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm focus:outline-none
-                            focus:ring-2 focus:ring-offset-2
-                            focus:ring-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus
-                            ring-blue-600 dark:focus:ring-blue-700">
-                            New User
-                        </a>
-                    </div>
-                </div>
+                </div> --}}
                 <x-tables.admin.pengguna.table-pengguna :users="$users" />
             </div>
         </div>

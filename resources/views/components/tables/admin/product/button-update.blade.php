@@ -164,7 +164,7 @@
             <div class="flex items-center justify-center w-full" >
                 <label for="product_update_image_{{$product['id']}}" data-dropfile="product_update_image_{{$product['id']}}"
                     class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    @if ($product['imagse'])
+                    @if ($product['image'])
                     <img class="w-full h-full rounded-lg" src="{{ asset('images/original/'.$product['image']) }}" alt=""
                         data-image="product_update_image_{{$product['id']}}">
                         @else

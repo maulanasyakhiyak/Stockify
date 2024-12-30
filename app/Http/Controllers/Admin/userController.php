@@ -20,17 +20,12 @@ class userController extends Controller
         
     }
 
-    public function index()
-    {
+    public function index(){
         $users = $this->userRepository->index();
         return view('adminpage.pengguna.pengguna', compact('users'));
     }
 
-    public function create(){
-        $url = url()->previous();
-        if (session('previous_url_users') !== $url) {
-            session(['previous_url_users' => $url]);
-        }
+    public function create(){  
         return view('adminpage.pengguna.pengguna_baru');
     }
     public function store(Request $req){
@@ -62,6 +57,14 @@ class userController extends Controller
         if($result == 'unchanged'){
             return redirect()->back();
         }
+        if($result['status'] == 'success'){
+            return redirect()->back()->with($result['status'], $result['message']);
+        }else{
+            return redirect()->back()->withErrors( $result['message']);
+        }
+    }
+    public function destroy($id){
+        $result = $this->userService->destroy($id);
         if($result['status'] == 'success'){
             return redirect()->back()->with($result['status'], $result['message']);
         }else{

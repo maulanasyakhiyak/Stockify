@@ -51,7 +51,7 @@
                             <td class="p-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <x-tables.admin.pengguna.button-update routeUpdate='admin.users.update'
                                     :user="$item" />
-                                <x-tables.admin.pengguna.button-delete routeDelete='admin.suplier.update'
+                                <x-tables.admin.pengguna.button-delete routeDelete='admin.users.destroy'
                                     :id="$item->id" :supplier="$item" />
                             </td>
                         </tr>

@@ -5,6 +5,7 @@ namespace App\Services\User;
 use LaravelEasyRepository\Service;
 use App\Repositories\User\UserRepository;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -76,8 +77,16 @@ class UserServiceImplement extends Service implements UserService{
       }
     }
 
-    protected function comparing_data_user($data,$id){
+    protected function checking_user($id){
       $finded =  $this->mainRepository->find($id);
+      if($finded->role == 'admin' ){
+        throw new \Exception('You are not authorized to update this user');
+      }
+      return $finded;
+    }
+
+    protected function comparing_data_user($data,$id){
+      $finded =  $this->checking_user($id);
       $data_to_compare = $finded->toArray();
       $compared = [];
       foreach ($data as $key => $value) {
@@ -89,8 +98,8 @@ class UserServiceImplement extends Service implements UserService{
     }
 
     public function update($data, $id){
-      // dd($data);
       $compared = $this->comparing_data_user($data,$id);
+      // dd($compared);
       // dd($compared);
       $validator = Validator::make($compared, [
         'first_name' => 'sometimes|required|string|min:2|max:50',
@@ -123,14 +132,22 @@ class UserServiceImplement extends Service implements UserService{
       }
 
       try {
-        $result = $this->mainRepository->update($compared,$id);
-        if($result){
+        if(Auth::user()->role == 'admin'){
+          $result = $this->mainRepository->update($compared,$id);
+          if($result){
+            return [
+              'status' => 'success',
+              'message' => 'Berhasil update user',
+            ];
+          }
+          return 'unchanged';
+        }else{
           return [
-            'status' => 'success',
-            'message' => 'Berhasil update user',
-          ];
+            'status' => 'error',
+            'message' => 'You are not authorized to update this user',
+            ];
         }
-        return 'unchanged';
+
       } catch (Exception $e) {
         return [
           'status' => 'error',
@@ -138,6 +155,31 @@ class UserServiceImplement extends Service implements UserService{
         ];
       }
 
+    }
+
+    public function destroy($id)
+    {
+      try{
+        $user = $this->checking_user($id);
+        $result = $this->mainRepository->destroy($user->id);
+        if($result){
+          return [
+            'status' => 'success',
+            'message' => 'Berhasil hapus user',
+            ];
+        }else{
+          return [
+            'status' => 'error',
+            'message' => 'Gagal hapus user',
+          ];
+        }
+      }catch(Exception $e){
+        return [
+          'status' => 'error',
+          'message' => $e->getMessage(),
+          ];
+      }
+      
     }
     // Define your custom methods :)
 }

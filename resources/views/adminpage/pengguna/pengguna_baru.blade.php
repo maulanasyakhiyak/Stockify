@@ -13,7 +13,7 @@
     <div class="grid grid-cols-1 gap-4 p-4">
         <div class="flex flex-col">
             <div class="flex items-center gap-2 p-4">
-                <a href="{{ session('previous_url_users', ''); }}"
+                <a href="{{ route('admin.users.index') }}"
                     class=" flex items-center justify-center rounded-full w-8 h-8 bg-gray-200 text-gray-500">
                     <i class="fa-solid fa-angle-left"></i>
                 </a>

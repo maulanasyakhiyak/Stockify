@@ -54,7 +54,7 @@ class UserRepositoryImplement extends Eloquent implements UserRepository{
 
     public function update($data,$id){
         $user = $this->model->find($id);
-        if ($user->role == 'admin' && isset($data['role']) && $data['role'] == 'admin') {
+        if (isset($data['role']) && $data['role'] == 'admin') {
             throw new \Exception('Nice try');
         }
         if (!empty($data)) {
@@ -64,6 +64,11 @@ class UserRepositoryImplement extends Eloquent implements UserRepository{
         }
         
         return $updatedUser;
+    }
+
+    public function destroy($id)
+    {
+       return $this->model->destroy($id);
     }
 
     // Write something awesome :)

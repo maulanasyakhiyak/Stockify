@@ -10,4 +10,6 @@ interface UserService extends BaseService{
 
     public function update($data, $id);
 
+    public function destroy($id);
+
 }
