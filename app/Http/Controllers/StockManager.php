@@ -36,9 +36,9 @@ class StockManager extends Controller
 
     }
 
-    public function stock(Request $req){
-
+    public function index(Request $req){
         $stockTransaction = $this->stokTransRepo->getStockTransaction();
+        
         $filter = session('filterRiwayatTransaksi');
         if($filter || $req->has('search')){
             $stockTransaction = $this->stokTransRepo->getStockTransaction(
@@ -63,5 +63,18 @@ class StockManager extends Controller
 
         $earliestDate =  $this->stokTransRepo->getFirstDate();
         return view('managerpage.stock', compact('stockTransaction','earliestDate','filter'));
+    }
+
+    public function store(Request $req){
+        $result = $this->stockTransactionService->store([
+            'sku' => $req->input('product_sku'),
+            'type' => $req->input('type'),
+            'quantity' => $req->input('quantity'),
+            'notes' => $req->input('notes'),
+        ]);
+        if($result['status'] == 'success'){
+            return redirect()->back()->with('success', $result['message'])->withInput();
+        }
+        return redirect()->back()->withErrors( $result['message'])->withInput();
     }
 }

@@ -49,7 +49,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,manager,staff']], function () {
     Route::get('/get_stock_for_chart', [AdminController::class, 'get_stock_for_chart'])->name('get_stock_for_chart');
-
     Route::get('/download/sample-import', [AdminController::class,'downloadSampleImport'])->name('download-sample-import');
     Route::get('/download/sample-opname', [AdminController::class,'downloadSampleImport'])->name('download-sample-opname');
     Route::get('/get-selected-id', [AdminController::class, 'getSelectedId']);
@@ -123,7 +122,9 @@ Route::group(['middleware' => ['auth', 'verified', 'role:manager']], function ()
 
     Route::get('manager/product', [ManagerController::class, 'product'])->name('manager.product');
 
-    Route::get('manager/stock', [StockManager::class, 'stock'])->name('manager.stock');
+    Route::prefix('manager')->group(function () {
+        Route::resource('stock', StockManager::class)->names('manager.stock');
+    });
 
     Route::get('manager/supplier', [ManagerController::class, 'supplier'])->name('manager.supplier');
 

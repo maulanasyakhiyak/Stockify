@@ -20,16 +20,20 @@ export class searchAutocomplete {
   }
 
   sendToDb(term) {
+    console.log(this.options.searching);
+    
+    let by = ['name', 'sku'].includes(this.options.searching) ? this.options.searching : 'name';
     $.ajax({
       url: "/admin/simple-search",
       dataType: "json",
       data: {
         table: "2d2d2c4b9e1d2f6f2bcd345b223ee6d4",
+        search : by,
         term: term,
       },
       success: (data) => {
         if (data.debuging) {
-          console.log(data.debuging);
+          console.log(data.data);
         }
 
         this.resultTarget.empty();

@@ -31,11 +31,12 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     @forelse ($stockTransaction as $item)
+                    
                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white overflow-hidden">
                                 {{ $item->product->name }}</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white truncate xl:max-w-xs">
-                                {{ $item->user->name }}</td>
+                                {{ $item->user->first_name }} {{ $item->user->last_name }}</td>
                             <td class="p-4 ">
                                 @switch($item->type)
                                     @case('in')

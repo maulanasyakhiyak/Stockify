@@ -68,6 +68,7 @@ class AdminController extends Controller
     {
         $encryptedTable = $req->get('table');
         $term = $req->get('term');
+        $by = $req->get('search') ?? 'name';
         $tables = [
             '2c6ee24b09816a6f14f95d1698b24ead' => 'users',   // Misalnya, 'table_1' adalah nama tabel yang diizinkan
             '2d2d2c4b9e1d2f6f2bcd345b223ee6d4' => 'product',
@@ -83,7 +84,7 @@ class AdminController extends Controller
                             $user = User::where('name', 'like', "%{$term}%")->get();
                             break;
                         case 'product':
-                            $product = Product::where('name', 'like', "%{$term}%")->get();
+                            $product = Product::where($by, 'like', "%{$term}%")->get();
                             break;
                     }
                 }
@@ -99,7 +100,7 @@ class AdminController extends Controller
                         $data = User::where('name', 'like', "%{$term}%")->get();
                         break;
                     case '2d2d2c4b9e1d2f6f2bcd345b223ee6d4':
-                        $data = Product::where('name', 'like', "%{$term}%")->get();
+                        $data = Product::where($by, 'like', "%{$term}%")->get();
                         break;
                 }
                 return response()->json([

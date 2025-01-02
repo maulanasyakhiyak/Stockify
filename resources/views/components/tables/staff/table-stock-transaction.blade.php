@@ -43,7 +43,7 @@
                             {{ $item->product->name }}</td>
                         <td
                             class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white truncate xl:max-w-xs">
-                            {{ $item->user->name }}</td>
+                            {{ $item->user->first_name }} {{ $item->user->last_name }}</td>
                         <td class="p-4 ">
                             @switch($item->type)
                                 @case('in')
@@ -199,7 +199,7 @@
                                                         <div class="text-base">User :</div>
                                                         <span
                                                             class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-500">
-                                                            {{ $item->user->name }}
+                                                            {{ $item->user->first_name }} {{ $item->user->last_name }}
                                                         </span>
                                                     </div>
                                                     <div class="flex justify-between mb-3">

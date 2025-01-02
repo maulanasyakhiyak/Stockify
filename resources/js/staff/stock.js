@@ -1,3 +1,5 @@
+import '../filterstock'
+
 $('[data-form]').on('submit' ,function(e){
     e.preventDefault()
     if($(this).data('form') == 'accept'){

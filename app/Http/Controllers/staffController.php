@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\UserActivityLogged;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\DetailOpname\DetailOpnameRepository;
 use App\Repositories\ProductStock\ProductStockRepository;
@@ -74,13 +75,16 @@ class staffController extends Controller
     }
 
     public function confirm_transation(Request $request, $id){
-        $this->stokTransRepo->update($id,[
+        event(new UserActivityLogged(auth()->id(), 'confirm', "accepting new transaction with id : {$id}"));
+        $data = $this->stokTransRepo->update($id,[
             'status' => 'completed'
         ]);
+        dd($data);
         return redirect()->back()->with('success', 'Berhasil konfirmasi transaksi');
     }
     
     public function reject_transaction(Request $request, $id){
+        event(new UserActivityLogged(auth()->id(), 'reject', "rejecting new transaction with id : {$id}"));
         $this->stokTransRepo->update($id,[
             'status' => 'cancelled'
         ]);

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\StockTransaction;
+use App\Events\UserActivityLogged;
 use Illuminate\Support\Facades\DB;
 use LaravelEasyRepository\Implementations\Eloquent;
 
@@ -76,79 +77,96 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
     public function get_stock_for_chart($range)
     {
         if ($range) {
-            $dates = [];
-            switch($range){
-                case '7-days':
-                    $startDate = Carbon::now()->subDays(6)->copy();
-                    $endDate = Carbon::now();
-                    while ($startDate->lte($endDate)) {
-                        $dates[] = ['date' => $startDate->format('Y-m-d'),'total' => 0];
-                        $startDate->addDay(); // Tambah 1 hari
-                    }
-                    break;
-                case '1-month':
-                    $startDate = Carbon::now()->startOfMonth()->copy();
-                    $endDate = Carbon::now()->endOfWeek();
-                    $currentDate = $startDate->copy();
-                    while ($currentDate->lte($endDate)) {
-                        $dates[] = ['date' => $currentDate->format('Y-m-d'),'total' => 0];
-                        $currentDate->addWeek(); // Tambah 1 hari
-                    }
-                    break;
-                case '1-year':
-                    $startDate = Carbon::now()->startOfYear()->copy();
-                    $endDate = Carbon::now();
-                    $currentDate = $startDate->copy();
-                    while ($currentDate->lte($endDate)) {
-                        $dates[] = ['date' => $currentDate->endOfMonth()->format('Y-m-d'),'total' => 0];
-                        $currentDate->addMonth(); // Tambah 1 hari
-                    }
-                    break;
-
-            }
-
-            $stockBefore = $this->model
-                        ->where('date', '<', $dates[0]['date']) // Ambil stok yang tanggalnya sebelum $beforeDate
-                        ->where('status', 'completed')   // Kondisi tambahan (jika perlu)
-                        ->selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total') // Hitung total stok
-                        ->first();
-
-            $total_quantity = 0;
-            $beforeDate = null;
-            $data = collect($dates)->map(function ($item,$index) use (&$total_quantity,$stockBefore,&$beforeDate) {
-                if ($index === 0) {
-                    $total_quantity += $stockBefore->total; // Tambahkan previousStock pada iterasi pertama
-                }
-                $dbItem = $this->model
-                        ->whereBetween('date', [$beforeDate ?? $item['date'] ,$item['date'] ])
-                        ->where('status', 'completed')
-                        ->selectRaw('date, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total')
-                        ->groupBy(function($date) {
-                            return Carbon::parse($date->date)->format('W'); // Format minggu
-                        })
-                        ->first();
-                $total = $dbItem ? $dbItem->total : 0; // Jika tidak ada data, set total 0
-                $total_quantity += $total;
+            $query = $this->model
+                ->selectRaw('date, YEAR(date) as year, MONTH(date) as month, DAY(date) as day, WEEK(date) as week, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total_quantity')
+                ->where('status', 'completed');
                 
-                $beforeDate = $item['date'];
+            $endDate = Carbon::now();
+            $startDate = null;
+        
+            switch ($range) {
+                case '1-month':
+                    $startDate = $endDate->copy()->subMonth();
+                    $query = $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                        ->groupBy(DB::raw('date,YEAR(date), MONTH(date), WEEK(date)'))
+                        ->orderBy('date');
+                    $formatDate = function($item) {
+                        return Carbon::parse($item->date)->startOfMonth()->format('Y-m-d');
+                    };
+                    break;
+        
+                case '1-year':
+                    $startDate = $endDate->copy()->subYear();
+                    $query = $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                        ->groupBy(DB::raw('date,YEAR(date), MONTH(date)'))
+                        ->orderBy('date');
+                    $formatDate = function($item) {
+                        return Carbon::parse($item->year.'-'.$item->month.'-01')->format('F Y');
+                    };
+                    break;
+        
+                case '7-days':
+                    $startDate = $endDate->copy()->subDays(7);
+                    $query = $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                        ->groupBy(DB::raw('date,YEAR(date), MONTH(date), DAY(date)'))
+                        ->orderBy('date');
+                    $formatDate = function($item) {
+                        return Carbon::parse($item->day)->format('l');
+                    };
+                    break;
+        
+                default:
+                    $startDate = $this->model->min('date');
+                    $query = $query->whereBetween('date', [$startDate, $endDate->format('Y-m-d')])
+                        ->groupBy(DB::raw('date,YEAR(date), MONTH(date)'))
+                        ->orderBy('date');
+                    $formatDate = function($item) {
+                        return Carbon::parse($item->year.'-'.$item->month.'-01')->format('F Y');
+                    };
+            }
+        
+            $total_before = $this->model
+                ->selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total')
+                ->where('date', '<', $startDate)
+                ->where('status', 'completed')
+                ->first();
+        
+            $total = $total_before->total ?? 0;
+            $total_stock = 0;
+        
+            $data = $query->get()->map(function($item) use (&$total, &$total_stock, $formatDate) {
+                $total += $item->total_quantity ?? 0;
+                $total_stock += $item->total_quantity ?? 0;
                 return [
-                    'date' => $item['date'],
-                    'total' => $total,
-                    'total_quantity' => $total_quantity
+                    'date' => $formatDate($item),
+                    'quantity' => $item->total_quantity,
+                    'total_quantity' => $total,
                 ];
             });
-            $totalAccumulated = $total_quantity;
         }
+        
 
         return [
-            'total' => $totalAccumulated,
-            'message' =>'asdadad',
+            'total' => $total_stock,
             'data' => $data,
-            'total_all' => $this->model
-            ->where('status', 'completed')
-            ->selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total')
-            ->pluck('total')
         ];
+    }
+
+    public function store($data){
+        $product_id = Product::where('sku' , $data['sku'])->pluck('id');
+        if($product_id->isEmpty()){
+            return['message' => 'Product not found'];
+        }
+        event(new UserActivityLogged(auth()->id(), 'add', "adding new transaction with SKU : {$data['sku']}"));
+        return $this->model->create([
+            'product_id' => $product_id[0],
+            'user_id' => auth()->id(),
+            'type' => $data['type'],
+            'quantity' => $data['quantity'],
+            'status' => 'pending',
+            'notes' => $data['notes'],
+            'date' => Carbon::now()->format('Y-m-d')
+        ]);
     }
 }
 

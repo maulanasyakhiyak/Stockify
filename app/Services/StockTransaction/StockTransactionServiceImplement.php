@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Repositories\ProductStock\ProductStockRepository;
 use App\Repositories\RiwayatOpname\RiwayatOpnameRepository;
 use App\Repositories\StockTransaction\StockTransactionRepository;
+use Exception;
 
 class StockTransactionServiceImplement extends Service implements StockTransactionService{
 
@@ -82,6 +83,50 @@ class StockTransactionServiceImplement extends Service implements StockTransacti
             return $riwayat->token;
         }
         
+    }
+
+    public function store($data){
+        $validator = Validator::make($data, [
+            'sku' => 'required|string|exists:products,sku',
+            'type' => 'required|in:in,out',
+            'quantity' => 'required|numeric',
+            'notes' => 'required|string|min:10',
+        ], [
+            'sku.required' => 'Nama produk wajib diisi.',
+            'sku.exists' => 'SKU yang dimasukkan tidak ditemukan.',
+            'sku.string' => 'Nama produk harus berupa teks.',
+            'type.required' => 'Jenis transaksi (type) wajib diisi.',
+            'type.in' => 'Jenis transaksi (type) hanya boleh "in" atau "out".',
+            'quantity.required' => 'Jumlah (quantity) wajib diisi.',
+            'quantity.numeric' => 'Jumlah (quantity) harus berupa angka.',
+            'notes.required' => 'Catatan wajib diisi.',
+            'notes.string' => 'Catatan harus berupa teks.',
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                'status' => 'error',
+                'message' => $validator->errors()
+            ];
+        }
+
+        try{
+            $result = $this->mainRepository->store($data);
+            return [
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ];
+        }catch(Exception $e){
+            return [
+                'status' => 'error',
+                'message' => $e->getLine() . ' ' . $e->getMessage() . ' ' . $e->getFile()
+            ];
+        }
+    
+        return [
+            'status' => 'success',
+            'message' => 'Data valid!'
+        ];
     }
     
 

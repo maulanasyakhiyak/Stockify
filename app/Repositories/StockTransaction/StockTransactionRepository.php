@@ -13,4 +13,6 @@ interface StockTransactionRepository extends Repository{
     public function getFirstDate();
 
     public function get_stock_for_chart($range);
+
+    public function store($data);
 }
