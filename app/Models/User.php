@@ -18,6 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'email_verified_at'
     ];
 
     protected $hidden = [
@@ -28,5 +29,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function stockTransactions()
     {
         return $this->hasMany(StockTransaction::class);
+    }
+    public function activityLogs()
+    {
+        return $this->hasMany(UserActivityLog::class); // Menunjukkan bahwa User dapat memiliki banyak UserActivityLog
     }
 }

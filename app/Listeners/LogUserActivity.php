@@ -24,8 +24,7 @@ class LogUserActivity
     UserActivityLog::create([
         'user_id' => $event->userId,        // ID pengguna dari event
         'activity' => $event->activity,    // Jenis aktivitas dari event
-        'description' => $event->description, // Deskripsi aktivitas dari event
-        'logged_at' => now(),              // Timestamp aktivitas
+        'description' => $event->description,       // Timestamp aktivitas
     ]);
 }
 }

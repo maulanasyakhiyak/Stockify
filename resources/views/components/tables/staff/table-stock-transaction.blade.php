@@ -31,6 +31,9 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     @forelse ($stockTransaction as $item)
+                    @php
+                        $user_name =$item->user->first_name . ' ' . $item->user->last_name ?? 'Anonim';
+                    @endphp
                         @if ($item->status == 'pending')
                             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                                 data-target-modal="transaction-{{ $item['id'] }}">

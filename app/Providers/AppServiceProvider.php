@@ -18,6 +18,8 @@ use App\Repositories\Supplier\SupplierRepository;
 use App\Repositories\Supplier\SupplierRepositoryImplement;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryImplement;
+use App\Repositories\UserActivity\UserActivityRepository;
+use App\Repositories\UserActivity\UserActivityRepositoryImplement;
 use App\Services\Categories\CategoriesService;
 use App\Services\Categories\CategoriesServiceImplement;
 use App\Services\Product\ProductService;
@@ -62,6 +64,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(RiwayatOpnameRepository::class, RiwayatOpnameRepositoryImplement::class);
 
         $this->app->bind(DetailOpnameRepository::class, DetailOpnameRepositoryImplement::class);
+
+        $this->app->bind(UserActivityRepository::class, UserActivityRepositoryImplement::class);
     }
 
     /**

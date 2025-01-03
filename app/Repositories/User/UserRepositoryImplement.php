@@ -3,10 +3,11 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use App\Events\UserActivityLogged;
+use function Laravel\Prompts\error;
+
 use Illuminate\Support\Facades\Hash;
 use LaravelEasyRepository\Implementations\Eloquent;
-
-use function Laravel\Prompts\error;
 
 class UserRepositoryImplement extends Eloquent implements UserRepository{
 
@@ -28,6 +29,8 @@ class UserRepositoryImplement extends Eloquent implements UserRepository{
 
     public function index($page = null, $search = null){
         $query = $this->model->query();
+        $query->whereNotNull('role')
+            ->whereNotNull('email');
 
         if($search){
             $query->where('name', 'like', "%{$search}%");
@@ -68,7 +71,9 @@ class UserRepositoryImplement extends Eloquent implements UserRepository{
 
     public function destroy($id)
     {
-       return $this->model->destroy($id);
+        $user = $this->model->find($id);
+        event(new UserActivityLogged(auth()->id(), 'Remove', "Removing user $user->first_name $user->last_name"));
+        return $user->update(['role' => null,'email_verified_at' => null,'email' => null]);
     }
 
     // Write something awesome :)

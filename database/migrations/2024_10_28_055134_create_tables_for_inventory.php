@@ -20,10 +20,11 @@ class CreateTablesForInventory extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role'); // Menggunakan string untuk role
+            $table->boolean('is_active')->default(false);
+            $table->string('role')->nullable(); // Menggunakan string untuk role
             $table->timestamps();
         });
 
@@ -73,13 +74,14 @@ class CreateTablesForInventory extends Migration
         Schema::create('stock_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('type'); // Menggunakan string untuk type
             $table->integer('quantity');
             $table->date('date');
             $table->string('status'); // Menggunakan string untuk status
             $table->text('notes')->nullable();
             $table->timestamps();
+            $table->index(['status', 'type','quantity']);
         });
 
         // Table riwayat_opname
@@ -106,12 +108,12 @@ class CreateTablesForInventory extends Migration
         });
 
         Schema::create('user_activity_logs', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id'); // Relasi ke tabel users
+            $table->id();// Relasi ke tabel users
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('activity');           // Jenis aktivitas
             $table->text('description')->nullable(); // Keterangan aktivitas
-            $table->timestamp('logged_at');       // Waktu aktivitas
-            $table->timestamps();                 // Timestamps
+            $table->dateTime('created');
+            $table->dateTime('deleting_at');
         });
 
         DB::statement("DROP VIEW IF EXISTS product_stock_view");

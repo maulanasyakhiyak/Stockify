@@ -11,6 +11,7 @@ use App\Exports\ProductExport;
 use App\Imports\ProductImport;
 use App\Models\StockTransaction;
 use App\Events\UserActivityLogged;
+use App\Models\UserActivityLog;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
@@ -21,6 +22,7 @@ use App\Repositories\Product\ProductRepository;
 use App\Repositories\Supplier\SupplierRepository;
 use App\Repositories\Categories\CategoriesRepository;
 use App\Repositories\StockTransaction\StockTransactionRepository;
+use App\Repositories\UserActivity\UserActivityRepository;
 
 class AdminController extends Controller
 {
@@ -41,6 +43,8 @@ class AdminController extends Controller
     protected $supplierRepository;
 
     protected $stockTransactionRepository;
+    
+    protected $userActivityRepository;
 
     public function __construct(
         StockTransactionRepository $stockTransactionRepository,
@@ -48,7 +52,8 @@ class AdminController extends Controller
         ProductService $productService,
         CategoriesService $categoriesService,
         CategoriesRepository $categoriesRepository,
-        SupplierRepository $supplierRepository
+        SupplierRepository $supplierRepository,
+        UserActivityRepository $userActivityRepository
     ) {
         $this->stockTransactionRepository = $stockTransactionRepository;
         $this->productService = $productService;
@@ -56,6 +61,7 @@ class AdminController extends Controller
         $this->categoriesService = $categoriesService;
         $this->categoriesRepository = $categoriesRepository;
         $this->supplierRepository = $supplierRepository;
+        $this->userActivityRepository = $userActivityRepository;
         $this->checkboxSession = session('checkbox', []);
     }
 
@@ -114,11 +120,14 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+        $user_activity = UserActivityLog::get();
 
-
-        // dd($data->toJson(JSON_PRETTY_PRINT));
-
-        return view('adminpage.dashboard');
+        // dd($user_activity);
+        $total_transaksi_masuk = $this->stockTransactionRepository->get_total_transaction('in');
+        $total_transaksi_keluar = $this->stockTransactionRepository->get_total_transaction('out');
+        $total_product = $this->productRepository->sumProduct();
+        // dd($total_transaksi_keluar);
+        return view('adminpage.dashboard', compact('total_product','total_transaksi_masuk','total_transaksi_keluar','user_activity'));
     }
 
     public function get_stock_for_chart(Request $req)

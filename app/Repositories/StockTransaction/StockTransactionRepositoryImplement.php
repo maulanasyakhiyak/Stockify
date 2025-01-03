@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\StockTransaction;
 use App\Events\UserActivityLogged;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use LaravelEasyRepository\Implementations\Eloquent;
 
 class StockTransactionRepositoryImplement extends Eloquent implements StockTransactionRepository
@@ -86,7 +87,8 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
         
             switch ($range) {
                 case '1-month':
-                    $startDate = $endDate->copy()->subMonth();
+                    $message = 'Stock in last 1 month';
+                        $startDate = $endDate->copy()->subMonth();
                     $query = $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                         ->groupBy(DB::raw('date,YEAR(date), MONTH(date), WEEK(date)'))
                         ->orderBy('date');
@@ -96,7 +98,8 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                     break;
         
                 case '1-year':
-                    $startDate = $endDate->copy()->subYear();
+                    $message = 'Stock in last 1 year';
+                        $startDate = $endDate->copy()->subYear();
                     $query = $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                         ->groupBy(DB::raw('date,YEAR(date), MONTH(date)'))
                         ->orderBy('date');
@@ -106,7 +109,8 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                     break;
         
                 case '7-days':
-                    $startDate = $endDate->copy()->subDays(7);
+                    $message = 'Stock in this week';
+                        $startDate = $endDate->copy()->subDays(7);
                     $query = $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                         ->groupBy(DB::raw('date,YEAR(date), MONTH(date), DAY(date)'))
                         ->orderBy('date');
@@ -116,6 +120,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                     break;
         
                 default:
+                    $message = 'Stock all time';
                     $startDate = $this->model->min('date');
                     $query = $query->whereBetween('date', [$startDate, $endDate->format('Y-m-d')])
                         ->groupBy(DB::raw('date,YEAR(date), MONTH(date)'))
@@ -148,6 +153,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
 
         return [
             'total' => $total_stock,
+            'message' => $message,
             'data' => $data,
         ];
     }
@@ -167,6 +173,26 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             'notes' => $data['notes'],
             'date' => Carbon::now()->format('Y-m-d')
         ]);
+    }
+
+    public function get_total_transaction($option='in'){
+        if($option === 'in'){
+            return $this->model
+                    ->where('status', 'completed')
+                    ->where('type', 'in')
+                    ->count(); 
+        }
+        if($option === 'out'){
+                return $this->model
+                    ->where('status', 'completed')
+                    ->where('type', 'out')
+                    ->count();
+        }
+    }
+    public function get_total_stock(){
+        $data = $this->model->selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total')
+                    ->where('status', 'completed')->first();
+        return $data->total;
     }
 }
 

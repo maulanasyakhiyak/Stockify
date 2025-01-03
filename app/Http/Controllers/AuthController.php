@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserActivityLogged;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Events\UserActivityLogged;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -32,8 +33,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             // Regenerasi session untuk keamanan
             $r->session()->regenerate();
-
-            event(new UserActivityLogged(auth()->id(), 'login', 'User logged in successfully.'));
+            User::where('id',Auth::user()->id)->update(['is_active' => true]);
 
             switch (Auth::user()->role) {
                 case 'admin':
@@ -56,8 +56,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        User::where('id',Auth::user()->id)->update(['is_active' => false]);
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

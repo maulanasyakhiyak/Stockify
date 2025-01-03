@@ -12,12 +12,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('records:delete-old')->daily();
     }
 
-    /**
-     * Register the commands for the application.
-     */
+    protected $commands = [
+        \App\Console\Commands\DeleteOldRecords::class,
+    ];
+    
     protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');

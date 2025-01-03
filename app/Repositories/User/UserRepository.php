@@ -15,4 +15,6 @@ interface UserRepository extends Repository{
     public function find($id);
     
     public function destroy($id);
+
+    
 }

@@ -15,4 +15,8 @@ interface StockTransactionRepository extends Repository{
     public function get_stock_for_chart($range);
 
     public function store($data);
+
+    public function get_total_transaction($option='in');
+
+    public function get_total_stock();
 }

@@ -79,7 +79,7 @@ class staffController extends Controller
         $data = $this->stokTransRepo->update($id,[
             'status' => 'completed'
         ]);
-        dd($data);
+        // dd($data);
         return redirect()->back()->with('success', 'Berhasil konfirmasi transaksi');
     }
     
