@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\LaporanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockManager;
 use App\Http\Controllers\ApiController;
@@ -95,22 +96,22 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
     Route::put('admin/product/categories-produk/update/{id}', [AdminController::class, 'updateCategoriesProduk'])->name('admin.product.categories-produk.update');
     Route::delete('admin/product/categories-produk/delete/{id}', [AdminController::class, 'deleteCategoriesProduk'])->name('admin.product.categories-produk.delete');
 
-    Route::get('admin/product/attribute-produk', [AdminController::class, 'attributeProduk'])->name('admin.product.attribute-produk');
-
-
     Route::get('admin/stok', [StokAdminController::class, 'index'])->name('admin.stok');
     Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
     Route::post('admin/stok/product-stock/update-minimum-stock', [StokAdminController::class, 'updateMinimumStock'])->name('admin.stok.productStok.update-minimum-stock');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
 
-    Route::get('admin/suplier', [SuppliersController::class, 'index'])->name('admin.suplier');
-    Route::put('admin/suplier/update/{id}', [SuppliersController::class, 'updateSupplier'])->name('admin.suplier.update');
-
+    Route::prefix('admin')->group(function () {
+        Route::resource('supplier', SuppliersController::class)->names('admin.supplier');
+    });
     Route::prefix('admin')->group(function () {
         Route::resource('users', userController::class)->names('admin.users');
     });
     
-    Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
+    Route::get('admin/laporan', [LaporanController::class , 'index'])->name('admin.laporan');
+    Route::get('admin/laporan/export-user-activity', [LaporanController::class, 'ExportUserActivity'])->name('admin.laporan.ExportUserActivity');
+    Route::get('admin/laporan/export-product-stock', [LaporanController::class, 'ExportProductStock'])->name('admin.laporan.ExportProductStock');
+    Route::post('admin/laporan/session', [LaporanController::class , 'storeSession'])->name('admin.laporan.session');
     Route::get('admin/settings', [settingsController::class, 'index'])->name('admin.settings');
     Route::post('admin/settings', [settingsController::class, 'updateSettings'])->name('admin.settings.proccess');
 });

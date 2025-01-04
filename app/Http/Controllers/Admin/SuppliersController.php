@@ -22,25 +22,33 @@ class SuppliersController extends Controller
     public function index()
     {
         // dd(session());
-        $suppliers = $this->supplierRepository->index(5);
+        $suppliers = $this->supplierRepository->index();
         return view('adminpage.suplier', compact('suppliers'));
     }
 
-    public function updateSupplier(Request $r, $id){
-        $result = $this->supplierService->updateService( $r->except(['_token', '_method']), $id);
-        if ($result['success']) {
-            return response()->json([
-                'success' => true,
-                'id' => $id,
-                'data' =>$r->except(['_token', '_method'])
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'errors' => $result['message'],
-                'id' => $id,
-                'data' =>$r->except(['_token', '_method'])
-            ]);
+    public function store(Request $request){
+        // dd($request->all());
+        $result = $this->supplierService->store($request->except('_token'));
+        if(!$result){
+            return redirect()->back()->withErrors($result['message']);
         }
+        return redirect()->route('admin.supplier.index')->with('success',$result['message']);
+    }
+
+    public function destroy($id){
+        $result = $this->supplierRepository->destroy($id);
+        if(!$result){
+            return redirect()->back()->withErrors('Error menghapus data');
+        }
+        return redirect()->back()->with('success','Berhasil menghapis data');
+
+    }
+
+    public function update(Request $request, $id){
+        $result = $this->supplierService->update($request->except('_token','_method'),$id);
+        if(!$result){
+            return redirect()->back()->withErrors($result['message']);
+        }
+        return redirect()->route('admin.supplier.index')->with('success',$result['message']);
     }
 }

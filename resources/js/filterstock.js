@@ -45,13 +45,13 @@ $('#applyFilter').on('click', function(){
     var selectedType =  $('input[name="default-radio"]:checked').val();
     var dateRangeStart =  $('#datepicker-start').val();
     var dateRangeEnd =  $('#datepicker-end').val();
-
     $.ajax({
         url: '/stok/filter',
         type:'POST',
         dataType: 'json',
         data: {
             _token : csrfToken,
+            route : window.location.pathname,
             filterSearch : $('#simple-search-filter').val(),
             status: status,
             type: selectedType,
@@ -65,7 +65,7 @@ $('#applyFilter').on('click', function(){
             if(data.status == 'fail'){
                 console.log(data.message);
             }
-        }
+        },
     })
 })
 

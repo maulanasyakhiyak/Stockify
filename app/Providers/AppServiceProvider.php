@@ -30,6 +30,8 @@ use App\Services\Supplier\SupplierService;
 use App\Services\Supplier\SupplierServiceImplement;
 use App\Services\User\UserService;
 use App\Services\User\UserServiceImplement;
+use App\Services\UserActivity\UserActivityService;
+use App\Services\UserActivity\UserActivityServiceImplement;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -66,6 +68,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DetailOpnameRepository::class, DetailOpnameRepositoryImplement::class);
 
         $this->app->bind(UserActivityRepository::class, UserActivityRepositoryImplement::class);
+
+        $this->app->bind(UserActivityService::class, UserActivityServiceImplement::class);
     }
 
     /**

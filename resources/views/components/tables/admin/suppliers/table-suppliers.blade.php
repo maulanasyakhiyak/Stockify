@@ -36,7 +36,7 @@
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->email }}</td>
                             <td class="p-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <x-tables.admin.suppliers.button-update routeUpdate='admin.suplier.update' :supplier="$item" />
+                                <x-tables.admin.suppliers.button-update routeUpdate='admin.supplier.update' :supplier="$item" />
                             </td>
                         </tr>
                     @empty

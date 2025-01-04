@@ -49,7 +49,7 @@
                         class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
                         <div class="flex items-center w-full space-x-3 md:w-auto">
                                 <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                data-dropdown-ignore-click-outside-class="ignore-dropdown"
+                                    data-dropdown-ignore-click-outside-class="ignore-dropdown"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
@@ -74,7 +74,7 @@
                                             <h3 class="p-2 text-gray-900 dark:text-gray-50 font-semibold">Filter</h3>
                                             <div class="p-2 flex gap-4 text-sm">
                                                 <button id="applyFilter" class="hover:underline ">Apply</button>
-                                                <form action="{{ route('admin.stok.filter.clear') }}" class="inline" method="POST">
+                                                <form action="{{ route('admin.stok.filter.clear',['route'=> Request::path()]) }}" class="inline" method="POST">
                                                     <button type="submit" class="hover:underline ">Clear all</button>
                                                     @csrf
                                                 </form>
@@ -396,8 +396,6 @@
 
                                     </div>
                                 </div>
-                            {{-- </div> --}}
-
                         </div>
                     </div>
 

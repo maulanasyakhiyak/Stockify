@@ -33,7 +33,20 @@ class SupplierRepositoryImplement extends Eloquent implements SupplierRepository
 
         return $query->get();
     }
-    public function updateSupplier($data, $id){
+
+    public function store($data){
+        return $this->model->create($data);
+    }
+
+    public function destroy($id){
+        $supplier = $this->model->find($id);
+        if($supplier){
+            return $supplier->delete();
+        }
+        return false;
+    }
+
+    public function update($data, $id){
         $product = $this->model->find($id);
         if (! $product) {
             throw new ModelNotFoundException("Produk dengan ID {$id} tidak ditemukan.");

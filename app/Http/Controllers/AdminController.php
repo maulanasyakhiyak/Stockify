@@ -421,11 +421,6 @@ class AdminController extends Controller
         return view('adminpage.pengguna');
     }
 
-    public function laporan()
-    {
-        return view('adminpage.laporan');
-    }
-
     // .CATEGORY
 
     public function categoriesProduk(Request $req)
@@ -463,11 +458,6 @@ class AdminController extends Controller
         } else {
             return redirect()->back()->withInput()->withErrors($result['message']);
         }
-    }
-
-    public function attributeProduk()
-    {
-        return view('adminpage.product.attribute-product');
     }
 
     public function deleteCategoriesProduk(CategoriesRepository $categoriesRepository, $id)

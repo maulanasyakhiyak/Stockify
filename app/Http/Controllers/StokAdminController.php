@@ -54,7 +54,7 @@ class StokAdminController extends Controller
             'end' => $req->input('dateRangeEnd'),
         ];
         try{
-            session(['filterRiwayatTransaksi' => $riwayatTransaksiFilter]);
+            session([$req->input('route') => $riwayatTransaksiFilter]);
             return response()->json([
                 'status' => 'success'
             ]);
@@ -67,11 +67,11 @@ class StokAdminController extends Controller
 
     }
 
-    public function clearAllFilter(){
+    public function clearAllFilter(Request $req){
         $previousUrl = strtok(url()->previous(), '?');
         // switch($previousUrl){
         //     case route('admin.stok.riwayat-transaksi'):
-                session()->forget('filterRiwayatTransaksi');
+                session()->forget('/'.$req->input('route'));
         //         break;
         //     case route('admin.stok.productStok'):
         //         break;
@@ -86,7 +86,7 @@ class StokAdminController extends Controller
 
     public function stokRiwayatTransaksi(Request $req){
         $stockTransaction = $this->stokTransRepo->getStockTransaction();
-        $filter = session('filterRiwayatTransaksi');
+        $filter = session('/'.$req->path());
         if($filter || $req->has('search')){
             $stockTransaction = $this->stokTransRepo->getStockTransaction(
             $filter['search'] ?? null,

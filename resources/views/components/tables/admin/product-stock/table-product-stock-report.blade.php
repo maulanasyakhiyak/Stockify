@@ -21,23 +21,16 @@
                         <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Stock updated
                         </th>
-                        <th scope="col" class="w-20 text-center p-4 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
-                            Actions
-                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     @forelse ($productStock as $item)
-                    <tr class="{{ $item->minimal_stock >= $item->stock_akhir && $item['updated_at'] ? 'text-red-400 hover:bg-red-50 dark:hover:bg-gray-700' : 'text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-
+                    <tr class="text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                             <td class="py-2 px-4 text-base whitespace-nowrap"> {{ $item['product_name']  }}</td>
                             <td class="py-2 px-4 text-base whitespace-nowrap"> {{ $item['sku']  }} </td>
                             <td class="py-2 px-4 text-base whitespace-nowrap"> {{ $item['stock_akhir']  }} </td>
                             <td class="py-2 px-4 text-base whitespace-nowrap"> {{ $item['minimal_stock']  }} </td>
-                            <td class="py-2 px-4 text-base whitespace-nowrap"> {{ $item['updated_at'] ? $item['updated_at']  : 'belum ada transaksi'  }} </td>
-                            <td class="py-2 px-4 text-center text-base whitespace-nowrap">
-                                <x-tables.admin.product-stock.button-settings :item="$item" />
-                            </td>
+                            <td class="py-2 px-4 text-base whitespace-nowrap"> {{ $item['updated_at'] ? $item['updated_at']  : 'null'  }} </td>
                         </tr>
                     @empty
                         <tr>
@@ -49,8 +42,4 @@
             </table>
         </div>
     </div>
-</div>
-
-<div class="p-4 border-t dark:border-gray-500">
-    {{ $productStock->links() }}
 </div>
