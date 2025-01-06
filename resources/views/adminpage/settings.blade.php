@@ -20,7 +20,7 @@
                             <input type="text" id="NEW_APP_NAME"
                                 class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Search by product name" name="NEW_APP_NAME"
-                                value="{{ config('app_settings.app_name') }}">
+                                value="{{ $settings->app_name }}">
                         </div>
                     </div>
                     <div class="grid grid-cols-[25rem_auto] w-full border-b border-gray-300 dark:border-gray-100 py-4">
@@ -36,17 +36,20 @@
                                     class="w-full h-full absolute z-10 bg-gray-500 opacity-0 hover:opacity-50 text-white flex justify-center items-center hover:cursor-pointer">
                                     <i class="fa-solid fa-pen text-lg"></i>
                                 </label>
-                                <input type="file" id="logo" accept="image/*" data-preview-target="logo-image"
+                                @php
+                                    $image_path = $settings->logo_path
+                                @endphp
+                                <input type="file" id="logo" accept="image/*" data-image-path="{{$image_path}}" data-preview-target="logo-image"
                                     hidden>
-                                <img src="{{ asset(config('app_settings.logo_path')) }}" data-preview="logo-image"
+                                <img src="{{ asset($image_path) }}" data-preview="logo-image"
                                     class="w-full p-2" alt="">
                             </div>
                         </div>
                     </div>
-
+ 
                 </div>
                 <div class="">
-                    <form action="{{ route('admin.settings.proccess') }}" method="POST">
+                    <form action="{{ route('admin.settings.store') }}" method="POST" id="FORM_SETTING_APP" enctype="multipart/form-data">
                         @csrf
                         <button id="button-submit" type="submit"
                             class="flex items-center gap-2 justify-center w-full px-4 py-2 text-sm font-medium
@@ -58,7 +61,6 @@
                             Save changes
                         </button>
                     </form>
-
                 </div>
             </div>
         </div>

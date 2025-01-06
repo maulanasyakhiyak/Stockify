@@ -42,13 +42,14 @@ class staffController extends Controller
     }
 
     public function dashboard(){
-    return view('staffpage.dashboard');
+        $stockTransaction = $this->stokTransRepo->getStockTransaction();
+        return view('staffpage.dashboard', compact('stockTransaction'));
     }
 
     public function stock(Request $req){
 
     $stockTransaction = $this->stokTransRepo->getStockTransaction();
-    $filter = session('filterRiwayatTransaksi');
+    $filter = session('/'.$req->path());
     // dd($filter);
     if($filter || $req->has('search')){
         $stockTransaction = $this->stokTransRepo->getStockTransaction(
@@ -74,7 +75,7 @@ class staffController extends Controller
     return view('staffpage.stock', compact('stockTransaction','earliestDate','filter'));
     }
 
-    public function confirm_transation(Request $request, $id){
+    public function confirm_transaction(Request $request, $id){
         event(new UserActivityLogged(auth()->id(), 'confirm', "accepting new transaction with id : {$id}"));
         $data = $this->stokTransRepo->update($id,[
             'status' => 'completed'

@@ -67,7 +67,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             $query->whereDate('date', '>=', $start);
         }
 
-        return $query->get();
+        return $query->orderBy('date')->get();
     }
 
     public function getFirstDate()

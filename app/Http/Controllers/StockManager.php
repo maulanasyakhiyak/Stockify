@@ -39,7 +39,7 @@ class StockManager extends Controller
     public function index(Request $req){
         $stockTransaction = $this->stokTransRepo->getStockTransaction();
         
-        $filter = session('filterRiwayatTransaksi');
+        $filter = session('/'.$req->path());
         if($filter || $req->has('search')){
             $stockTransaction = $this->stokTransRepo->getStockTransaction(
             $filter['search'] ?? null,

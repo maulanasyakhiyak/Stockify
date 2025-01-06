@@ -71,7 +71,7 @@
                                     <h3 class="p-2 text-gray-900 dark:text-gray-50 font-semibold">Filter</h3>
                                     <div class="p-2 flex gap-4 text-sm">
                                         <button id="applyFilter" class="hover:underline ">Apply</button>
-                                        <form action="{{ route('admin.stok.filter.clear') }}" class="inline"
+                                        <form action="{{ route('admin.stok.filter.clear',['route'=> Request::path()]) }}" class="inline"
                                             method="POST">
                                             <button type="submit" class="hover:underline ">Clear all</button>
                                             @csrf

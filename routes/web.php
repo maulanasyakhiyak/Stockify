@@ -111,9 +111,11 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
     Route::get('admin/laporan', [LaporanController::class , 'index'])->name('admin.laporan');
     Route::get('admin/laporan/export-user-activity', [LaporanController::class, 'ExportUserActivity'])->name('admin.laporan.ExportUserActivity');
     Route::get('admin/laporan/export-product-stock', [LaporanController::class, 'ExportProductStock'])->name('admin.laporan.ExportProductStock');
+    Route::get('admin/laporan/export-stock-transaction', [LaporanController::class, 'ExportStockTransaction'])->name('admin.laporan.ExportStockTransaction');
     Route::post('admin/laporan/session', [LaporanController::class , 'storeSession'])->name('admin.laporan.session');
-    Route::get('admin/settings', [settingsController::class, 'index'])->name('admin.settings');
-    Route::post('admin/settings', [settingsController::class, 'updateSettings'])->name('admin.settings.proccess');
+    Route::prefix('admin')->group(function () {
+        Route::resource('settings', settingsController::class)->names('admin.settings');
+    });
 });
 Route::group(['middleware' => ['auth', 'verified', 'role:manager']], function () {
 
@@ -140,7 +142,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:staff']], function () {
 
     Route::get('staff/stock', [staffController::class, 'stock'])->name('staff.stock');
 
-    Route::post('staff/stock/confirm/{id}', [staffController::class, 'confirm_transation'])->name('confirm_transation');
+    Route::post('staff/stock/confirm/{id}', [staffController::class, 'confirm_transaction'])->name('confirm_transation');
 
     Route::post('staff/stock/reject/{id}', [staffController::class, 'reject_transaction'])->name('reject_transaction');
 

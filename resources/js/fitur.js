@@ -138,7 +138,7 @@ export class trackingForm {
   init() {
     this.elements.forEach((element) => {
       if (element.attr("type") === "file") {
-        this.currentValues[element.attr("id")] = element[0].files; // Mengambil daftar file
+        this.currentValues[element.attr("id")] = element[0].files[0]; // Mengambil daftar file
       } else {
         this.currentValues[element.attr("id")] = element.val();
       }
@@ -147,7 +147,7 @@ export class trackingForm {
       ];
       element.on("change input", () => {
         if (element.attr("type") === "file") {
-          this.initialValues[element.attr("id")] = element[0].files; // Mengambil daftar file
+          this.initialValues[element.attr("id")] = element[0].files[0]; // Mengambil daftar file
         } else {
           this.initialValues[element.attr("id")] = element.val();
         }

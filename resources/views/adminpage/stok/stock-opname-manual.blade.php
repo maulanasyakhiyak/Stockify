@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="h-72">
+    <div class="min-h-72">
         <div class=" text-gray-800 dark:text-gray-300 h-full flex justify-center items-center" id="search-info">
             <div class="">Search to add product</div>
         </div>

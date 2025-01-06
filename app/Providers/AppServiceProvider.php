@@ -2,37 +2,41 @@
 
 namespace App\Providers;
 
-use App\Repositories\Categories\CategoriesRepository;
-use App\Repositories\Categories\CategoriesRepositoryImplement;
-use App\Repositories\DetailOpname\DetailOpnameRepository;
-use App\Repositories\DetailOpname\DetailOpnameRepositoryImplement;
-use App\Repositories\Product\ProductRepository;
-use App\Repositories\Product\ProductRepositoryImplement;
-use App\Repositories\ProductStock\ProductStockRepository;
-use App\Repositories\ProductStock\ProductStockRepositoryImplement;
-use App\Repositories\RiwayatOpname\RiwayatOpnameRepository;
-use App\Repositories\RiwayatOpname\RiwayatOpnameRepositoryImplement;
-use App\Repositories\StockTransaction\StockTransactionRepository;
-use App\Repositories\StockTransaction\StockTransactionRepositoryImplement;
-use App\Repositories\Supplier\SupplierRepository;
-use App\Repositories\Supplier\SupplierRepositoryImplement;
-use App\Repositories\User\UserRepository;
-use App\Repositories\User\UserRepositoryImplement;
-use App\Repositories\UserActivity\UserActivityRepository;
-use App\Repositories\UserActivity\UserActivityRepositoryImplement;
-use App\Services\Categories\CategoriesService;
-use App\Services\Categories\CategoriesServiceImplement;
-use App\Services\Product\ProductService;
-use App\Services\Product\ProductServiceImplement;
-use App\Services\StockTransaction\StockTransactionService;
-use App\Services\StockTransaction\StockTransactionServiceImplement;
-use App\Services\Supplier\SupplierService;
-use App\Services\Supplier\SupplierServiceImplement;
+use App\Models\AppSetting;
 use App\Services\User\UserService;
-use App\Services\User\UserServiceImplement;
-use App\Services\UserActivity\UserActivityService;
-use App\Services\UserActivity\UserActivityServiceImplement;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Services\Product\ProductService;
+use App\Repositories\User\UserRepository;
+use App\Services\Supplier\SupplierService;
+use App\Services\User\UserServiceImplement;
+use App\Services\Categories\CategoriesService;
+use App\Repositories\Product\ProductRepository;
+use App\Services\AppSettings\AppSettingsService;
+use App\Repositories\Supplier\SupplierRepository;
+use App\Services\Product\ProductServiceImplement;
+use App\Repositories\User\UserRepositoryImplement;
+use App\Services\UserActivity\UserActivityService;
+use App\Services\Supplier\SupplierServiceImplement;
+use App\Repositories\Categories\CategoriesRepository;
+use App\Services\Categories\CategoriesServiceImplement;
+use App\Repositories\Product\ProductRepositoryImplement;
+use App\Repositories\DetailOpname\DetailOpnameRepository;
+use App\Repositories\ProductStock\ProductStockRepository;
+use App\Repositories\UserActivity\UserActivityRepository;
+use App\Services\AppSettings\AppSettingsServiceImplement;
+use App\Repositories\Supplier\SupplierRepositoryImplement;
+use App\Services\StockTransaction\StockTransactionService;
+use App\Repositories\RiwayatOpname\RiwayatOpnameRepository;
+use App\Services\UserActivity\UserActivityServiceImplement;
+use App\Repositories\Categories\CategoriesRepositoryImplement;
+use App\Repositories\StockTransaction\StockTransactionRepository;
+use App\Repositories\DetailOpname\DetailOpnameRepositoryImplement;
+use App\Repositories\ProductStock\ProductStockRepositoryImplement;
+use App\Repositories\UserActivity\UserActivityRepositoryImplement;
+use App\Services\StockTransaction\StockTransactionServiceImplement;
+use App\Repositories\RiwayatOpname\RiwayatOpnameRepositoryImplement;
+use App\Repositories\StockTransaction\StockTransactionRepositoryImplement;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -70,6 +74,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserActivityRepository::class, UserActivityRepositoryImplement::class);
 
         $this->app->bind(UserActivityService::class, UserActivityServiceImplement::class);
+
+        $this->app->bind(AppSettingsService::class, AppSettingsServiceImplement::class);
     }
 
     /**
@@ -77,6 +83,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('*', function ($view) {
+            $settings = AppSetting::first();
+
+            // Jika tidak ada data, berikan nilai default
+            if (!$settings) {
+                $settings = (object) [
+                    'app_name' => 'Stockify',
+                    'logo_path' => 'static/images/logo.svg'
+                ];
+            }
+            $view->with('settings', $settings);
+        });
     }
 }

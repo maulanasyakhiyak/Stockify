@@ -6,7 +6,6 @@ use App\Repositories\Categories\CategoriesRepository;
 use App\Repositories\Supplier\SupplierRepository;
 use App\Services\Product\ProductService;
 use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\Reader\Xls\RC4;
 
 class ManagerController extends Controller
 {

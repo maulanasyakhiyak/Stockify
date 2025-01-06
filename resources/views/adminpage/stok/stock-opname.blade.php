@@ -36,13 +36,13 @@
 
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 mt-3">
             <ul class="flex flex-wrap -mb-px">
-
                 <li class="me-2">
                     <a href="{{ route('admin.stok.productStok.opname-manual') }}"
                         class="inline-block cursor-pointer p-4 border-b-2 rounded-t-lg
                         {{request()->routeIs('admin.stok.productStok.opname-manual') ? 'text-blue-600  border-blue-600 dark:text-blue-500 dark:border-blue-500'
                         : ' hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }} ">
-                        Manual</a>
+                        Manual
+                    </a>
                 </li>
                 <li class="me-2">
                     <a href="{{ route('admin.stok.productStok.opname-withcsv') }}"
@@ -58,7 +58,6 @@
                     : ' hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' }} "
                         aria-current="page">Riwayat</a>
                 </li>
-
             </ul>
         </div>
 

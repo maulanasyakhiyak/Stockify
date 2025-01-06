@@ -441,14 +441,14 @@
                             </div>
                     </div>
 
-                        <button type="button" data-target-modal="stock-opname-modal" id="stock-opname-button"
+                       <a href="{{ route('admin.laporan.ExportStockTransaction', ['url' => request()->path()]) }}"  
                             class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text
                             text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm focus:outline-none
                             focus:ring-2 focus:ring-offset-2
                             focus:ring-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus
                             ring-blue-600 dark:focus:ring-blue-700">
-                            Export PDF
-                        </button>
+                            Export CSV
+                        </a>
                     </div>
                 </div>
                 <x-tables.admin.riwayatTransaksi.table-riwayat_transaksi :stockTransaction="$stockTransaction" />

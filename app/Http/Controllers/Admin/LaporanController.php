@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Exports\ProductStock;
+use App\Exports\StockTransaction;
 use Illuminate\Http\Request;
 use App\Exports\UserActivity;
 use App\Http\Controllers\Controller;
@@ -38,7 +39,7 @@ class LaporanController extends Controller{
 
     public function index(Request $request){
         // dd( );
-        $user_activity = $this->userActivityService->getActivities(session('activity')['range']);
+        $user_activity = $this->userActivityService->getActivities(session('activity')['range'] ?? '1 month');
         $stockTransaction = $this->stockTransactionRepository->getStockTransaction();
         $productStock = $this->productStockRepository->getAll();
         $filter = session('/'.$request->path());
@@ -49,17 +50,7 @@ class LaporanController extends Controller{
             $filter['type'] ?? null,
             $filter['start'] ?? null,
             $filter['end'] ?? null,
-            $request->get('search') ?? null,
             );
-        }else{
-            $filter = [
-                'search' => null,
-                'status' => null,
-                'type' => null,
-                'start' => null,
-                'end' => null,
-                $request->get('search') ?? null,
-            ];
         }
         // dd($filter);
 
@@ -78,6 +69,25 @@ class LaporanController extends Controller{
     {
         $date = now()->format('Y-m-d');
         return Excel::download(new ProductStock($this->productStockRepository), "ExportProductStock-{$date}.xlsx");
+    }
+
+    public function ExportStockTransaction(Request $request)
+    {
+        $date = now()->format('Y-m-d');
+        $filter = session('/'.$request->input('url'));
+        // dd($filter);
+        $stockTransaction = $this->stockTransactionRepository->getStockTransaction();
+        if($filter){
+            $stockTransaction = $this->stockTransactionRepository->getStockTransaction(
+            $filter['search'] ?? null,
+            $filter['status'] ?? null,
+            $filter['type'] ?? null,
+            $filter['start'] ?? null,
+            $filter['end'] ?? null,
+            );
+        }
+        // dd($stockTransaction->toArray());
+        return Excel::download(new StockTransaction($stockTransaction), "ExportProductStock-{$date}.xlsx");
     }
 
 }

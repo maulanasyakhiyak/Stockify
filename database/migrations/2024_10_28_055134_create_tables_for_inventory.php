@@ -115,6 +115,12 @@ class CreateTablesForInventory extends Migration
             $table->dateTime('created');
             $table->dateTime('deleting_at');
         });
+        Schema::create('app_settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('app_name');
+            $table->string('logo_path');   
+            $table->timestamps(); 
+        });
 
         DB::statement("DROP VIEW IF EXISTS product_stock_view");
         DB::statement("
@@ -148,6 +154,7 @@ class CreateTablesForInventory extends Migration
         Schema::dropIfExists('suppliers');
         Schema::dropIfExists('categories');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('app_settings');
 
     }
 }
