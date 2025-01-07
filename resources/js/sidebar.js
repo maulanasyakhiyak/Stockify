@@ -7,7 +7,6 @@ if (sidebar) {
         toggleSidebarMobileHamburger.classList.toggle('hidden');
         toggleSidebarMobileClose.classList.toggle('hidden');
     }
-    
     const toggleSidebarMobileEl = document.getElementById('toggleSidebarMobile');
     const sidebarBackdrop = document.getElementById('sidebarBackdrop');
     const toggleSidebarMobileHamburger = document.getElementById('toggleSidebarMobileHamburger');

@@ -3,42 +3,37 @@ import {searchAutocomplete} from "./fitur";
 
 // $(function () {
 const autocompleteSearch = new searchAutocomplete($("#stock-opname-search"), { addExcept: true }).itemOnClick(function (item) {
-
     var selectedId = item.id
     console.log(selectedId);
-
     var selectedSKU = item.sku
     var selectedName = item.name
     $("#stock-opname-search").val("");
     $("#autocomplete-results").empty().hide();
-
     var html = `<tr data-row-id="${selectedId}" class="bg-white dark:bg-gray-800 dark:border-gray-700 divide-x-2 divide-gray-200 dark:divide-gray-700">
-                                              <th scope="row"
-                                                  class="p-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                  ${selectedName}
-                                              </th>
-                                              <td class="p-2">
-                                                  ${selectedSKU}
-                                              </td>
-                                              <td class="p-2">
-                                                   <input type="text" data-input-stock-id="${selectedId}" id="${selectedId}" name="stockopname[${selectedId}]" placeholder="0" class="w-full border-none focus:ring-0 py-1 px-2 placeholder:text-sm bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white">
-                                              </td>
-                                              <td class="p-2">
-                                                  <div class="flex items-center justify-center">
-                                                  <button class="" data-delete-row-stock-opname="${selectedId}">
-                                                      <i class="fa-solid fa-minus"></i>
-                                                  </button>
-                                                  </div>
-                                              </td>
-                                          </tr>`;
-
+                    <th scope="row"
+                        class="p-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        ${selectedName}
+                    </th>
+                    <td class="p-2">
+                        ${selectedSKU}
+                    </td>
+                    <td class="p-2">
+                        <input type="text" data-input-stock-id="${selectedId}" id="${selectedId}" name="stockopname[${selectedId}]" placeholder="0" class="w-full border-none focus:ring-0 py-1 px-2 placeholder:text-sm bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white">
+                    </td>
+                    <td class="p-2">
+                        <div class="flex items-center justify-center">
+                        <button class="" data-delete-row-stock-opname="${selectedId}">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        </div>
+                    </td>
+                </tr>`;
     $("#item-search-append").append(html);
     Inputmask(maskOptions).mask($(`#${selectedId}`));
     $("#search-info").addClass("hidden");
     $("#product-list-result").removeClass("hidden");
     detectInputProduct();
 });
-// })
 
 var csrfToken = $('meta[name="csrf-token"]').attr("content");
 var originalUrl = $('meta[name="original"]').attr("content");
@@ -63,7 +58,6 @@ $("[data-tab]").on("click", function () {
     var showContent = $(this).data("tab");
     $(`#${showContent}`).removeClass("hidden");
 });
-
 
 function detectInputProduct() {
     const disabled =
@@ -103,7 +97,6 @@ $(document).on(
 );
 
 $("[data-button-start-opname]").on("click", function () {
-
     var dataOpname = [];
     $("input[data-input-stock-id]").each(function () {
         var inputValue = $(this).val();
@@ -200,6 +193,5 @@ $("#upload-opname-csv").on("change", function () {
                 toastr.error(response.message)
             }
         },
-    });
-
+    });5
 });

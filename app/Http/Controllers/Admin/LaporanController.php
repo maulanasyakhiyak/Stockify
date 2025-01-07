@@ -38,7 +38,6 @@ class LaporanController extends Controller{
     }
 
     public function index(Request $request){
-        // dd( );
         $user_activity = $this->userActivityService->getActivities(session('activity')['range'] ?? '1 month');
         $stockTransaction = $this->stockTransactionRepository->getStockTransaction();
         $productStock = $this->productStockRepository->getAll();
@@ -52,27 +51,22 @@ class LaporanController extends Controller{
             $filter['end'] ?? null,
             );
         }
-        // dd($filter);
-
         $earliestDate =  $this->stockTransactionRepository->getFirstDate();
         return view('adminpage.laporan', compact('user_activity','stockTransaction','earliestDate','productStock','filter'));
     }
 
-    public function ExportUserActivity()
-    {
+    public function ExportUserActivity(){
         $date = now()->format('Y-m-d');
         $timeRange = session('activity')['range'];
         return Excel::download(new UserActivity($timeRange), "UserActivity-{$date}.xlsx");
     }
     
-    public function ExportProductStock()
-    {
+    public function ExportProductStock(){
         $date = now()->format('Y-m-d');
         return Excel::download(new ProductStock($this->productStockRepository), "ExportProductStock-{$date}.xlsx");
     }
 
-    public function ExportStockTransaction(Request $request)
-    {
+    public function ExportStockTransaction(Request $request) {
         $date = now()->format('Y-m-d');
         $filter = session('/'.$request->input('url'));
         // dd($filter);

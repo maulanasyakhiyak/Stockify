@@ -33,8 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element.classList.add('ignore-dropdown'); // Menambahkan kelas 'ignore' ke setiap elemen
         });
     });
-})
-
+});
 $('#applyFilter').on('click', function(){
     var status = []
     $('[data-checkbox="status"]').each(function(){
@@ -67,25 +66,20 @@ $('#applyFilter').on('click', function(){
             }
         },
     })
-})
-
+});
 const filterSearch = new searchAutocomplete($('#simple-search-filter')).itemOnClick(function(item){
     $('#simple-search-filter').val(item.name)
-})
-
-
+});
 $('[data-filter-collapse]').each(function () {
     $(this).on('click', function () {
         $(this).toggleClass('bg-blue-50 text-blue-400');
         $(`#${$(this).data('filter-collapse')}`).toggleClass('hidden');
         var otherElements = $('[data-filter-collapse]').not(this);
-
         otherElements.each(function () {
             $(this).removeClass('bg-blue-50 text-blue-400');
             if (!$(`#${$(this).data('filter-collapse')}`).hasClass('hidden')) {
                 $(`#${$(this).data('filter-collapse')}`).addClass('hidden')
             }
         });
-
     })
-})
+});

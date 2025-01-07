@@ -187,7 +187,6 @@ async function fetchAndRender(range) {
 
 if (document.getElementById("stock-charts")) {
     const selectedRange = $('[data-selected="true"]').data("item-value");
-
     fetchAndRender(selectedRange);
 }
 
@@ -195,9 +194,7 @@ $("#range-select").on("change", async function () {
     const selectedRange = $(this).val();
     fetchAndRender(selectedRange);
 });
-
 // SELECT RANGE CHART ==================================================================================================================================================================
-
 const options = {
     placement: "bottom",
     triggerType: "click",
@@ -209,32 +206,22 @@ const options = {
     onShow: () => {},
     onToggle: () => {},
 };
-
 const $triggerEl = $("#range-button").get(0);
-const $targetEl = $(
-    `#${$("#range-button").data("dropdown-select-target")}`
-).get(0);
+const $targetEl = $(`#${$("#range-button").data("dropdown-select-target")}`).get(0);
 const dropdown = new Dropdown($targetEl, $triggerEl, options);
-
 function changeSelectedItem() {
     var itemSelected = $('[data-selected="true"]').text();
     $("#range-button span").text(itemSelected);
 }
-
 changeSelectedItem();
 
 $("[data-item-value]").on("click", function () {
     var value = $(this).data("item-value");
-
     $("[data-item-value]").each(function () {
         $(this).removeAttr("data-selected");
     });
-
     $(this).attr("data-selected", true);
-
     changeSelectedItem();
-
     fetchAndRender(value);
-
     dropdown.hide();
 });

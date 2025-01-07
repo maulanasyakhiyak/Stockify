@@ -18,7 +18,6 @@ $("[data-button-delete-selected]").on("click", function () {
     addDataToModal($(this).data("button-delete-selected"));
 });
 
-// .New atribut form
 $("[data-add-atribute-target]").on("click", function () {
     const targetEle = $(this).data('add-atribute-target')
     var target = $(`#${targetEle}`)
@@ -140,7 +139,6 @@ $("#button-cancel-upload").on("click", function () {
 // PREVIEW IMAGE FUNCTION =========================================================================
 $("input[data-file]").on("change", function () {
     const file = this.files[0];
-
     var target = $(this).attr("id");
     if (file) {
         const reader = new FileReader();
@@ -154,7 +152,6 @@ $("input[data-file]").on("change", function () {
         $(`[data-image=${target}]`).hide();
     }
 });
-
 
 // CHECK FUNCTION
 $("[data-checkbox_item]").on("change", function () {
@@ -277,12 +274,10 @@ $(function () {
         event.preventDefault();
         $(this).addClass("bg-gray-100 dark:bg-gray-600"); // Sorot area
     });
-
     // Event drag leave
     dropArea.on("dragleave", function () {
         $(this).removeClass("bg-gray-100 dark:bg-gray-600"); // Hapus sorotan
     });
-
     // Event drop
     dropArea.on("drop", function (event) {
         event.preventDefault();

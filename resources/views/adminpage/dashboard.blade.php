@@ -6,8 +6,7 @@
 @endsection
 @section('content')
     <div class="grid grid-cols-1 gap-4 p-4">
-        <div
-            class="w-full grid grid-cols-3 p-3 rounded-lg shadow divide-x bg-white divide-gray-300 dark:bg-gray-800 dark:divide-gray-600">
+        <div class="w-full grid grid-cols-3 p-3 rounded-lg shadow divide-x bg-white divide-gray-300 dark:bg-gray-800 dark:divide-gray-600">
             <a href="{{ route('admin.product.data-produk') }}" class="p-3 flex flex-col gap-3">
                 <div class="">
                     <h3 class="text-base sm:text-lg font-medium text-gray-700 dark:text-white">Jumlah Product</h3>
@@ -41,8 +40,7 @@
         </div>
         <div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
             <!-- Main widget -->
-            <div
-                class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex-shrink-0">
                         <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white"
@@ -108,10 +106,8 @@
                 </div>
             </div>
 
-
             <!--Tabs widget -->
-            <div
-                class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                 <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">User Activity
                     <button data-popover-target="popover-description" data-popover-placement="bottom-end"
                         type="button"><svg class="w-4 h-4 ml-2 text-gray-400 hover:text-gray-500" aria-hidden="true"

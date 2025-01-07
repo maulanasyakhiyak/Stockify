@@ -138,7 +138,6 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
         
             $total = $total_before->total ?? 0;
             $total_stock = 0;
-        
             $data = $query->get()->map(function($item) use (&$total, &$total_stock, $formatDate) {
                 $total += $item->total_quantity ?? 0;
                 $total_stock += $item->total_quantity ?? 0;

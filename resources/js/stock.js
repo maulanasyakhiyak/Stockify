@@ -49,8 +49,6 @@ $('[data-save-minimum-stock').on('click', function(){
                 }
             }
     })
-
-
 })
 
 

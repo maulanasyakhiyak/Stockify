@@ -34,7 +34,6 @@ class staffController extends Controller
         $this->productRepository = $productRepository;
         $this->detailOpnameRepository = $detailOpnameRepository;
         $this->riwayatOpnameRepository = $riwayatOpnameRepository;
-
     }
 
     public function index(){
@@ -47,49 +46,45 @@ class staffController extends Controller
     }
 
     public function stock(Request $req){
-
-    $stockTransaction = $this->stokTransRepo->getStockTransaction();
-    $filter = session('/'.$req->path());
-    // dd($filter);
-    if($filter || $req->has('search')){
-        $stockTransaction = $this->stokTransRepo->getStockTransaction(
-        $filter['search'] ?? null,
-        $filter['status'] ?? null,
-        $filter['type'] ?? null,
-        $filter['start'] ?? null,
-        $filter['end'] ?? null,
-        );
-    }else{
-        $filter = [
-            'search' => null,
-            'status' => null,
-            'type' => null,
-            'start' => null,
-            'end' => null,
-            $req->get('search') ?? null,
-        ];
-    }
-    // dd($stockTransaction);
-
-    $earliestDate =  $this->stokTransRepo->getFirstDate();
-    return view('staffpage.stock', compact('stockTransaction','earliestDate','filter'));
+        $stockTransaction = $this->stokTransRepo->getStockTransaction();
+        $filter = session('/'.$req->path());
+        if($filter || $req->has('search')){
+            $stockTransaction = $this->stokTransRepo->getStockTransaction(
+            $filter['search'] ?? null,
+            $filter['status'] ?? null,
+            $filter['type'] ?? null,
+            $filter['start'] ?? null,
+            $filter['end'] ?? null,
+            );
+        }else{
+            $filter = [
+                'search' => null,
+                'status' => null,
+                'type' => null,
+                'start' => null,
+                'end' => null,
+                $req->get('search') ?? null,
+            ];
+        }
+        $earliestDate =  $this->stokTransRepo->getFirstDate();
+        return view('staffpage.stock', compact('stockTransaction','earliestDate','filter'));
     }
 
     public function confirm_transaction(Request $request, $id){
         event(new UserActivityLogged(auth()->id(), 'confirm', "accepting new transaction with id : {$id}"));
-        $data = $this->stokTransRepo->update($id,[
-            'status' => 'completed'
+        $this->stokTransRepo->update($id,[
+            'status' => 'completed',
+            'notes' => $request->input('notes')
         ]);
-        // dd($data);
         return redirect()->back()->with('success', 'Berhasil konfirmasi transaksi');
     }
-    
+  
     public function reject_transaction(Request $request, $id){
         event(new UserActivityLogged(auth()->id(), 'reject', "rejecting new transaction with id : {$id}"));
         $this->stokTransRepo->update($id,[
-            'status' => 'cancelled'
+            'status' => 'cancelled',
+            'notes' => $request->input('notes')
         ]);
         return redirect()->back()->with('success', 'Berhasil menolak transaksi');
     }
-
 }
