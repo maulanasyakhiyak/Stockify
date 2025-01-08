@@ -13,6 +13,7 @@ use App\Http\Controllers\StokAdminController;
 use App\Http\Controllers\Admin\userController;
 use App\Http\Controllers\Admin\SuppliersController;
 use App\Http\Controllers\Api\ApiTransactionController;
+use App\Http\Controllers\Manager\LaporanController as ManagerLaporanController;
 use App\Http\Controllers\verificationController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -131,7 +132,8 @@ Route::group(['middleware' => ['auth', 'verified', 'role:manager']], function ()
 
     Route::get('manager/supplier', [ManagerController::class, 'supplier'])->name('manager.supplier');
 
-    Route::get('manager/laporan', [ManagerController::class, 'laporan'])->name('manager.laporan');
+    Route::get('manager/laporan', [ManagerLaporanController::class, 'index'])->name('manager.laporan');
+    Route::post('manager/laporan/filter', [ManagerLaporanController::class, 'stock_filter'])->name('manager.laporan.filter');
 
 });
 Route::group(['middleware' => ['auth', 'verified', 'role:staff']], function () {

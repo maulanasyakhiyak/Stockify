@@ -479,16 +479,6 @@
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
-                <div>
-                    <label for="notes"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Notes</label>
-                    <textarea id="notes" rows="4" name="notes"
-                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Enter event notes here" value="{{ old('notes') }}">{{ old('notes') }}</textarea>
-                    @error('notes')
-                        <span class="text-red-500">{{ $message }}</span>
-                    @enderror
-                </div>
                 <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
                     <button type="submit"
                         class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">

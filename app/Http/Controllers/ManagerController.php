@@ -66,7 +66,5 @@ class ManagerController extends Controller
         return view('managerpage.dashboard');
     }
 
-    public function laporan(){
-        return view('managerpage.dashboard');
-    }
+
 }

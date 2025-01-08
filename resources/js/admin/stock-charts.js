@@ -221,7 +221,5 @@ $("[data-item-value]").on("click", function () {
         $(this).removeAttr("data-selected");
     });
     $(this).attr("data-selected", true);
-    changeSelectedItem();
-    fetchAndRender(value);
     dropdown.hide();
 });

@@ -25,19 +25,20 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
     }
-
     public function attributes()
     {
         return $this->hasMany(ProductAttribute::class);
     }
-
     public function stockTransactions()
     {
         return $this->hasMany(StockTransaction::class);
+    }
+    public function stock()
+    {
+        return $this->hasOne(ProductStock::class);
     }
 }

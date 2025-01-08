@@ -19,4 +19,6 @@ interface StockTransactionRepository extends Repository{
     public function get_total_transaction($option='in');
 
     public function get_total_stock();
+
+    public function laporanStokBarang($date_start = null, $date_end = null, $kategoriId = null);
 }

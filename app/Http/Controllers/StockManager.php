@@ -70,7 +70,6 @@ class StockManager extends Controller
             'sku' => $req->input('product_sku'),
             'type' => $req->input('type'),
             'quantity' => $req->input('quantity'),
-            'notes' => $req->input('notes'),
         ]);
         if($result['status'] == 'success'){
             return redirect()->back()->with('success', $result['message'])->withInput();

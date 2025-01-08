@@ -2,6 +2,7 @@
 
 namespace App\Repositories\ProductStock;
 
+use App\Models\ProductStock;
 use App\Models\ProductStockView;
 use LaravelEasyRepository\Implementations\Eloquent;
 
@@ -14,15 +15,17 @@ class ProductStockRepositoryImplement extends Eloquent implements ProductStockRe
     */
     protected $model;
 
-    public function __construct(ProductStockView $model)
+    public function __construct(ProductStock $model)
     {
         $this->model = $model;
     }
 
     public function getAll($search = null, $paginate = null){
-        $query = $this->model->query();
+        $query = $this->model->with('product');
         if($search){
-            $query->where('product_name', 'like', "%{$search}%");
+            $query->whereHas('product', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
         }
         if($paginate){
             return $query->paginate($paginate);
@@ -33,10 +36,10 @@ class ProductStockRepositoryImplement extends Eloquent implements ProductStockRe
 
     public function getOne($id ,$val = null)
     {
-        $query = $this->model->query();
+        $query = $this->model->with('product');
 
         if($val){
-            return $query->where('id', $id)->pluck($val)->first();
+            return $query->where('product_id', $id)->pluck($val)->first();
         }else{
             $query->find($id);
         }

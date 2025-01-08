@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\StockTransaction;
 use App\Events\UserActivityLogged;
+use App\Models\ProductStock;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use LaravelEasyRepository\Implementations\Eloquent;
@@ -19,14 +20,15 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
      * @property Model|mixed $model;
      */
     protected $model;
+    protected $productStock;
 
-    public function __construct(StockTransaction $model)
+    public function __construct(StockTransaction $model,ProductStock $productStock)
     {
         $this->model = $model;
+        $this->productStock = $productStock;
     }
 
-    public function searchTransaction($search)
-    {
+    public function searchTransaction($search){
         $query = $this->model->with('product', 'user');
         $product_id = Product::where('name', 'like', '%' . $search . '%')->first()->id ?? null;
         $user_id = User::where('name', 'like', '%' . $search . '%')->first()->id ?? null;
@@ -39,8 +41,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
         return $query->get();
     }
 
-    public function getStockTransaction($searchFilter = null, $status = null, $type = null, $start = null, $end = null)
-    {
+    public function getStockTransaction($searchFilter = null, $status = null, $type = null, $start = null, $end = null){
         //    dd($search);
         $query = $this->model->with('product', 'user');
         $product_query = Product::query();
@@ -70,13 +71,11 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
         return $query->orderBy('date')->get();
     }
 
-    public function getFirstDate()
-    {
+    public function getFirstDate(){
         $this->model->orderBy('date', 'asc')->first()->date ?? 0;
     }
 
-    public function get_stock_for_chart($range)
-    {
+    public function get_stock_for_chart($range){
         if ($range) {
             $query = $this->model
                 ->selectRaw('date, YEAR(date) as year, MONTH(date) as month, DAY(date) as day, WEEK(date) as week, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total_quantity')
@@ -163,6 +162,17 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             return['message' => 'Product not found'];
         }
         event(new UserActivityLogged(auth()->id(), 'add', "adding new transaction with SKU : {$data['sku']}"));
+        // adding NEW STOCK
+        $stock = $this->productStock->find($product_id[0]);
+        if ($stock) {
+            $stock->increment('stock', $data['quantity'] * ($data['type'] === 'in' ? 1 : -1));
+        } else {
+            $this->productStock->create([
+                'product_id' => $product_id[0],
+                'stock' => $data['quantity'] * ($data['type'] === 'in' ? 1 : -1),
+            ]);
+        }
+
         return $this->model->create([
             'product_id' => $product_id[0],
             'user_id' => auth()->id(),
@@ -188,10 +198,71 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                     ->count();
         }
     }
+
     public function get_total_stock(){
         $data = $this->model->selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total')
                     ->where('status', 'completed')->first();
         return $data->total;
+    }
+
+    public function laporanStokBarang($date_start = null, $date_end = null, $kategoriId = null)
+    {
+        $query = $this->model->with('product')->where('status', 'completed');
+        $startDate = $query->min('date');
+        if($date_start && $date_end){
+            $startDate = Carbon::parse($date_start)->format('Y-m-d');
+            $endDate = Carbon::parse($date_end)->format('Y-m-d');
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+        // Jika kategori diberikan, filter berdasarkan kategori
+        if ($kategoriId) {
+            $query->whereHas('product.category', function ($query) use ($kategoriId) {
+                $query->where('id', $kategoriId);
+            });
+        }
+
+        // $stokBarang = $query->selectRaw("product_id, 
+        //                             $groupBy as periode, 
+        //                             SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total_quantity")
+        //                     ->groupBy('product_id', DB::raw($groupBy))
+        //                     ->orderBy(DB::raw($groupBy), 'asc')
+        //                     ->groupBy('product_id')
+        //                     ->get();
+        $laporan = $query->select('product_id')
+                    ->selectRaw("SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total_quantity")
+                    ->groupBy('product_id')
+                    ->get()->map(function($item) use($startDate){
+                        $totalBefore = $this->model->where('status', 'completed')
+                                    ->where('product_id', $item->product_id)
+                                    ->where('date', '<' ,$startDate)
+                                    ->selectRaw("SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total")
+                                    ->first()->total ?? 0;
+
+                        return [
+                            'total_bfore' =>$totalBefore ?? 0,
+                            'SKU' => $item->product->sku,
+                            'product_id' => $item->product_id,
+                            'total_quantity' => $item->total_quantity,
+                            'product_name' => $item->product->name,
+                            'category_name' => $item->product->category->name,
+                            ];
+                    });
+
+        
+        // $total = 0;
+        // ->map(function ($item) use(&$total){
+        //     $total += $item->total_quantity;
+        //     return [
+        //         'product_id' => $item->product_id,
+        //         'periode' => $item->periode,
+        //         'stok' => $item->total_quantity,
+        //         'total' => $total,
+        //     ];
+        // });
+
+        // dd($laporan->toArray());
+
+        return $laporan;
     }
 }
 
@@ -315,7 +386,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             //     break;
 
             //     case 'all-time':
-            //         $data = $this->model->select(DB::raw('DATE(date) as tanggal, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
+            //         $data = $this->model->select(DB::raw('DATE(date) as date, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
             //             ->where('status', 'completed')
             //             ->groupBy('date')
             //             ->get();
@@ -325,7 +396,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             //             $sumTotal += $item ? $item->total : 0;
             //             $total = $item ? $item->total : 0;
             //             return [
-            //                 'date' => $item->tanggal,
+            //                 'date' => $item->date,
             //                 'total' => $total,
             //                 'total_quantity' => $sumTotal,
             //             ];

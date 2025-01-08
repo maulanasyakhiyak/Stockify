@@ -70,6 +70,14 @@ class CreateTablesForInventory extends Migration
             $table->timestamps();
         });
 
+        Schema::create('product_stock', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_id')->primary();
+            $table->integer('stock')->default(0);
+            $table->integer('minimal_stock')->default(0);
+            $table->timestamps();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        });
+
         // Table stock_transactions
         Schema::create('stock_transactions', function (Blueprint $table) {
             $table->id();
@@ -121,22 +129,6 @@ class CreateTablesForInventory extends Migration
             $table->string('logo_path');   
             $table->timestamps(); 
         });
-
-        DB::statement("DROP VIEW IF EXISTS product_stock_view");
-        DB::statement("
-        CREATE VIEW product_stock_view AS
-        SELECT ROW_NUMBER() OVER (ORDER BY p.id) AS id,
-                p.id AS product_id,
-                p.name AS product_name,
-                p.sku,
-                p.minimal_stock,
-                (COALESCE(SUM(CASE WHEN st.type = 'in' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0) -
-                    COALESCE(SUM(CASE WHEN st.type = 'out' AND st.status = 'completed' THEN st.quantity ELSE 0 END), 0)) AS stock_akhir,
-                    MAX(st.updated_at) AS updated_at
-        FROM products p
-        LEFT JOIN stock_transactions st ON p.id = st.product_id
-        GROUP BY p.id, p.name, p.sku;
-    ");
     }
 
     /**
@@ -150,6 +142,7 @@ class CreateTablesForInventory extends Migration
         Schema::dropIfExists('user_activity_logs');
         Schema::dropIfExists('stock_transactions');
         Schema::dropIfExists('product_attributes');
+        Schema::dropIfExists('product_stock');
         Schema::dropIfExists('products');
         Schema::dropIfExists('suppliers');
         Schema::dropIfExists('categories');

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Product;
+use App\Models\ProductStock;
 use App\Models\StockTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -102,6 +103,19 @@ class StockTransactionFactory extends Factory
             }
         }
         $this->index += 1;
+
+        if($status=='completed'){
+            $stock = ProductStock::find($product_id);
+            if ($stock) {
+                $stock->increment('stock', $qty * ($type === 'in' ? 1 : -1));
+            } else {
+                ProductStock::create([
+                    'product_id' => $product_id,
+                    'stock' => $qty * ($type === 'in' ? 1 : -1),
+                ]);
+            }
+        }
+
         return [
             'product_id' => $product_id,
             'user_id' => User::inRandomOrder()->first()->id,

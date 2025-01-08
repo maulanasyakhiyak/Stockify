@@ -1,3 +1,7 @@
+import { Dropdown } from "flowbite";
+import { Datepicker } from "flowbite-datepicker";
+import { DateRangePicker } from "flowbite-datepicker";
+
 export class searchAutocomplete {
   constructor(ele, options = {}, table) {
     this.inputEle = ele;
@@ -21,14 +25,16 @@ export class searchAutocomplete {
 
   sendToDb(term) {
     console.log(this.options.searching);
-    
-    let by = ['name', 'sku'].includes(this.options.searching) ? this.options.searching : 'name';
+
+    let by = ["name", "sku"].includes(this.options.searching)
+      ? this.options.searching
+      : "name";
     $.ajax({
       url: "/admin/simple-search",
       dataType: "json",
       data: {
         table: "2d2d2c4b9e1d2f6f2bcd345b223ee6d4",
-        search : by,
+        search: by,
         term: term,
       },
       success: (data) => {
@@ -151,14 +157,16 @@ export class trackingForm {
         } else {
           this.initialValues[element.attr("id")] = element.val();
         }
-        this.isChanged()
+        this.isChanged();
         this.triggerTrackingCallback();
       });
     });
   }
 
   isChanged() {
-    if ( JSON.stringify(this.initialValues) !== JSON.stringify(this.currentValues)) {
+    if (
+      JSON.stringify(this.initialValues) !== JSON.stringify(this.currentValues)
+    ) {
       this.changed = true;
     } else {
       this.changed = false;
@@ -177,6 +185,64 @@ export class trackingForm {
   triggerTrackingCallback() {
     if (this.trackingCallback) {
       this.trackingCallback();
+    }
+  }
+}
+
+export class DropdownSelector {
+  constructor(triggerSelector, dropdownTargetSelector) {
+    this.triggerSelector = triggerSelector;
+    this.options = {
+      placement: "bottom",
+      triggerType: "click",
+      offsetSkidding: 0,
+      offsetDistance: 10,
+      delay: 300,
+      ignoreClickOutsideClass: false,
+      onHide: () => {},
+      onShow: () => {},
+      onToggle: () => {},
+    };
+    this.$triggerEl = $(triggerSelector).get(0);
+    this.$targetEl = $(
+      `#${$(triggerSelector).data("dropdown-select-target")}`
+    ).get(0);
+    this.dropdown = new Dropdown(this.$targetEl, this.$triggerEl, this.options);
+    this.onChangeCallback = null;
+    this.initialize();
+  }
+
+  initialize() {
+    this.updateSelectedItem();
+
+    $("[data-item-value]").on("click", (event) => {
+      const $item = $(event.currentTarget);
+      $("[data-item-value]").each(function () {
+        $(this).removeAttr("data-selected");
+      });
+      $item.attr("data-selected", true);
+      this.updateSelectedItem();
+      this.dropdown.hide();
+      if (typeof this.onChangeCallback === "function") {
+        this.onChangeCallback(this.value);
+    }
+    });
+  }
+
+  getValue() {
+    const selectedItem = $('[data-selected="true"]').data("item-value");
+    return selectedItem || this.value || null;
+  }
+  updateSelectedItem() {
+    const itemSelected = $('[data-selected="true"]').text();
+    $(`${this.triggerSelector} span`).text(itemSelected);
+  }
+  onchange(callback) {
+    // Assign the callback function for onchange event
+    if (typeof callback === "function") {
+      this.onChangeCallback = callback;
+    } else {
+      console.error("onchange callback must be a function");
     }
   }
 }
