@@ -23,8 +23,8 @@ class AppSettingsServiceImplement extends Service implements AppSettingsService{
     $filename = 'logo.' . $image->getClientOriginalExtension();
     $manager = new ImageManager(new Driver);
     $manager->read($image)
-              ->resize(200,200)
-              ->save($path.$filename);
+            ->resize(200,200)
+            ->save($path.$filename);
     return 'static/images/'.$filename;
   }
 
@@ -38,6 +38,7 @@ class AppSettingsServiceImplement extends Service implements AppSettingsService{
     $query = AppSetting::first();
     if(!$query){
       $query = new AppSetting();
+      $query->logo_path = 'static/images/logo.svg';
     }
     if (isset($data['image_file'])) {
       if($query->logo_path && file_exists(public_path($query->logo_path))){
@@ -47,7 +48,7 @@ class AppSettingsServiceImplement extends Service implements AppSettingsService{
       $query->logo_path = $image;
     }
     if (isset($data['app_name'])) {
-        $query->app_name = $data['app_name'];
+      $query->app_name = $data['app_name'];
     }
     $query->save();
   }

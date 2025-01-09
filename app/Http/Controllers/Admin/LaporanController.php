@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Exports\ProductStock;
-use App\Exports\StockTransaction;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Exports\ProductStock;
 use App\Exports\UserActivity;
+use App\Exports\StockTransaction;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\UserActivity\UserActivityService;
@@ -39,20 +40,48 @@ class LaporanController extends Controller{
 
     public function index(Request $request){
         $user_activity = $this->userActivityService->getActivities(session('activity')['range'] ?? '1 month');
+        $category =  Category::select('id', 'name')->get(); 
+        // GET PRODUCT STOCK
+        $filter = session('filter_laporan_stock');
+        $laporan_stock = $this->stockTransactionRepository->laporanStokBarang();
+        if($filter){
+            $laporan_stock = $this->stockTransactionRepository->laporanStokBarang(
+                $filter['date_start'] ?? null,
+                $filter['date_end'] ?? null,
+                $filter['category'] ?? null,
+            );
+        }
+        $data_filter = [
+            'category' => isset($filter['category']) 
+                ? optional($category->firstWhere('id', $filter['category']))->name 
+                : null,
+            'period' => isset($filter['date_start'], $filter['date_end']) 
+                ? $filter['date_start'] . ' - ' . $filter['date_end'] 
+                : null,
+        ];
+
+        // GET STOCK TRANSACTION
         $stockTransaction = $this->stockTransactionRepository->getStockTransaction();
-        $productStock = $this->productStockRepository->getAll();
-        $filter = session('/'.$request->path());
-        if($filter || $request->has('search')){
+        $filter_transaction = session('/'.$request->path());
+        if($filter_transaction || $request->has('search')){
             $stockTransaction = $this->stockTransactionRepository->getStockTransaction(
-            $filter['search'] ?? null,
-            $filter['status'] ?? null,
-            $filter['type'] ?? null,
-            $filter['start'] ?? null,
-            $filter['end'] ?? null,
+            $filter_transaction['search'] ?? null,
+            $filter_transaction['status'] ?? null,
+            $filter_transaction['type'] ?? null,
+            $filter_transaction['start'] ?? null,
+            $filter_transaction['end'] ?? null,
             );
         }
         $earliestDate =  $this->stockTransactionRepository->getFirstDate();
-        return view('adminpage.laporan', compact('user_activity','stockTransaction','earliestDate','productStock','filter'));
+        return view('adminpage.laporan', compact(
+            'user_activity',
+            'stockTransaction',
+            'earliestDate',
+            'filter_transaction',
+            'data_filter',
+            'laporan_stock',
+            'category'
+        ));
     }
 
     public function ExportUserActivity(){
@@ -63,7 +92,12 @@ class LaporanController extends Controller{
     
     public function ExportProductStock(){
         $date = now()->format('Y-m-d');
-        return Excel::download(new ProductStock($this->productStockRepository), "ExportProductStock-{$date}.xlsx");
+        $filter = session('filter_laporan_stock');
+        return Excel::download(new ProductStock([
+            'start_date' => $filter['date_start'] ?? null,
+            'end_date' => $filter['date_end'] ?? null,
+            'category' => $filter['category'] ?? null,
+        ],$this->stockTransactionRepository), "ExportProductStock-{$date}.xlsx");
     }
 
     public function ExportStockTransaction(Request $request) {

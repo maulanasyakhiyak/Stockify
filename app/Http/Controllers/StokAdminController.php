@@ -114,6 +114,7 @@ class StokAdminController extends Controller
 
     public function productStok(Request $r){
         $productStock = $this->productStockRepository->getAll(null,10);
+        // dd($productStock->toArray());
         if($r->has('search')){
             if($r->get('search') == ''){
                 return redirect()->route('admin.stok.productStok');
@@ -123,18 +124,12 @@ class StokAdminController extends Controller
         return view('adminpage.stok.produk-stok', compact('productStock'));
     }
 
-    public function updateMinimumStock(Request $r){
-        $data = [
-            'minimal_stock' => $r->input('stock')
-        ];
-        $id = $r->input('id');
+    public function updateMinimumStock(Request $r, $id){
+        // dd($r->all());
         try{
-            $result = $this->productRepository->updateProduct($data,$id);
+            $result = $this->productStockRepository->updateMinimum($id,$r->input('new_minimum_stock'));
             // dd($result);
-            return response()->json([
-                'status' => 'success',
-                'result' => $result
-            ]);
+            return redirect()->back();
         }catch(Exception $e){
             return response()->json([
                 'status' => 'error',

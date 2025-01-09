@@ -190,10 +190,10 @@ if (document.getElementById("stock-charts")) {
     fetchAndRender(selectedRange);
 }
 
-$("#range-select").on("change", async function () {
-    const selectedRange = $(this).val();
-    fetchAndRender(selectedRange);
-});
+// $("#range-select").on("change", async function () {
+//     const selectedRange = $(this).val();
+//     fetchAndRender(selectedRange);
+// });
 // SELECT RANGE CHART ==================================================================================================================================================================
 const options = {
     placement: "bottom",
@@ -221,5 +221,7 @@ $("[data-item-value]").on("click", function () {
         $(this).removeAttr("data-selected");
     });
     $(this).attr("data-selected", true);
+    changeSelectedItem()
+    fetchAndRender(value)
     dropdown.hide();
 });

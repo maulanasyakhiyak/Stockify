@@ -5,14 +5,25 @@
 @section('subtitle', 'Laporan')
 @section('content')
     <div class="relative flex flex-col p-4 overflow-visible min-h-96">
-        <div class="mb-4 flex justify-between">
+        <div class="mb-4">
             <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Laporan</h1>
         </div>
         <div class="grid grid-cols-1 gap-y-4 divide-gray-900">
             <div class="bg-white shadow dark:bg-gray-800 sm:rounded-lg overflow-hidden pb-2">
                 <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Product Stock</h2>
-                    <div class="flex items-center space-x-2 gap-2">
+                    <div class="">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Product Stock</h2>
+                        <div class="flex gap-2 {{$data_filter['category'] || $data_filter['period'] ? 'mb-1' : ''}}">
+                            @if ($data_filter['category'])
+                                <span class="max-w-40 truncate whitespace-nowrap inline-block py-1 px-2 rounded-lg text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500">Category : {{$data_filter['category']}}</span>
+                            @endif
+                            @if($data_filter['period'])
+                                <span class="inline-block py-1 px-2 rounded-lg text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500">Periode : {{$data_filter['period']}}</span>                    
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-1">
 
                         <button id="dropdown-filter-stock-button" data-dropdown-toggle="dropdown-filter-stock"
                             data-dropdown-ignore-click-outside-class="datepicker"
@@ -63,11 +74,12 @@
                                     <h1 class="text-sm mb-1 font-semibold text-gray-600">Category</h1>
                                     <select id="category" name="category"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        <option selected value=" ">Choose a country</option>
-                                        <option value="US">United States</option>
-                                        <option value="CA">Canada</option>
-                                        <option value="FR">France</option>
-                                        <option value="DE">Germany</option>
+                                            <option selected value="" hidden>Pilih kategori</option>
+                                        @forelse ($category as $item )
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                        @empty
+                                            <option value="">Tidak ada kategori</option>
+                                        @endforelse
                                     </select>
 
                                 </div>

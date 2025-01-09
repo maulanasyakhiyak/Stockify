@@ -22,6 +22,7 @@ class ProductStockRepositoryImplement extends Eloquent implements ProductStockRe
 
     public function getAll($search = null, $paginate = null){
         $query = $this->model->with('product');
+        
         if($search){
             $query->whereHas('product', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
@@ -44,5 +45,10 @@ class ProductStockRepositoryImplement extends Eloquent implements ProductStockRe
             $query->find($id);
         }
 
+    }
+
+    public function updateMinimum($id,$minimum_stock){
+        // dd($minimum_stock);
+        return $this->model->where('product_id', $id)->update(['minimal_stock' => $minimum_stock]);
     }
 }

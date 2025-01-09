@@ -90,7 +90,6 @@ class StockTransactionServiceImplement extends Service implements StockTransacti
             'sku' => 'required|string|exists:products,sku',
             'type' => 'required|in:in,out',
             'quantity' => 'required|numeric',
-            'notes' => 'required|string|min:10',
         ], [
             'sku.required' => 'Nama produk wajib diisi.',
             'sku.exists' => 'SKU yang dimasukkan tidak ditemukan.',
@@ -99,8 +98,6 @@ class StockTransactionServiceImplement extends Service implements StockTransacti
             'type.in' => 'Jenis transaksi (type) hanya boleh "in" atau "out".',
             'quantity.required' => 'Jumlah (quantity) wajib diisi.',
             'quantity.numeric' => 'Jumlah (quantity) harus berupa angka.',
-            'notes.required' => 'Catatan wajib diisi.',
-            'notes.string' => 'Catatan harus berupa teks.',
         ]);
 
         if ($validator->fails()) {

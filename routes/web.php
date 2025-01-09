@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin,manager,staff']],
     Route::post('stok/product-stock/opname', [StokAdminController::class, 'productStokOpname'])->name('admin.stok.productStok.opname');
     Route::get('stok/product-stock/opname/{token}', [StokAdminController::class, 'productStokOpnameDetail'])->name('admin.stok.productStok.Detailopname');
 
+    Route::post('manager/laporan/filter', [ManagerLaporanController::class, 'stock_filter'])->name('manager.laporan.filter');   
 });
 
 Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
@@ -99,7 +100,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
 
     Route::get('admin/stok', [StokAdminController::class, 'index'])->name('admin.stok');
     Route::get('admin/stok/product-stock', [StokAdminController::class, 'productStok'])->name('admin.stok.productStok');
-    Route::post('admin/stok/product-stock/update-minimum-stock', [StokAdminController::class, 'updateMinimumStock'])->name('admin.stok.productStok.update-minimum-stock');
+    Route::post('admin/stok/product-stock/update-minimum-stock/{id}', [StokAdminController::class, 'updateMinimumStock'])->name('admin.stok.productStok.update-minimum-stock');
     Route::get('admin/stok/riwayat-transaksi', [StokAdminController::class, 'stokRiwayatTransaksi'])->name('admin.stok.riwayat-transaksi');
 
     Route::prefix('admin')->group(function () {
@@ -133,7 +134,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:manager']], function ()
     Route::get('manager/supplier', [ManagerController::class, 'supplier'])->name('manager.supplier');
 
     Route::get('manager/laporan', [ManagerLaporanController::class, 'index'])->name('manager.laporan');
-    Route::post('manager/laporan/filter', [ManagerLaporanController::class, 'stock_filter'])->name('manager.laporan.filter');
+    
 
 });
 Route::group(['middleware' => ['auth', 'verified', 'role:staff']], function () {

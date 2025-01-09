@@ -135,15 +135,14 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                 ->where('status', 'completed')
                 ->first();
         
-            $total = $total_before->total ?? 0;
-            $total_stock = 0;
+            $total_stock = $total_before->total ?? 0;
             $data = $query->get()->map(function($item) use (&$total, &$total_stock, $formatDate) {
                 $total += $item->total_quantity ?? 0;
                 $total_stock += $item->total_quantity ?? 0;
                 return [
                     'date' => $formatDate($item),
                     'quantity' => $item->total_quantity,
-                    'total_quantity' => $total,
+                    'total_quantity' => $total_stock,
                 ];
             });
         }
@@ -179,7 +178,6 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
             'type' => $data['type'],
             'quantity' => $data['quantity'],
             'status' => 'pending',
-            'notes' => $data['notes'],
             'date' => Carbon::now()->format('Y-m-d')
         ]);
     }
@@ -205,8 +203,7 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
         return $data->total;
     }
 
-    public function laporanStokBarang($date_start = null, $date_end = null, $kategoriId = null)
-    {
+    public function laporanStokBarang($date_start = null, $date_end = null, $kategoriId = null){
         $query = $this->model->with('product')->where('status', 'completed');
         $startDate = $query->min('date');
         if($date_start && $date_end){
@@ -222,8 +219,8 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
         }
 
         // $stokBarang = $query->selectRaw("product_id, 
-        //                             $groupBy as periode, 
-        //                             SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total_quantity")
+        //                          $groupBy as periode, 
+        //                          SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total_quantity")
         //                     ->groupBy('product_id', DB::raw($groupBy))
         //                     ->orderBy(DB::raw($groupBy), 'asc')
         //                     ->groupBy('product_id')
@@ -267,139 +264,139 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
 }
 
 
-            // $now = Carbon::now();
-            // switch ($range) {
-            //     case '7-days':
-            //         $data = $this->model
-            //             ->where('status', 'completed')
-            //             ->select(DB::raw(' DAYOFWEEK(date) AS hari, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
-            //             ->where('date', '>=', $now->subWeek())
-            //             ->groupBy(DB::raw(' DAYOFWEEK(date) '))
-            //             ->get();
+    // $now = Carbon::now();
+    // switch ($range) {
+    //     case '7-days':
+    //         $data = $this->model
+    //             ->where('status', 'completed')
+    //             ->select(DB::raw(' DAYOFWEEK(date) AS hari, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
+    //             ->where('date', '>=', $now->subWeek())
+    //             ->groupBy(DB::raw(' DAYOFWEEK(date) '))
+    //             ->get();
 
-            //             $days = collect(range(1,7));
-            //             $lastDay = $data->sortByDesc('hari')->first();
+    //             $days = collect(range(1,7));
+    //             $lastDay = $data->sortByDesc('hari')->first();
 
-            //             $sumTotal = 0;
-            //             $data = $days->map(function ($day) use ($data, &$sumTotal, $lastDay) {
-            //                 // // Mencari data untuk minggu tertentu
-            //                 $dataItem = $data->firstWhere('hari', $day);
-            //                 $sumTotal += $dataItem ? $dataItem->total : 0;
-            //                 $total = $dataItem ? $dataItem->total : 0;
-            //                 if($lastDay){
-            //                     if ( $lastDay->hari < $day) {
-            //                         $sumTotal = null;
-            //                         $total = null;
-            //                     }
-            //                 }
-            //                 return [
-            //                     'date' => Carbon::create()->startOfWeek()->addDays($day - 1)->locale('id')->dayName ,
-            //                     'total' => $total,
-            //                     'total_quantity' => $sumTotal,
-            //                 ];
-            //             });
-            //         break;
+    //             $sumTotal = 0;
+    //             $data = $days->map(function ($day) use ($data, &$sumTotal, $lastDay) {
+    //                 // // Mencari data untuk minggu tertentu
+    //                 $dataItem = $data->firstWhere('hari', $day);
+    //                 $sumTotal += $dataItem ? $dataItem->total : 0;
+    //                 $total = $dataItem ? $dataItem->total : 0;
+    //                 if($lastDay){
+    //                     if ( $lastDay->hari < $day) {
+    //                         $sumTotal = null;
+    //                         $total = null;
+    //                     }
+    //                 }
+    //                 return [
+    //                     'date' => Carbon::create()->startOfWeek()->addDays($day - 1)->locale('id')->dayName ,
+    //                     'total' => $total,
+    //                     'total_quantity' => $sumTotal,
+    //                 ];
+    //             });
+    //         break;
 
-            //     case '1-month':
-            //         $data = $this->model
-            //             ->where('status', 'completed')
-            //             ->select(DB::raw('FLOOR((DAY(date) - 1) / 7) + 1 AS minggu, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
-            //             ->where('date', '>=', Carbon::now()->subMonth())
-            //             ->groupBy(DB::raw('FLOOR((DAY(date) - 1) / 7) + 1'))
-            //             ->get();
+    //     case '1-month':
+    //         $data = $this->model
+    //             ->where('status', 'completed')
+    //             ->select(DB::raw('FLOOR((DAY(date) - 1) / 7) + 1 AS minggu, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
+    //             ->where('date', '>=', Carbon::now()->subMonth())
+    //             ->groupBy(DB::raw('FLOOR((DAY(date) - 1) / 7) + 1'))
+    //             ->get();
 
-            //         $totalBefore = $this->model
-            //             ->where('status', 'completed')
-            //             ->where('date', '<', Carbon::now()->startOfMonth()) // Ambil data sebelum bulan ini
-            //             ->sum(DB::raw('CASE WHEN type = "in" THEN quantity ELSE -quantity END'));
+    //         $totalBefore = $this->model
+    //             ->where('status', 'completed')
+    //             ->where('date', '<', Carbon::now()->startOfMonth()) // Ambil data sebelum bulan ini
+    //             ->sum(DB::raw('CASE WHEN type = "in" THEN quantity ELSE -quantity END'));
 
-            //         $weeks = collect(range(1, 5));
+    //         $weeks = collect(range(1, 5));
 
-            //         $lastWeek = $data->sortByDesc('minggu')->first();
+    //         $lastWeek = $data->sortByDesc('minggu')->first();
 
-            //         // Mendeklarasikan $sumTotal untuk menyimpan total keseluruhan
-            //         $sumTotal = 0;
+    //         // Mendeklarasikan $sumTotal untuk menyimpan total keseluruhan
+    //         $sumTotal = 0;
 
-            //         $data = $weeks->map(function ($week) use ($data, &$sumTotal, $lastWeek,$totalBefore) {
-            //             $item = $data->firstWhere('minggu',$week);
-            //             $sumTotal += $item ? $item->total : 0;
-            //             $total = $item ? $item->total : 0;
+    //         $data = $weeks->map(function ($week) use ($data, &$sumTotal, $lastWeek,$totalBefore) {
+    //             $item = $data->firstWhere('minggu',$week);
+    //             $sumTotal += $item ? $item->total : 0;
+    //             $total = $item ? $item->total : 0;
 
-            //             if($week == 1){
-            //                 $sumTotal += $totalBefore;
-            //             }
+    //             if($week == 1){
+    //                 $sumTotal += $totalBefore;
+    //             }
 
-            //             if ( $lastWeek->minggu < $week) {
-            //                 $sumTotal = null;
-            //                 $total = null;
-            //             }
+    //             if ( $lastWeek->minggu < $week) {
+    //                 $sumTotal = null;
+    //                 $total = null;
+    //             }
 
-            //             return [
-            //                 'date' => $week . ' week',
-            //                 'total' => $total,
-            //                 'total_quantity' => $sumTotal,
-            //             ];
-            //         });
+    //             return [
+    //                 'date' => $week . ' week',
+    //                 'total' => $total,
+    //                 'total_quantity' => $sumTotal,
+    //             ];
+    //         });
 
-            //         break;
+    //         break;
 
-            //     case '1-year':
-            //         $data = $this->model
-            //             ->where('status', 'completed')
-            //             ->select(DB::raw('YEAR(date) as tahun, MONTH(date) as bulan, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
-            //             ->where('date', '>=', Carbon::now()->subYear())
-            //             ->groupBy(DB::raw('YEAR(date), MONTH(date)'))
-            //             ->get();
-            //         $totalBefore = $this->model
-            //             ->where('status', 'completed')
-            //             ->where('date', '<', Carbon::now()->startOfYear()) // Ambil data sebelum bulan ini
-            //             ->sum(DB::raw('CASE WHEN type = "in" THEN quantity ELSE -quantity END'));
-            //         $months = collect(range(1, 12));
-            //         $sumTotal = 0;
-            //         $lastMonth = $data->sortByDesc('bulan')->first();
-            //         $data = $months->map(function ($month) use ($data, &$sumTotal, $lastMonth,$totalBefore) {
-            //             $dataItem = $data->firstWhere('bulan', $month);
-            //             $sumTotal += $dataItem ? $dataItem->total : 0;
-            //             $total = $dataItem ? $dataItem->total : 0;
-            //             if($month == 1){
-            //                 $sumTotal += $totalBefore;
-            //             }
-            //             if ($lastMonth->bulan < $month) {
-            //                 $sumTotal = null;
-            //                 $total = null;
-            //             }
-            //             if (!$dataItem) {
-            //                 return [
-            //                     'date' => Carbon::createFromFormat('m', $month)->format('F'),
-            //                     'total' => $total,
-            //                     'total_quantity' => $sumTotal,
-            //                 ];
-            //             }
-            //             // Jika ada data, kembalikan data seperti biasa
-            //             return [
-            //                 'date' => Carbon::createFromFormat('m', $dataItem->bulan)->format('F'),
-            //                 'total' => $total,
-            //                 'total_quantity' => $sumTotal,
-            //             ];
-            //         });
+    //     case '1-year':
+    //         $data = $this->model
+    //             ->where('status', 'completed')
+    //             ->select(DB::raw('YEAR(date) as tahun, MONTH(date) as bulan, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
+    //             ->where('date', '>=', Carbon::now()->subYear())
+    //             ->groupBy(DB::raw('YEAR(date), MONTH(date)'))
+    //             ->get();
+    //         $totalBefore = $this->model
+    //             ->where('status', 'completed')
+    //             ->where('date', '<', Carbon::now()->startOfYear()) // Ambil data sebelum bulan ini
+    //             ->sum(DB::raw('CASE WHEN type = "in" THEN quantity ELSE -quantity END'));
+    //         $months = collect(range(1, 12));
+    //         $sumTotal = 0;
+    //         $lastMonth = $data->sortByDesc('bulan')->first();
+    //         $data = $months->map(function ($month) use ($data, &$sumTotal, $lastMonth,$totalBefore) {
+    //             $dataItem = $data->firstWhere('bulan', $month);
+    //             $sumTotal += $dataItem ? $dataItem->total : 0;
+    //             $total = $dataItem ? $dataItem->total : 0;
+    //             if($month == 1){
+    //                 $sumTotal += $totalBefore;
+    //             }
+    //             if ($lastMonth->bulan < $month) {
+    //                 $sumTotal = null;
+    //                 $total = null;
+    //             }
+    //             if (!$dataItem) {
+    //                 return [
+    //                     'date' => Carbon::createFromFormat('m', $month)->format('F'),
+    //                     'total' => $total,
+    //                     'total_quantity' => $sumTotal,
+    //                 ];
+    //             }
+    //             // Jika ada data, kembalikan data seperti biasa
+    //             return [
+    //                 'date' => Carbon::createFromFormat('m', $dataItem->bulan)->format('F'),
+    //                 'total' => $total,
+    //                 'total_quantity' => $sumTotal,
+    //             ];
+    //         });
 
-            //     break;
+    //     break;
 
-            //     case 'all-time':
-            //         $data = $this->model->select(DB::raw('DATE(date) as date, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
-            //             ->where('status', 'completed')
-            //             ->groupBy('date')
-            //             ->get();
+    //     case 'all-time':
+    //         $data = $this->model->select(DB::raw('DATE(date) as date, SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END) as total'))
+    //             ->where('status', 'completed')
+    //             ->groupBy('date')
+    //             ->get();
 
-            //         $sumTotal = 0 ;
-            //         $data = $data->map(function ($item) use(&$sumTotal) {
-            //             $sumTotal += $item ? $item->total : 0;
-            //             $total = $item ? $item->total : 0;
-            //             return [
-            //                 'date' => $item->date,
-            //                 'total' => $total,
-            //                 'total_quantity' => $sumTotal,
-            //             ];
-            //         });
-            //         break;
-            // }
+    //         $sumTotal = 0 ;
+    //         $data = $data->map(function ($item) use(&$sumTotal) {
+    //             $sumTotal += $item ? $item->total : 0;
+    //             $total = $item ? $item->total : 0;
+    //             return [
+    //                 'date' => $item->date,
+    //                 'total' => $total,
+    //                 'total_quantity' => $sumTotal,
+    //             ];
+    //         });
+    //         break;
+         
