@@ -21,4 +21,10 @@ interface StockTransactionRepository extends Repository{
     public function get_total_stock();
 
     public function laporanStokBarang($date_start = null, $date_end = null, $kategoriId = null);
+
+    public function laporan_barang_masuk_keluar($type);
+
+    public function get_receive_today();
+
+    public function get_dispatched_today();
 }

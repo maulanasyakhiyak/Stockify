@@ -217,50 +217,47 @@ class StockTransactionRepositoryImplement extends Eloquent implements StockTrans
                 $query->where('id', $kategoriId);
             });
         }
-
-        // $stokBarang = $query->selectRaw("product_id, 
-        //                          $groupBy as periode, 
-        //                          SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total_quantity")
-        //                     ->groupBy('product_id', DB::raw($groupBy))
-        //                     ->orderBy(DB::raw($groupBy), 'asc')
-        //                     ->groupBy('product_id')
-        //                     ->get();
-        $laporan = $query->select('product_id')
-                    ->selectRaw("SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total_quantity")
-                    ->groupBy('product_id')
-                    ->get()->map(function($item) use($startDate){
-                        $totalBefore = $this->model->where('status', 'completed')
-                                    ->where('product_id', $item->product_id)
-                                    ->where('date', '<' ,$startDate)
-                                    ->selectRaw("SUM(CASE WHEN type = 'in' THEN quantity ELSE -quantity END) as total")
-                                    ->first()->total ?? 0;
-
-                        return [
-                            'total_bfore' =>$totalBefore ?? 0,
-                            'SKU' => $item->product->sku,
-                            'product_id' => $item->product_id,
-                            'total_quantity' => $item->total_quantity,
-                            'product_name' => $item->product->name,
-                            'category_name' => $item->product->category->name,
-                            ];
-                    });
-
-        
-        // $total = 0;
-        // ->map(function ($item) use(&$total){
-        //     $total += $item->total_quantity;
-        //     return [
-        //         'product_id' => $item->product_id,
-        //         'periode' => $item->periode,
-        //         'stok' => $item->total_quantity,
-        //         'total' => $total,
-        //     ];
-        // });
-
+        $laporan = $query->get()->groupBy('product_id')->map(function ($transactions, $productId) {
+            $product = $transactions->first()->product;
+            $quantityIn = $transactions->where('type', 'in')->sum('quantity');
+            $quantityOut = $transactions->where('type', 'out')->sum('quantity');
+    
+            return [
+                'product_id' => $productId,
+                'SKU' => $product->sku,
+                'product_name' => $product->name,
+                'category_name' => $product->category->name ?? null,
+                'total_quantity' => $quantityIn - $quantityOut, // Hitung kuantitas
+            ];
+        });
         // dd($laporan->toArray());
-
         return $laporan;
     }
+
+    public function laporan_barang_masuk_keluar($type){
+        return $this->model->with('user','product')
+                                ->select('product_id','user_id','quantity','type','date')
+                                ->where('status', 'completed')
+                                ->where('type', $type)
+                                ->orderBy('date')->get();
+    }
+    public function get_receive_today(){
+        $date = Carbon::now()->format('Y-m-d');
+        return $this->model->with('product')->where('status', 'completed')
+        ->where('type', 'in')
+        ->whereDate('date', $date)
+        ->get();
+
+    }
+    public function get_dispatched_today(){
+        $date = Carbon::now()->format('Y-m-d');
+        return $this->model->with('product')->where('status', 'completed')
+        ->where('type', 'out')
+        ->whereDate('date', $date)
+        ->get();
+
+    }
+
 }
 
 

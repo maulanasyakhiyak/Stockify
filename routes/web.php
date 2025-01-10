@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin,manager,staff']],
     Route::post('stok/product-stock/opname', [StokAdminController::class, 'productStokOpname'])->name('admin.stok.productStok.opname');
     Route::get('stok/product-stock/opname/{token}', [StokAdminController::class, 'productStokOpnameDetail'])->name('admin.stok.productStok.Detailopname');
 
+    Route::get('admin/laporan/export-product-stock', [LaporanController::class, 'ExportProductStock'])->name('admin.laporan.ExportProductStock');
     Route::post('manager/laporan/filter', [ManagerLaporanController::class, 'stock_filter'])->name('manager.laporan.filter');   
 });
 
@@ -112,7 +113,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
     
     Route::get('admin/laporan', [LaporanController::class , 'index'])->name('admin.laporan');
     Route::get('admin/laporan/export-user-activity', [LaporanController::class, 'ExportUserActivity'])->name('admin.laporan.ExportUserActivity');
-    Route::get('admin/laporan/export-product-stock', [LaporanController::class, 'ExportProductStock'])->name('admin.laporan.ExportProductStock');
+    
     Route::get('admin/laporan/export-stock-transaction', [LaporanController::class, 'ExportStockTransaction'])->name('admin.laporan.ExportStockTransaction');
     Route::post('admin/laporan/session', [LaporanController::class , 'storeSession'])->name('admin.laporan.session');
     Route::prefix('admin')->group(function () {
@@ -134,6 +135,9 @@ Route::group(['middleware' => ['auth', 'verified', 'role:manager']], function ()
     Route::get('manager/supplier', [ManagerController::class, 'supplier'])->name('manager.supplier');
 
     Route::get('manager/laporan', [ManagerLaporanController::class, 'index'])->name('manager.laporan');
+
+    Route::get('manager/laporan/export_barang_masuk', [ManagerLaporanController::class, 'export_barang_masuk'])->name('manager.laporan.export_in');
+    Route::get('manager/laporan/export_barang_keluar', [ManagerLaporanController::class, 'export_barang_keluar'])->name('manager.laporan.export_out');
     
 
 });

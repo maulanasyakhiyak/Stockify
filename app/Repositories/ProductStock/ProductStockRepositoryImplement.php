@@ -51,4 +51,8 @@ class ProductStockRepositoryImplement extends Eloquent implements ProductStockRe
         // dd($minimum_stock);
         return $this->model->where('product_id', $id)->update(['minimal_stock' => $minimum_stock]);
     }
+
+    public function get_low_stock(){
+        return $this->model->with('product')->where('stock', '<=' , 'minimal_stock')->get();
+    }
 }

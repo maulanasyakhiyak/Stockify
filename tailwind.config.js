@@ -42,7 +42,18 @@ module.exports = {
         require('flowbite/plugin')({
             datatables: true,
         }),
-        require('flowbite/plugin')
+        require('flowbite/plugin'),
+        function ({ addUtilities }) {
+            addUtilities({
+              '.scrollbar-hidden': {
+                'scrollbar-width': 'none',  // Untuk Firefox
+                '-ms-overflow-style': 'none',  // Untuk Internet Explorer
+              },
+              '.scrollbar-hidden::-webkit-scrollbar': {
+                display: 'none',  // Untuk Chrome, Safari, dan Edge
+              },
+            })
+          }
     ],
 }
 

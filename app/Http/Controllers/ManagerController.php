@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Categories\CategoriesRepository;
+use App\Repositories\ProductStock\ProductStockRepository;
+use App\Repositories\StockTransaction\StockTransactionRepository;
 use App\Repositories\Supplier\SupplierRepository;
 use App\Services\Product\ProductService;
 use Illuminate\Http\Request;
@@ -14,21 +16,30 @@ class ManagerController extends Controller
     protected $categoriesRepository;
     protected $productService;
     protected $supplierRepository;
+    protected $productStockRepository;
+    protected $stockTransactionRepository;
 
     public function __construct(SupplierRepository $supplierRepository,
                                 CategoriesRepository $categoriesRepository,
-                                ProductService $productService)
+                                ProductService $productService,
+                                ProductStockRepository $productStockRepository,
+                                StockTransactionRepository $stockTransactionRepository)
     {
         $this->categoriesRepository = $categoriesRepository;
         $this->productService = $productService;
         $this->supplierRepository = $supplierRepository;
+        $this->productStockRepository = $productStockRepository;
+        $this->stockTransactionRepository = $stockTransactionRepository;
     }
     public function index(){
         return redirect(route('manager.dashboard'));
     }
 
     public function dashboard(){
-        return view('managerpage.dashboard');
+        $low_stock = $this->productStockRepository->get_low_stock();
+        $receive_today = $this->stockTransactionRepository->get_receive_today();
+        $dispatched_today = $this->stockTransactionRepository->get_dispatched_today();
+        return view('managerpage.dashboard', compact('low_stock','receive_today','dispatched_today'));
     }
 
     public function product(Request $req){

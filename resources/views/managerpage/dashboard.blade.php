@@ -2,78 +2,104 @@
 
 @section('subtitle', 'Dashboard')
 @section('content')
-<div class="grid grid-cols-1 gap-4 p-4">
-    <div class="w-full flex justify-between pb-0">
-        <div
-            class="grid grid-cols-5 p-1 hidden lg:grid bg-white border border-gray-200 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <div class=" text-gray-500 text-sm font-bold p-2 text-center rounded-md text-white bg-blue-500">All time</div>
-            <div class=" text-gray-500 text-sm p-2 text-center">12 Month</div>
-            <div class=" text-gray-500 text-sm p-2 text-center">30 Days</div>
-            <div class=" text-gray-500 text-sm p-2 text-center">7 Days</div>
-            <div class=" text-gray-500 text-sm p-2 text-center">1 Days</div>
+    <div class="flex h-[625px] gap-4 p-4">
+        <!-- Card 1 -->
+        <div class="flex flex-col border rounded-xl shadow bg-white dark:bg-gray-800 dark:border-gray-600 p-4 w-1/2">
+            <div class="text-gray-500 dark:text-gray-200 text-lg mb-4">
+                <i class="fa-solid fa-box-open pe-2 text-red-500"></i>Low Stock
+            </div>
+            <div class="">
+                <table class="w-full table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 bg-transparent dark:text-gray-400 border-b dark:border-gray-700">
+                        <tr>
+                            <th scope="col" class="w-3/5 pb-2 text-sm font-medium text-gray-400">
+                                Name
+                            </th>
+                            <th scope="col" class="pb-2 w-1/5 text-center text-sm font-medium text-gray-400">
+                                Current
+                            </th>
+                            <th scope="col" class="pb-2 w-1/5 text-center text-sm font-medium text-gray-400">
+                                Minimal
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="overflow-y-auto scrollbar-hidden max-h-[470px]">
+                <table class="table-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <tbody>
+                        @forelse ($low_stock as $item)
+                        <tr class="bg-transparent border-b dark:border-gray-700">
+                            <td class="py-4 w-3/5 font-semibold text-gray-900 dark:text-gray-200">
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-block h-4 w-4 rounded-md bg-red-400"></span>
+                                    <div class="text-red-00">{{$item->product->name}}</div>
+                                </div>
+                            </td>
+                            <td class="py-4 w-1/5 font-semibold text-gray-900 dark:text-gray-200 text-center">
+                                {{$item->stock}}
+                            </td>
+                            <td class="py-4 w-1/5 font-semibold text-gray-900 dark:text-gray-200 text-center">
+                                {{$item->minimal_stock}}
+                            </td>
+                        </tr>
+                        @empty
+                            <tr class="bg-transparent border-b dark:border-gray-700">
+                                <td colspan="3" class="text-center text-gray-300">No data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="grid grid-cols-1 ">
-            <button class="bg-blue-500 text-sm p-3 rounded-md text-white"><i class="fa-solid fa-plus pe-2"></i>Tambah produk</button>
+    
+        <!-- Card 2 and Card 3 -->
+        <div class="flex flex-col gap-4 flex-grow">
+            <!-- Card 2 -->
+            <div class="flex border rounded-xl shadow bg-white dark:bg-gray-800 dark:border-gray-600  p-4 h-1/2 flex-col">
+                <div class="text-gray-500 dark:text-gray-200 text-lg mb-4">
+                    <i class="fa-solid fa-arrow-down pe-2 text-green-500"></i> Items Received Today
+                </div>
+                <div class="flex flex-col overflow-y-auto scrollbar-hidden gap-3" style="max-height: 200px;">
+                    @forelse ($receive_today as $item)
+                        <div class="bg-green-400 rounded-lg p-2 px-4 w-full flex justify-between text-white">
+                            <div class="flex items-center gap-2 font-normal ">
+                                <span class="inline-block h-2 w-2 bg-white rounded-full"></span>
+                                <h1>{{$item->product->name}}</h1>
+                            </div>
+                            <div class="font-semibold">{{$item->quantity}} pcs</div>
+                        </div>
+                    @empty
+                        <div class="bg-transparent mt-20">
+                            <div class="text-center text-gray-300 w-full">No data</div>
+                        </div>
+                    @endforelse
+                    
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="flex border rounded-xl shadow bg-white dark:bg-gray-800 dark:border-gray-600  p-4 h-1/2 flex-col">
+                <div class="text-gray-500 dark:text-gray-200 text-lg mb-4 ">
+                    <i class="fa-solid fa-arrow-up pe-2 text-red-500"></i> 
+                    Items Dispatched Today
+                </div>
+                <div class="flex flex-col overflow-y-auto scrollbar-hidden gap-3" style="max-height: 200px;">
+                    @forelse ($dispatched_today as $item)
+                    <div class="bg-red-400 rounded-lg p-2 px-4 w-full flex justify-between text-white">
+                        <div class="flex items-center gap-2 font-normal ">
+                            <span class="inline-block h-2 w-2 bg-white rounded-full"></span>
+                            <h1>{{$item->product->name}}</h1>
+                        </div>
+                        <div class="font-semibold">{{$item->quantity}} pcs</div>
+                    </div>
+                @empty
+                    <div class="bg-transparent mt-20">
+                        <div class="text-center text-gray-300 w-full">No data</div>
+                    </div>
+                @endforelse
+                </div>
+            </div>
         </div>
     </div>
-    <div class="grid w-full grid-cols-1 gap-4  sm:grid-cols-2 2xl:grid-cols-3">
-        <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex gap-x-6 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <i class="fa-solid fa-box-open text-4xl text-gray-400"></i>
-            <div class="w-full">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Jumlah Produk</h3>
-                <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">2,340</span>
-                <p class="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
-                    <span class="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z">
-                            </path>
-                        </svg>
-                        12.5%
-                    </span>
-                    Since last month
-                </p>
-            </div>
-        </div>
-        <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex gap-x-6 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <i class="fa-solid fa-arrow-down text-4xl text-emerald-500"></i>
-            <div class="w-full">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Pemasukkan</h3>
-                <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">2,340</span>
-                <p class="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
-                    <span class="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z">
-                            </path>
-                        </svg>
-                        3,4%
-                    </span>
-                    Since last month
-                </p>
-            </div>
-        </div>
-        <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 gap-x-6 dark:bg-gray-800">
-            <i class="fa-solid fa-arrow-up text-4xl text-red-500"></i>
-            <div class="w-full">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Pengeluaran</h3>
-                <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">2,340</span>
-                <p class="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
-                    <span class="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z">
-                            </path>
-                        </svg>
-                        3,4%
-                    </span>
-                    Since last month
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+    
 @endsection
