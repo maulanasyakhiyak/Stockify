@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Events\UserActivityLogged;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -62,5 +65,52 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')->with('success', 'Anda telah logout');
+    }
+
+    public function showLinkRequestForm(){
+        return view('guest.forgot-password');
+    }
+
+    public function sendResetLinkEmail(Request $request){
+        $request->validate(['email' => 'required|email']);
+
+        // Mengirimkan link reset password
+        $response = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $response == Password::RESET_LINK_SENT
+        ? back()->with('status', 'Link reset password telah dikirimkan!')
+        : back()->withErrors(['email' => 'Email tidak ditemukan.']);
+
+    }
+
+    public function showResetForm($token)
+    {
+        return view('guest.reset-form', ['token' => $token]); // Menyertakan token di view
+    }
+
+    public function reset(Request $request)
+    {
+        // Validasi form reset password
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+            'token' => 'required',
+        ]);
+
+        // Memperbarui password
+        $response = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        // Cek jika reset password berhasil
+        return $response == Password::PASSWORD_RESET
+            ? redirect()->route('login')->with('status', 'Password berhasil direset!')
+            : back()->withErrors(['email' => 'Gagal mereset password.']);
     }
 }
