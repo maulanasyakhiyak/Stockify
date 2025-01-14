@@ -49,6 +49,15 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middl
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Route untuk menampilkan form permintaan reset password (halaman email)
+Route::get('password/reset', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
+// Route untuk mengirimkan email link reset password
+Route::post('password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+// Route untuk menampilkan form reset password (memerlukan token)
+Route::get('password/reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+// Route untuk menangani form reset password dan memperbarui password
+Route::post('password/reset', [AuthController::class, 'reset'])->name('password.update');
+
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,manager,staff']], function () {
     Route::get('/get_stock_for_chart', [AdminController::class, 'get_stock_for_chart'])->name('get_stock_for_chart');
     Route::get('/download/sample-import', [AdminController::class,'downloadSampleImport'])->name('download-sample-import');

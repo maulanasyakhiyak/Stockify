@@ -29,23 +29,19 @@
                         <div class="relative bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <input type="password" name="password" id="password"
                                    class="block w-full text-sm text-gray-900 bg-transparent focus:ring-0 border-none focus:outline-none dark:text-white peer"
-                                   placeholder=" •••••••• " />
+                                   placeholder="••••••••" />
                             <button type="button" data-toggle="togglePassword" data-toggle-eye="password"
                                     class="absolute right-3 top-2 text-gray-500 dark:text-gray-400">
                                     <i data-toggle-eye-icon="password" class="fa-regular fa-eye"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="flex items-start">
-                        <div class="flex items-center h-5">
-                            <input id="remember" aria-describedby="remember" name="remember" type="checkbox" class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+                    <div class="w-full flex flex-col justify-center">
+                        <button type="submit" class="mb-4 w-full px-5 py-3 text-base font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Login to your account</button>
+                        <div class="flex items-start">
+                            <a href="{{ route('password.request') }}" class="text-sm text-primary-700 hover:underline dark:text-primary-500">Lost Password?</a>
                         </div>
-                        <div class="ml-3 text-sm">
-                        <label for="remember" class="font-medium text-gray-900 dark:text-white">Remember me</label>
-                        </div>
-                        <a href="#" class="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500">Lost Password?</a>
                     </div>
-                    <button type="submit" class="w-full px-5 py-3 text-base font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Login to your account</button>
                 </form>
             </div>
         </div>
