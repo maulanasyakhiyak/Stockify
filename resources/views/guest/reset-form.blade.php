@@ -24,6 +24,14 @@
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
                     <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <div class="relative bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <input type="email" name="email" id="email"
+                                   class="block w-full text-sm text-gray-900 bg-transparent focus:ring-0 border-none focus:outline-none dark:text-white peer"
+                                   value="{{ old('email') }}" required/>
+                        </div>
+                    </div>
+                    <div>
                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                         <div class="relative bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <input type="password" name="password" id="password"
@@ -36,14 +44,14 @@
                         </div>
                     </div>
                     <div>
-                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+                        <label for="password_confirmation" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
                         <div class="relative bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <input type="password" name="confirm_password" id="confirm_password"
+                            <input type="password" name="password_confirmation" id="password_confirmation"
                                    class="block w-full text-sm text-gray-900 bg-transparent focus:ring-0 border-none focus:outline-none dark:text-white peer"
                                    placeholder="••••••••" />
-                            <button type="button" data-toggle="togglePassword" data-toggle-eye="confirm_password"
+                            <button type="button" data-toggle="togglePassword" data-toggle-eye="password_confirmation"
                                     class="absolute right-3 top-2 text-gray-500 dark:text-gray-400">
-                                    <i data-toggle-eye-icon="confirm_password" class="fa-regular fa-eye"></i>
+                                    <i data-toggle-eye-icon="password_confirmation" class="fa-regular fa-eye"></i>
                             </button>
                         </div>
                     </div>

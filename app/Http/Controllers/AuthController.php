@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\UserActivityLogged;
 use Illuminate\Support\Facades\Auth;
@@ -94,7 +95,7 @@ class AuthController extends Controller
     {
         // Validasi form reset password
         $request->validate([
-            'email' => 'required|email',
+            // 'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
             'token' => 'required',
         ]);
@@ -103,14 +104,18 @@ class AuthController extends Controller
         $response = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
-                $user->password = Hash::make($password);
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ]);
                 $user->save();
             }
         );
-
-        // Cek jika reset password berhasil
-        return $response == Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Password berhasil direset!')
-            : back()->withErrors(['email' => 'Gagal mereset password.']);
+        if($response == Password::PASSWORD_RESET){
+            return redirect()->route('login')->with('status', 'Password berhasil direset!');
+        }elseif($response == Password::INVALID_TOKEN){
+            return redirect()->back()->withErrors(['email' => 'Token reset password tidak valid.']);
+        }elseif(Password::INVALID_USER){
+            return redirect()->back()->withErrors(['email' => 'Email tidak ditemukan.']);
+        }
     }
 }
